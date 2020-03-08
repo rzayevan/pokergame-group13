@@ -1,3 +1,8 @@
 # Poker Pals
 
-The overall purpose of this project is to create a web application that allows users to play poker with other users. The target audience of this project is anyone interested in poker, primarily those who are not interested in spending real money. This multiplayer game will have a room-based environment with a set capacity of players per room. Within a room, real-time interaction will be available, both through gameplay and through instant messaging. This web application will implement basic user authentication for both user and admin accounts. Both accounts are capable of creating and joining rooms, however admins will have additional permissions regarding user management. Each user will have account information that persists regarding their game statistics, such as wins or losses and their in-game currency. 
+A fun poker game!
+
+## Dependencies
+* Run `npm install -g @vue/cli`
+* Navigate to poker-pals directory: `cd poker-pals`
+* Run `npm run serve`
