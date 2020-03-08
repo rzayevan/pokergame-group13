@@ -8,3 +8,6 @@ A fun poker game!
 * Run `npm install -g concurrently`
 * Navigate to poker-pals directory: `cd poker-pals-group13`
 * Run `npm start`
+* 
+* Open the app from localhost:8080
+* Server requests can be received from the port 8081
