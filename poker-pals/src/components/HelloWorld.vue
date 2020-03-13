@@ -13,12 +13,15 @@
         socket: {},
       }
     },
+    // gets called before the view is rendered
     created() {
-      this.socket = io("http://localhost:3000");
+      this.socket = io("http://localhost:3000"); // connect to our server
     },
+
+    // gets called after the view is rendered
     mounted() {
       this.socket.on("connected", data => {
-        console.log("cliet received a message: " + data);
+        console.log("client received a message: " + data);
       });
     }
   }
