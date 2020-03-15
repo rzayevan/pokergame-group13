@@ -11,7 +11,6 @@
 // import Profile from './components/Profile.vue';
 // import Reports from './components/Reports.vue';
 // import Tables from './components/Tables.vue';
-//import Table from './components/Table.vue';
 
 export default {
   name: 'App',
@@ -21,7 +20,6 @@ export default {
     // Profile,
     // Reports,
     // Tables
-    //Table
   }
 }
 
