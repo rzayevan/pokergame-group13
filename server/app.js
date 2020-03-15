@@ -8,6 +8,6 @@ http.listen(3000, () => {
 });
 
 io.on('connection', (socket) => {
+    console.log("Client connected.");          
     socket.emit("connected", "Hello from server");
-    console.log("test");          
 });
