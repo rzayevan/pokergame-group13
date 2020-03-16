@@ -29,7 +29,7 @@ export default {
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
 #app {
-  font-family: Roboto;
+  font-family: Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
