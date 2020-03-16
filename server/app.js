@@ -2,6 +2,7 @@ let express = require('express');
 let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
+let User = require("./model/User.js");
 
 const DataAccessLayer = require('./controllers/DataAccessLayer.js')
 
@@ -17,12 +18,8 @@ io.on('connection', (socket) => {
 
     socket.on('add-new-user', function(msg) {
         let splitUserString = msg.split(';');
-        let newUser = {
-            username: splitUserString[0],
-            password: splitUserString[1],
-            email: splitUserString[2],
-            gold: 100
-        };
+        let newUser = new User();
+        newUser.CreateNewUser(splitUserString[0], splitUserString[1], splitUserString[2]);
         DataAccessLayer.AddUserToFile(newUser);
     });
 });
