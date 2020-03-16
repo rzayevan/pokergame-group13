@@ -176,6 +176,8 @@
                     <button class="testButton" v-on:click="revealPlayerCards()">9</button>
                     <button class="testButton" v-on:click="changeNames()">10</button>
                     <button class="testButton" v-on:click="changeTagImages()">11</button>
+                    <button class="testButton" v-on:click="changeTimer1()">12</button>
+                    <button class="testButton" v-on:click="changeTimer2()">13</button>
                 </div>
             </div>
             <div class="inputBoxBorder">
@@ -289,7 +291,7 @@
         background: transparent;
     }
     .tableImage img{
-        width: 100%;
+      width: 100%;
 	    height: 100%;
     }
     .tableItems{
@@ -333,7 +335,7 @@
         border-radius: 15%;
     }
     .tableCard img{
-        width: 100%;
+      width: 100%;
 	    height: 100%;
     }
     .tableDeck{
@@ -345,7 +347,7 @@
         border-radius: 15%;
     }
     .tableDeck img{
-        width: 100%;
+      width: 100%;
 	    height: 100%;
     }
     .players123{
@@ -792,7 +794,27 @@ export default {
                 player5: require(`../images/player_icon_1.png`),
                 player6: require(`../images/player_icon_1.png`),
             };
-        }
+        },
+        changeTimer1(){
+            this.playerTimer = {
+                player1: true,
+                player2: false,
+                player3: false,
+                player4: false,
+                player5: false,
+                player6: false,
+            };
+        },
+        changeTimer2(){
+            this.playerTimer = {
+                player1: false,
+                player2: true,
+                player3: false,
+                player4: false,
+                player5: false,
+                player6: false,
+            };
+        },
     }
 };
 </script>

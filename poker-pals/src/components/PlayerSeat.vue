@@ -1,16 +1,11 @@
 <template>
     <div class="playerSeat">
-        <div class="border" :style="{ background: playerTurnStatus.background }">
+        <div class="border" :style="{ background: playerTurnBackground }">
             <div class="box">
                 <div class="action">
                     <div class="actionText">{{ action }}</div>
                 </div>
-                <div class="clock" :style="{ opacity: playerTurnStatus.opacity }">
-                    <img src="../images/clock.png"/>
-                    <div class="clock_pointer">
-                        <img src="../images/clock_pointer.png"/>
-                    </div>
-                </div>
+                <Clock v-bind:timer="timer"/>
                 <div class="identification">
                     <div class="idImage">
                         <img v-bind:src="tagImage"/>
@@ -76,31 +71,6 @@
         margin: 0% 0% 0% 5%;
         top: 5%;
     }
-    .clock{
-        position: absolute;
-        width: 30%;
-        height: 58%;
-        background: transparent;
-        margin: -16% 0% 0% -18%;
-    }
-    .clock img{
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        margin: 0% 0% 0% -50%;
-    }                
-    .clock_pointer{
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: transparent;
-        margin: 0% 0% 0% 0%;
-    }
-    .clock_pointer img{
-        width: 100%;
-        height: 100%;
-    }
-
     .youTagA{
         position: absolute;
         width: 50%;
@@ -285,8 +255,13 @@
 </style>
 
 <script>
+import Clock from './Clock.vue';
+
 export default {
     name: "PlayerSeat",
+    components: {
+        Clock,
+    },
     props: [
         'classes', 'dealerStatus', '_id', 'cards', 'cardReveal', 'betValue', 'tagName',
         'tagImage', 'chipTotal', 'action', 'youTag', 'timer'
@@ -297,7 +272,7 @@ export default {
             cardRevealOpacity: this.cardReveal ? 1.0 : 0.0,
             betValueStatus: {opacity: this.betValue === 0 ? 0.0 : 1.0, betValue: this.betValue},
             youTagOpacity: this.youTag ? 1.0 : 0.0,
-            playerTurnStatus: this.timer ? {opacity: 1.0, background: 'black'} : {opacity: 0.0, background: 'transparent'},
+            playerTurnBackground: this.timer ? 'black' : 'transparent',
             top: true,
             classesT: {betBox: this.classes.betBox, youTag: this.classes.youTag, playerCards: this.classes.playerCards},
         };
@@ -319,7 +294,7 @@ export default {
             this.youTagOpacity = this.youTag ? 1.0 : 0.0;
         },
         timer: function(){
-            this.playerTurnStatus = this.timer ? {opacity: 1.0, background: 'black'} : {opacity: 0.0, background: 'transparent'};
+            this.playerTurnBackground = this.timer ? 'black' : 'transparent';
         },
     },
     methods:{
