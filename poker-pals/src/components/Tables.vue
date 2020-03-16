@@ -1,5 +1,4 @@
 <template>
-
   <div class="table">
     <div class="table-description">
         <div class = "table-stakes">
@@ -19,13 +18,11 @@
         </div>
     </div>
   </div>
-
-
 </template>
 
 <script>
 export default {
-  name: 'Table',
+  name: 'Tables',
 
 }
 </script>
