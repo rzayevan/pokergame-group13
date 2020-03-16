@@ -1,6 +1,6 @@
 <template>
     <div class="playerSeat">
-        <div class="border" :style="{ background: playerTurnBackground }">
+        <div class="border1" :style="{ background: playerTurnBackground }">
             <div class="box">
                 <div class="action">
                     <div class="actionText">{{ action }}</div>
@@ -53,14 +53,13 @@
         height: 100%;
         background: transparent;
     }
-    .border{
+    .border1{
         position: relative;
         width: 90%;
         height: 60%;
         background: black;
         border-radius: 15%;
         margin: 15% 0% 0% 10%;
-        border: none;
     }
     .box{
         position: relative;
@@ -278,7 +277,7 @@ export default {
         };
     },
     mounted(){
-
+        
     },
     watch: {// everything you put in here will watch for changes from parent props
         dealerStatus: function(){

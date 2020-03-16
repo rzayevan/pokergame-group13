@@ -158,35 +158,7 @@
                 </div>
             </div>
         </div>
-        <div class="chatBox">
-            <div class="title">
-                <div class="title_text centerText">Big Fish</div>
-            </div>
-            <div class="messagesBoxBorder">
-                <div class="messagesBox">
-                    <button class="testButton" v-on:click="revealCommunityCard(1, 'A_S')">1</button>
-                    <button class="testButton" v-on:click="revealCommunityCard(2, 'A_S')">2</button>
-                    <button class="testButton" v-on:click="revealCommunityCard(3, 'A_S')">3</button>
-                    <button class="testButton" v-on:click="revealCommunityCard(4, 'A_S')">4</button>
-                    <button class="testButton" v-on:click="revealCommunityCard(5, 'A_S')">5</button>
-
-                    <button class="testButton" v-on:click="switchDealers()">6</button>
-                    <button class="testButton" v-on:click="changeBets()">7</button>
-                    <button class="testButton" v-on:click="showPlayerCards()">8</button>
-                    <button class="testButton" v-on:click="revealPlayerCards()">9</button>
-                    <button class="testButton" v-on:click="changeNames()">10</button>
-                    <button class="testButton" v-on:click="changeTagImages()">11</button>
-                    <button class="testButton" v-on:click="changeTimer1()">12</button>
-                    <button class="testButton" v-on:click="changeTimer2()">13</button>
-                </div>
-            </div>
-            <div class="inputBoxBorder">
-                <div class="inputBox">
-                    <input type="text" class="input" value="Type a message">
-                    <button class="submitButton centerText">SEND</button>
-                </div>
-            </div>
-        </div>
+        <Chat v-bind:full="chatFull"/>
     </div>
 </template>
 
@@ -524,72 +496,6 @@
         margin: 6.75% 0% 0% 5%;
         white-space: nowrap;
     }
-    .chatBox{
-        float: left;
-        width: 30%;
-        height: 93%;
-        background: cyan;
-    }
-    .title{
-        float: left;
-        width: 100%;
-        height: 6%;
-        background: #eeeeee;
-        background: black;
-        margin: 0% 0% 0% 0%;
-    }
-    .title_text{
-        width: 99%;
-        height: 90%;
-        margin: 0.5% 0% 0% 0.5%;
-        background: #eeeeee;
-        font-size: 1.75vw;
-    }
-    .messagesBoxBorder{
-        width: 100%;
-        height: 92.5%;
-        background: black;
-    }
-    .messagesBox{
-        float: left;
-        width: 99%;
-        height: 93.2%;
-        background: #eeeeee;
-        margin: 0% 0% 0% 0.5%;
-    }
-    .inputBoxBorder{
-        width: 100%;
-        height: 7.5%;
-        background: black;
-    }
-    .inputBox{
-        float: left;
-        width: 98.9%;
-        height: 92%;
-        background: white;
-        margin: 0.2% 0% 0% 0.5%;
-    }
-    .input{
-        float: left;
-        width: 78%;
-        height: 93%;
-        margin: 0% 0% 0% 0%;
-        overflow: hidden;
-        border: none;
-        background: transparent;
-        font-size: 1.5vw;
-    }
-    .submitButton{
-        float: left;
-        width: 20%;
-        height: 70%;
-        background: #01b0d9;
-        border: 1px solid black;
-        border-radius: 15%/30%;
-        color: white;
-        margin: 2% 0% 0% 0%;
-        font-size: 1vw;
-    }
     .centerText{
         display : flex;
         align-items : center;
@@ -601,15 +507,18 @@
 
 import PlayerSeat from './PlayerSeat.vue';
 import NavBar from './NavBar.vue';
+import Chat from './Chat.vue';
 
 export default {
     name: "Poker",
     components: {
         PlayerSeat,
         NavBar,
+        Chat,
     },
     data() {
         return {
+            chatFull: true,
             cheatSheetOpen: true,
             bigBlind: 2000,
             cardReveal: false,
@@ -630,7 +539,6 @@ export default {
                 player6: {card1: require(`../images/cards/card_back.png`), card2: require(`../images/cards/card_back.png`)}
             },
             playerBets: {
-                // if bet is zero then we shouldn't display anything
                 player1: 0,
                 player2: 1000,
                 player3: 2000,
@@ -745,12 +653,12 @@ export default {
         revealPlayerCards(){
             // when a child looks for prop change they do not inspect the elements inside those props
             // only the prop itself so we can't just change card1 and card2 we need to change player1
-            this.playerCards.player1 = {card1: require(`../images/cards/2_H.png`), card2: require(`../images/cards/3_H.png`)};
-            this.playerCards.player2 = {card1: require(`../images/cards/2_H.png`), card2: require(`../images/cards/3_H.png`)};
-            this.playerCards.player3 = {card1: require(`../images/cards/2_H.png`), card2: require(`../images/cards/3_H.png`)};
-            this.playerCards.player4 = {card1: require(`../images/cards/2_H.png`), card2: require(`../images/cards/3_H.png`)};
-            this.playerCards.player5 = {card1: require(`../images/cards/2_H.png`), card2: require(`../images/cards/3_H.png`)};
-            this.playerCards.player6 = {card1: require(`../images/cards/2_H.png`), card2: require(`../images/cards/3_H.png`)};
+            this.playerCards.player1 = {card1: require(`../images/cards/3_H.png`), card2: require(`../images/cards/2_C.png`)};
+            this.playerCards.player2 = {card1: require(`../images/cards/6_H.png`), card2: require(`../images/cards/10_S.png`)};
+            this.playerCards.player3 = {card1: require(`../images/cards/K_S.png`), card2: require(`../images/cards/3_D.png`)};
+            this.playerCards.player4 = {card1: require(`../images/cards/Q_C.png`), card2: require(`../images/cards/J_H.png`)};
+            this.playerCards.player5 = {card1: require(`../images/cards/8_C.png`), card2: require(`../images/cards/3_S.png`)};
+            this.playerCards.player6 = {card1: require(`../images/cards/2_D.png`), card2: require(`../images/cards/A_C.png`)};
         },
 
 
@@ -814,6 +722,9 @@ export default {
                 player5: false,
                 player6: false,
             };
+        },
+        reportPlayer(){
+          this.chatFull = !this.chatFull;
         },
     }
 };
