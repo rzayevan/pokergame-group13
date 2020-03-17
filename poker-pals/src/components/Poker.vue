@@ -518,6 +518,64 @@ export default {
     },
     data() {
         return {
+            cardFiles: {
+                _card_Back: require(`../images/cards/card_back.png`),
+                _A_S: require(`../images/cards/A_S.png`),
+                _2_S: require(`../images/cards/2_S.png`),
+                _3_S: require(`../images/cards/3_S.png`),
+                _4_S: require(`../images/cards/4_S.png`),
+                _5_S: require(`../images/cards/5_S.png`),
+                _6_S: require(`../images/cards/6_S.png`),
+                _7_S: require(`../images/cards/7_S.png`),
+                _8_S: require(`../images/cards/8_S.png`),
+                _9_S: require(`../images/cards/9_S.png`),
+                _10_S: require(`../images/cards/10_S.png`),
+                _J_S: require(`../images/cards/J_S.png`),
+                _Q_S: require(`../images/cards/Q_S.png`),
+                _K_S: require(`../images/cards/K_S.png`),
+                
+                _A_C: require(`../images/cards/A_C.png`),
+                _2_C: require(`../images/cards/2_C.png`),
+                _3_C: require(`../images/cards/3_C.png`),
+                _4_C: require(`../images/cards/4_C.png`),
+                _5_C: require(`../images/cards/5_C.png`),
+                _6_C: require(`../images/cards/6_C.png`),
+                _7_C: require(`../images/cards/7_C.png`),
+                _8_C: require(`../images/cards/8_C.png`),
+                _9_C: require(`../images/cards/9_C.png`),
+                _10_C: require(`../images/cards/10_C.png`),
+                _J_C: require(`../images/cards/J_C.png`),
+                _Q_C: require(`../images/cards/Q_C.png`),
+                _K_C: require(`../images/cards/K_C.png`),
+
+                _A_H: require(`../images/cards/A_H.png`),
+                _2_H: require(`../images/cards/2_H.png`),
+                _3_H: require(`../images/cards/3_H.png`),
+                _4_H: require(`../images/cards/4_H.png`),
+                _5_H: require(`../images/cards/5_H.png`),
+                _6_H: require(`../images/cards/6_H.png`),
+                _7_H: require(`../images/cards/7_H.png`),
+                _8_H: require(`../images/cards/8_H.png`),
+                _9_H: require(`../images/cards/9_H.png`),
+                _10_H: require(`../images/cards/10_H.png`),
+                _J_H: require(`../images/cards/J_H.png`),
+                _Q_H: require(`../images/cards/Q_H.png`),
+                _K_H: require(`../images/cards/K_H.png`),
+
+                _A_D: require(`../images/cards/A_D.png`),
+                _2_D: require(`../images/cards/2_D.png`),
+                _3_D: require(`../images/cards/3_D.png`),
+                _4_D: require(`../images/cards/4_D.png`),
+                _5_D: require(`../images/cards/5_D.png`),
+                _6_D: require(`../images/cards/6_D.png`),
+                _7_D: require(`../images/cards/7_D.png`),
+                _8_D: require(`../images/cards/8_D.png`),
+                _9_D: require(`../images/cards/9_D.png`),
+                _10_D: require(`../images/cards/10_D.png`),
+                _J_D: require(`../images/cards/J_D.png`),
+                _Q_D: require(`../images/cards/Q_D.png`),
+                _K_D: require(`../images/cards/K_D.png`),
+            },
             chatFull: true,
             cheatSheetOpen: true,
             bigBlind: 2000,
@@ -531,12 +589,12 @@ export default {
                 player6: false
             },
             playerCards: {
-                player1: {card1: require(`../images/cards/card_back.png`), card2: require(`../images/cards/card_back.png`)},
-                player2: {card1: require(`../images/cards/card_back.png`), card2: require(`../images/cards/card_back.png`)},
-                player3: {card1: require(`../images/cards/card_back.png`), card2: require(`../images/cards/card_back.png`)},
-                player4: {card1: require(`../images/cards/card_back.png`), card2: require(`../images/cards/card_back.png`)},
-                player5: {card1: require(`../images/cards/card_back.png`), card2: require(`../images/cards/card_back.png`)},
-                player6: {card1: require(`../images/cards/card_back.png`), card2: require(`../images/cards/card_back.png`)}
+                player1: {card1: null, card2: null},
+                player2: {card1: null, card2: null},
+                player3: {card1: null, card2: null},
+                player4: {card1: null, card2: null},
+                player5: {card1: null, card2: null},
+                player6: {card1: null, card2: null},
             },
             playerBets: {
                 player1: 0,
@@ -606,6 +664,14 @@ export default {
         slider.oninput = function() {
             output.innerHTML = this.value;
         }
+        this.playerCards = {
+                player1: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
+                player2: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
+                player3: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
+                player4: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
+                player5: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
+                player6: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
+        }
     },
     methods:{
         myfunction(){
@@ -653,12 +719,12 @@ export default {
         revealPlayerCards(){
             // when a child looks for prop change they do not inspect the elements inside those props
             // only the prop itself so we can't just change card1 and card2 we need to change player1
-            this.playerCards.player1 = {card1: require(`../images/cards/3_H.png`), card2: require(`../images/cards/2_C.png`)};
-            this.playerCards.player2 = {card1: require(`../images/cards/6_H.png`), card2: require(`../images/cards/10_S.png`)};
-            this.playerCards.player3 = {card1: require(`../images/cards/K_S.png`), card2: require(`../images/cards/3_D.png`)};
-            this.playerCards.player4 = {card1: require(`../images/cards/Q_C.png`), card2: require(`../images/cards/J_H.png`)};
-            this.playerCards.player5 = {card1: require(`../images/cards/8_C.png`), card2: require(`../images/cards/3_S.png`)};
-            this.playerCards.player6 = {card1: require(`../images/cards/2_D.png`), card2: require(`../images/cards/A_C.png`)};
+            this.playerCards.player1 = {card1: this.cardFiles._3_H, card2: this.cardFiles._2_C};
+            this.playerCards.player2 = {card1: this.cardFiles._6_H, card2: this.cardFiles._10_S};
+            this.playerCards.player3 = {card1: this.cardFiles._K_S, card2: this.cardFiles._3_D};
+            this.playerCards.player4 = {card1: this.cardFiles._Q_C, card2: this.cardFiles._J_H};
+            this.playerCards.player5 = {card1: this.cardFiles._8_C, card2: this.cardFiles._3_S};
+            this.playerCards.player6 = {card1: this.cardFiles._2_D, card2: this.cardFiles._A_C};
         },
 
 
