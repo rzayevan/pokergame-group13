@@ -159,6 +159,7 @@
             </div>
         </div>
         <Chat v-bind:full="chatFull"/>
+        <ReportPocket v-bind:full="chatFull"/>
     </div>
 </template>
 
@@ -179,50 +180,6 @@
         width: 80vw;
         height: 45vw;
     }
-    .navigationTab{
-        width: 100%;
-        height: 7%;
-        background: #01B0D9;
-    }
-    .chipIcon{
-        float: left;
-        width: 4%;
-        height: 80%;
-        margin: 0.4% 0% 0% 68%;
-    }
-    .chipIcon img{
-        width: 100%;
-        height: 100%;
-    }
-    .chipValue{
-        float: left;
-        width: 10%;
-        height: 50%;
-        margin: 1% 0% 0% 0%;
-        color: white;
-        font-weight: 700;
-        font-size: 1.5vw;
-    }
-    .userIcon{
-        float: left;
-        width: 4%;
-        height: 80%;
-        margin: 0.4% 0% 0% 0%;
-    }
-    .userIcon img{
-        width: 100%;
-        height: 100%;
-    }
-    .logo{
-        float: left;
-        width: 10%;
-        height: 100%;
-        margin: 0% 0% 0% 2%;
-    }
-    .logo img{
-        width: 100%;
-        height: 100%;
-    }
     .tableLayoutAndDisplay{
         position: relative;
         float: left;
@@ -238,7 +195,7 @@
     }
     .buttonExitTable{
         position: absolute;
-        width: 5%;
+        width: 4%;
         height: 10%;
         margin: 1% 0% 0% 1%;
         background-color: transparent;
@@ -363,7 +320,7 @@
         margin: 49.2% 0% 0% 80%;
         font-size: 1vw;
         text-align: center;
-        font-weight: 700;
+        font-weight: 1000;
     }
     .display{
         width: 100%;
@@ -508,6 +465,7 @@
 import PlayerSeat from './pokerComponents/PlayerSeat.vue';
 import NavBar from './pokerComponents/NavBar.vue';
 import Chat from './pokerComponents/Chat.vue';
+import ReportPocket from './pokerComponents/ReportPocket.vue';
 
 export default {
     name: "Poker",
@@ -515,6 +473,7 @@ export default {
         PlayerSeat,
         NavBar,
         Chat,
+        ReportPocket,
     },
     data() {
         return {
@@ -626,7 +585,7 @@ export default {
                 player1: "20000",
                 player2: "40000",
                 player3: "60000",
-                player4: "80000",
+                player4: "800000",
                 player5: "10000",
                 player6: "20",
             },
@@ -643,8 +602,8 @@ export default {
                 player2: false,
                 player3: false,
                 player4: false,
-                player5: true,
-                player6: false,
+                player5: false,
+                player6: true,
             },
             playerTimer: {
                 player1: false,
@@ -790,8 +749,11 @@ export default {
             };
         },
         reportPlayer(){
-          this.chatFull = !this.chatFull;
+            this.chatFull = false;
         },
+        cancelReport(){
+            this.chatFull = true;
+        }
     }
 };
 </script>

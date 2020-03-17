@@ -23,7 +23,7 @@
             </div>
             <div class="inputBoxBorder" :style="{ height: heightPercentages.inputBoxBorder }">
                 <div class="inputBox">
-                    <input type="text" class="input" value="Type a message">
+                    <input type="text" class="input" placeholder="Type a message">
                     <button class="submitButton centerText">SEND</button>
                 </div>
             </div>
