@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div v-cloak class="container">
     <div class="row">
       <div class="col">
         <h1>Poker Pals</h1>
@@ -15,20 +15,34 @@
 
       <div class="col-md-6">
         <form class="text-left">
-          <h4>Sign into Poker Pals</h4>
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email"  class="form-control" v-model="email" required="required">
+            <input class="form-control" type="email" id="email" v-model="email" required="required">
+          </div>
+
+          <div class="form-group" v-show="!showLogin">
+            <label  for="username">Username</label>
+            <input class="form-control" type="text" id="username" v-model="username" required="required">
           </div>
 
           <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" class="form-control"  v-model="password" required="required">
+            <label for="password1">Password</label>
+            <input class="form-control" type="password" id="password1" v-model="password" required="required">
           </div>
 
-          <div class="form-group row justify-content-between">
-            <a href="/#/Register" class="col-4" >Create an Account</a>
-            <input type="submit" class="btn col-4" value="Submit">
+          <div class="form-group" v-show="!showLogin">
+            <label for="password2">Confirm Password</label>
+            <input class="form-control" type="password" id="password2" v-model="password2" required="required"/>
+          </div>
+
+          <div class="form-group row justify-content-between" v-show="showLogin">
+            <a class="col-4" href="#" @click="toggle()">Create account</a>
+            <input class="col-4 btn" type="submit"  value="Sign In">
+          </div>
+
+          <div class="form-group row justify-content-between" v-show="!showLogin">
+            <a class="col-4" href="#" @click="toggle()">Sign in</a>
+            <input class="col-4 btn" type="submit"  value="Sign Up">
           </div>
         </form>
       </div>
@@ -42,17 +56,27 @@
     data: function() {
       return {
         email: '',
+        username: '',
         password: '',
-        login: true
+        password2: '',
+        showLogin: true
       }
     },
     computed: { },
-    methods: { }
+    methods: {
+      toggle: function() {
+        this.showLogin = !this.showLogin;
+      }
+    }
   }
 </script>
 
 
 <style scoped>
+  [v-cloak] {
+    display: none;
+  }
+
   img {
     width: 100%;
     max-width: 400px;
@@ -63,7 +87,8 @@
   }
 
   form {
-    padding: 2em;
+    margin: auto;
+
   }
 
   .btn {
