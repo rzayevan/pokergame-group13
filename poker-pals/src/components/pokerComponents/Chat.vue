@@ -19,6 +19,15 @@
                     <button class="testButton" v-on:click="$parent.changeTimer1()">12</button>
                     <button class="testButton" v-on:click="$parent.changeTimer2()">13</button>
                     <button class="testButton" v-on:click="$parent.reportPlayer()">14</button>
+                    
+                    
+
+                    <div v-for="item in items" :key="item.message">
+                        <ChatMessage v-bind:you="item.id === '1' ? true : false" v-bind:name="item.name" v-bind:message="item.message"/>
+                        <div class="chatSpace">space</div>
+                    </div>
+
+
                 </div>
             </div>
             <div class="inputBoxBorder" :style="{ height: heightPercentages.inputBoxBorder }">
@@ -31,6 +40,12 @@
 </template>
 
 <style scoped>
+    .chatSpace{
+        float: left;
+        width: 50%;
+        color: transparent;
+        font-size: 0.5vw;
+    }
     .chatBox{
         float: left;
         width: 30%;
@@ -63,6 +78,7 @@
         height: 85%;
         background: #eeeeee;
         margin: 0% 0% 0% 0.5%;
+        overflow-y: auto;
     }
     .inputBoxBorder{
         width: 100%;
@@ -105,15 +121,29 @@
 </style>
 
 <script>
+import ChatMessage from './ChatMessage.vue';
 
 export default {
     name: "Chat",
+    components: {
+        ChatMessage,
+    },
     props: [
         'full',
     ],
     data() {
         return {
             heightPercentages: {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'},
+            items: [
+                { id: '1', name: 'bob', message: 'Foo kjh g n hy kb jk gbn g n g n ihg n g h b jh gi h gv tgb g' },
+                { id: '2', name: 'john', message: 'Barh g n hy kb jk gbn g n g n ihg n g h b jh' },
+                { id: '1', name: 'happy', message: 'no' },
+                { id: '2', name: 'happy', message: 'hellofgd ggf df gd gh rf tr r gh g fd gh t t t   gg er g  gt g rt g gtg g trd g g g dr gt gdr g f t hg fdt ghtrf gh f h yh' },
+                { id: '2', name: 'happy', message: 'hello  t t   gg er g  gt g rt g gtg g trd g g g dr gt gdr g f t hg fdt ghtf f g fd g fg h ' },
+                { id: '2', name: 'happy', message: 'hello rf gh fd hg g t g g g  f hhg f hdfh' },
+                { id: '1', name: 'happy', message: 'hello r g r gt g t   f' },
+                { id: '2', name: 'happy', message: 'hello' },
+            ],
         }
     },
     mounted(){
