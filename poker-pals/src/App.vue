@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    <Poker />
-    <HandRankCalculator />
     <router-view></router-view>
   </div>
 </template>
@@ -9,8 +7,8 @@
 <script>
 ///// Uncomment the following lines if you want to use them as components in this file /////
 // import Login from './components/Login.vue';
- import Poker from './components/Poker.vue';
- import HandRankCalculator from './components/HandRankCalculator.vue'
+// import Poker from './components/Poker.vue';
+// import HandRankCalculator from './components/HandRankCalculator.vue'
 // import Profile from './components/Profile.vue';
 // import Reports from './components/Reports.vue';
 //import Tables from './components/Tables.vue';
@@ -19,8 +17,8 @@ export default {
   name: 'App',
   components: {
     // Login,
-     Poker,
-     HandRankCalculator,
+    // Poker,
+    // HandRankCalculator,
     // Profile,
     // Reports,
     //Tables

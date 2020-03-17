@@ -61,14 +61,7 @@ export default {
             slots.push([]);
             slots.push([]);
             slots.push([]);
-            /*
-            let players = [];
-            for(let i = 0; i < 6; i++){
-                let rank = document.getElementById('player' + (i + 1).toString() + 'r').value;
-                let money = document.getElementById('player' + (i + 1).toString()).value;
-                players.push({id: i+1, rank: rank, moneyPot: money, returnPot: 0});
-            }
-            */
+            
             players.sort(function(a, b){return b.rank - a.rank});
             let rankTag = -1;
             for(let i = 0; i < players.length; i++){
