@@ -34,6 +34,27 @@ class User {
         // The time this entry was created
         this.createdDate = new Date();
     }
+
+    /**
+     * Copies the values of a User object into this User object
+     * @param {User} userToCopy The user that is being copied into this User object
+     */
+    CopyUser(userToCopy) {
+         // The username of the user
+         this.username = userToCopy.username;
+         // The password of the user
+         this.password = userToCopy.password;
+         // The email of the user
+         this.email = userToCopy.email;
+         // The number of chips the user has
+         this.chips = userToCopy.chips;
+         // The number of hands the user has won
+         this.hands = userToCopy.hands;
+         // The last time this entry was updated
+         this.lastUpdatedDate = userToCopy.lastUpdatedDate;
+         // The time this entry was created
+         this.createdDate = userToCopy.createdDate;
+    }
 }
 
 module.exports = User;
