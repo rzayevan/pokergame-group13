@@ -2,12 +2,12 @@ let express = require('express');
 let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
+let User = require("./model/User.js");
 
 const DataAccessLayer = require('./controllers/DataAccessLayer.js')
 
 http.listen(3000, () => {
     let users = DataAccessLayer.ReadUsersFile();
-    console.log(users);
     console.log('Listening on port *: 3000');
 });
 
@@ -17,12 +17,8 @@ io.on('connection', (socket) => {
 
     socket.on('add-new-user', function(msg) {
         let splitUserString = msg.split(';');
-        let newUser = {
-            username: splitUserString[0],
-            password: splitUserString[1],
-            email: splitUserString[2],
-            gold: 100
-        };
+        let newUser = new User();
+        newUser.CreateNewUser(splitUserString[0], splitUserString[1], splitUserString[2]);
         DataAccessLayer.AddUserToFile(newUser);
     });
 });
