@@ -1,9 +1,9 @@
 <template>
     <div class="clock" :style="{ opacity: clockOpacity }">
-        <img src="../images/clock.png"/>
+        <img src="../../images/clock.png"/>
         <div class="clock_pointer">
             <transition name="rotate">
-                <img v-if="timer" src="../images/clock_pointer.png"/>
+                <img v-if="timer" src="../../images/clock_pointer.png"/>
             </transition>
         </div>
     </div>

@@ -1,14 +1,14 @@
 <template>
     <div class="navigationTab">
         <div class="logo">
-            <img src="../images/logo.png"/>
+            <img src="../../images/logo.png"/>
         </div>
         <div class="chipIcon">
-            <img src="../images/chip.png"/>
+            <img src="../../images/chip.png"/>
         </div>
         <div class="chipValue">1,200,450</div>
         <div class="userIcon">
-            <img src="../images/player_icon_1.png" />
+            <img src="../../images/player_icon_1.png" />
         </div>
     </div>
 </template>

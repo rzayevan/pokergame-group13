@@ -14,7 +14,7 @@
                 </div>
                 <div class="chipCount">
                     <div class="chipImage">
-                        <img src="../images/chip.png"/>
+                        <img src="../../images/chip.png"/>
                     </div>
                     <div class="chipCountValue">{{ chipTotal }}</div>
                 </div>
@@ -22,13 +22,13 @@
         </div>
         <div v-bind:class= classesT.betBox>
             <div class="betImage" :style="{ opacity: betValueStatus.opacity }">
-                <img src="../images/chip.png"/>
+                <img src="../../images/chip.png"/>
             </div>
             <div class="betValue">
                 <div class="betValueText" :style="{ opacity: betValueStatus.opacity }">{{ betValueStatus.betValue }}</div>
             </div>
             <div class="dealerIcon" :style="{ opacity: dealerChipOpacity }">
-                <img src="../images/dealer_icon.png" />
+                <img src="../../images/dealer_icon.png" />
             </div>
         </div>
         <div v-bind:class= classesT.youTag :style="{ opacity: youTagOpacity }">

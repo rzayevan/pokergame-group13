@@ -505,9 +505,9 @@
 
 <script>
 
-import PlayerSeat from './PlayerSeat.vue';
-import NavBar from './NavBar.vue';
-import Chat from './Chat.vue';
+import PlayerSeat from './pokerComponents/PlayerSeat.vue';
+import NavBar from './pokerComponents/NavBar.vue';
+import Chat from './pokerComponents/Chat.vue';
 
 export default {
     name: "Poker",
