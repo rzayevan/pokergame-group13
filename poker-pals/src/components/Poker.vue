@@ -159,7 +159,7 @@
             </div>
         </div>
         <Chat v-bind:full="chatFull"/>
-        <ReportPocket v-if="!full"
+        <ReportPocket v-if="!chatFull"
             v-bind:report_OffenderName="report_OffenderName" 
             v-bind:report_OffenderMessageId="report_OffenderMessageId"
         />
