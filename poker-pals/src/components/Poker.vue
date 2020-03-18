@@ -147,10 +147,14 @@
                     <button class="InputButton1 centerText" id="buttonCheck">CHECK</button>
                     <button class="InputButton1 centerText" id="buttonCall">CALL</button>
                     <div class="raiseToggle">
-                        <button class="raiseButton centerText" id="buttonMinus" v-on:click="decrementRaise()">-</button>
+                        <div class="raiseButtonOuter" id="buttonMinus" v-on:click="decrementRaise()">
+                            <div class="raiseButton centerText">-</div>
+                        </div>
                         <div class="raiseValue" id="raiseValue">2000</div>
                         <input class="raiseScroll" id="slider" type="range" min="2000" max="100000" value="2000">
-                        <button class="raiseButton centerText" id="buttonPlus" v-on:click="incrementRaise()">+</button>
+                        <div class="raiseButtonOuter" id="buttonPlus" v-on:click="incrementRaise()">
+                            <div class="raiseButton centerText">+</div>
+                        </div>
                     </div>
                     <button class="InputButton1 centerText" id="buttonRaise">RAISE</button>
                     <button class="InputButton2 centerText" id="buttonCheckFold">CHECK/FOLD</button>
@@ -203,8 +207,13 @@
         margin: 1% 0% 0% 1%;
         background-color: transparent;
         border: none;
+        cursor: pointer;
+    }
+    .buttonExitTable:active {
+        transform: translateY(4%);
     }
     .buttonExitTable img{
+        float: left;
         width: 100%;
         height: 100%;
     }
@@ -337,8 +346,13 @@
         height: 14%;
         margin: 18.25% 0% 0% 1%;
         background-color: transparent;
+        cursor: pointer;
+    }
+    .cheatSheetToggle:active {
+        transform: translateY(4%);
     }
     .cheatSheetToggle img{
+        float: left;
         width: 100%;
         height: 100%;
     }
@@ -409,14 +423,23 @@
         height: 25%;
         margin: 6.75% 0% 0% 0%;
     }
-    .raiseButton{
+    .raiseButtonOuter{
         float: left;
         width: 20%;
         height: 100%;
+        background: black;
+        cursor: pointer;
+    }
+    .raiseButtonOuter:active{
+        transform: translateX(4%);
+    }
+    .raiseButton{
+        width: 95%;
+        height: 95%;
         background: white;
-        border: 1px solid black;
         font-weight: 700;
         font-size: 1vw;
+        margin: 2.5% 0% 0% 2.5%;
     }
     #buttonMinus{
         margin: 0% 0% 0% 0%;
@@ -759,6 +782,11 @@ export default {
         },
         reportPlayer(){
             this.chatFull = false;
+        },
+        submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
+            // pass this off to the server
+            alert(JSON.stringify(selected) + " " + JSON.stringify(message) + " " + JSON.stringify(report_OffenderName) + " " + JSON.stringify(report_OffenderMessageId));
+            this.chatFull = true;
         },
         cancelReport(){
             this.chatFull = true;

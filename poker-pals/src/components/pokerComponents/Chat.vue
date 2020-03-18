@@ -22,7 +22,7 @@
                     
 
                     <div v-for="item in items" :key="item.message">
-                        <ChatMessage v-bind:you="item.id === '1' ? true : false" v-bind:name="item.name" v-bind:message="item.message"/>
+                        <ChatMessage v-bind:you="item.id === '1' ? true : false" v-bind:name="item.name" v-bind:message="item.message" v-bind:messageId="item.id"/>
                         <div class="chatSpace">space</div>
                     </div>
 

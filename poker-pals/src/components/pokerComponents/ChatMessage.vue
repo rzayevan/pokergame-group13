@@ -80,6 +80,7 @@
         margin: -2.5vw 0% 0% 97%;
         border-top-left-radius: 20% 20%;
         border-bottom-left-radius: 20% 20%;
+        cursor: pointer;
     }
     .innerMute{
         float: left;
@@ -103,6 +104,7 @@
         margin: -2.5vw 0% 0% 109.25%;
         border-top-right-radius: 20% 20%;
         border-bottom-right-radius: 20% 20%;
+        cursor: pointer;
     }
     .innerReport{
         float: left;
@@ -126,7 +128,7 @@
 export default {
     name: "ChatMessage",
     props: [
-        'you', 'name','message',
+        'you', 'name','message', 'messageId',
     ],
     data() {
         return {
@@ -148,7 +150,7 @@ export default {
         },
         openReport(){
             // call back with some data
-            this.$parent.openReport(this.name, 0);
+            this.$parent.openReport(this.name, this.messageId);
         }
     }
 }

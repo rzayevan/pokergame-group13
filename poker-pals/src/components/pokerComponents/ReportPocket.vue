@@ -2,7 +2,9 @@
     <div class="reportBoxBorder">
         <div class="reportBox">
             <div class="reportTag centerText">Report</div>
-            <button class="buttonX centerText" v-on:click="cancelReport()">X</button>
+            <div class="buttonXOuter" v-on:click="cancelReport()">
+                <div class="buttonX centerText">X</div>
+            </div>
             <div class="title1">Filing a report against player: <strong class="extraBold">{{ report_OffenderName }}</strong></div>
             <div class="title2">Did you witness any of the following?</div>
             <select class="selector" v-model="selected">
@@ -42,15 +44,25 @@
         font-weight: 1000;
         color: black;
     }
-    .buttonX{
+    .buttonXOuter{
         float: left;
         width: 13%;
         height: 13%;
-        font-size: 1.5vw;
         margin: 2% 0% 0% 48%;
+        background: #666666;
+        cursor: pointer;
+    }
+    .buttonXOuter:active{
+        transform: translateY(4%);
+    }
+    .buttonX{
+        float: left;
+        width: 90%;
+        height: 90%;
+        font-size: 1.5vw;
+        margin: 5% 0% 0% 5%;
         background: #bf214b;
         color: white;
-        border-color: #666666;
     }
     .title1{
         float: left;
@@ -139,6 +151,7 @@ export default {
     data(){
         return {
             selected: '',
+            message: '',
         }
     },
     methods:{
@@ -146,7 +159,12 @@ export default {
             this.$parent.cancelReport();
         },
         submitReport(){
-            this.$parent.cancelReport();
+            if(this.selected === ''){
+                alert('please select reason');
+            }
+            else{
+                this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId);
+            }
         }
 
     }
