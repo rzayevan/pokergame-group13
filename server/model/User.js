@@ -10,7 +10,11 @@ class User {
          // The number of chips the user has
          this.chips;
          // The number of hands the user has won
-         this.hands;
+         this.handsWon;
+         // The number of hands the user has lost
+         this.handsLost;
+         // The number of hands the user has played
+         this.handsPlayed;
          // The last time this entry was updated
          this.lastUpdatedDate;
          // The time this entry was created
@@ -28,7 +32,11 @@ class User {
         // The number of chips the user has
         this.chips = 100;
         // The number of hands the user has won
-        this.hands = 0;
+        this.handsWon = 0;
+        // The number of hands the user has lost
+        this.handsLost = 0;
+        // The number of hands the user has played
+        this.handsPlayed = 0;
         // The last time this entry was updated
         this.lastUpdatedDate = new Date();
         // The time this entry was created
@@ -49,7 +57,11 @@ class User {
          // The number of chips the user has
          this.chips = userToCopy.chips;
          // The number of hands the user has won
-         this.hands = userToCopy.hands;
+         this.handsWon = userToCopy.handsWon;
+         // The number of hands the user has lost
+         this.handsPlayed = userToCopy.handsLost;
+         // The number of hands the user has played
+         this.handsPlayed = userToCopy.handsPlayed;
          // The last time this entry was updated
          this.lastUpdatedDate = userToCopy.lastUpdatedDate;
          // The time this entry was created
