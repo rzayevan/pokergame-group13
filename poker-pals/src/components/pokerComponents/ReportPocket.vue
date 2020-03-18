@@ -1,9 +1,9 @@
 <template>
-    <div v-if="!full" class="reportBoxBorder">
+    <div class="reportBoxBorder">
         <div class="reportBox">
             <div class="reportTag centerText">Report</div>
             <button class="buttonX centerText" v-on:click="cancelReport()">X</button>
-            <div class="title1">Filing a report against player: <strong class="extraBold">{{ evilPlayer }}</strong></div>
+            <div class="title1">Filing a report against player: <strong class="extraBold">{{ report_OffenderName }}</strong></div>
             <div class="title2">Did you witness any of the following?</div>
             <select class="selector" v-model="selected">
                 <option disabled value="">Select an option</option>
@@ -133,12 +133,12 @@
 export default {
     name: "ReportPocket",
     props: [
-        'full',
+        "report_OffenderName",
+        "report_OffenderMessageId",
     ],
     data(){
         return {
             selected: '',
-            evilPlayer: 'Curtis',
         }
     },
     methods:{

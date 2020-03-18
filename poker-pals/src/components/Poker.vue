@@ -159,7 +159,10 @@
             </div>
         </div>
         <Chat v-bind:full="chatFull"/>
-        <ReportPocket v-bind:full="chatFull"/>
+        <ReportPocket v-if="!full"
+            v-bind:report_OffenderName="report_OffenderName" 
+            v-bind:report_OffenderMessageId="report_OffenderMessageId"
+        />
     </div>
 </template>
 
@@ -220,8 +223,8 @@
         background: transparent;
     }
     .tableImage img{
-      width: 100%;
-	    height: 100%;
+        width: 100%;
+        height: 100%;
     }
     .tableItems{
         position: absolute;
@@ -264,8 +267,8 @@
         border-radius: 15%;
     }
     .tableCard img{
-      width: 100%;
-	    height: 100%;
+        width: 100%;
+        height: 100%;
     }
     .tableDeck{
         position: absolute;
@@ -276,8 +279,8 @@
         border-radius: 15%;
     }
     .tableDeck img{
-      width: 100%;
-	    height: 100%;
+        width: 100%;
+        height: 100%;
     }
     .players123{
         position: absolute;
@@ -477,6 +480,12 @@ export default {
     },
     data() {
         return {
+            report_OffenderName: '',
+            report_OffenderMessageId: '',
+
+
+
+
             cardFiles: {
                 _card_Back: require(`../images/cards/card_back.png`),
                 _A_S: require(`../images/cards/A_S.png`),
@@ -753,6 +762,15 @@ export default {
         },
         cancelReport(){
             this.chatFull = true;
+        },
+        openReport(name, messageId){
+            // called by child
+            this.chatFull = false;
+            this.report_OffenderName = name;
+            this.report_OffenderMessageId = messageId;
+        },
+        sendReport(){
+            // send a report
         }
     }
 };

@@ -1,5 +1,5 @@
 <template>
-    <div class="full" @click="toggleOptions()">
+    <div class="full" v-on:click="toggleOptions()" @mouseleave="closeOptions()">
         <div class="frameA" v-if="!you">
             <div class="spacer">space</div>
             <div class="name">{{ name }}:</div>
@@ -9,7 +9,7 @@
                     <img src="../../images/mute.png"/>
                 </div>
             </div>
-            <div class="report" v-if="optionsVisible">
+            <div class="report" v-if="optionsVisible" v-on:click="openReport()">
                 <div class="innerReport">
                     <img src="../../images/report.png"/>
                 </div>
@@ -143,6 +143,13 @@ export default {
         toggleOptions(){
             this.optionsVisible = !this.optionsVisible;
         },
+        closeOptions(){
+            this.optionsVisible = false;
+        },
+        openReport(){
+            // call back with some data
+            this.$parent.openReport(this.name, 0);
+        }
     }
 }
 </script>

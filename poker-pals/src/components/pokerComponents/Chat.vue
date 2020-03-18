@@ -18,7 +18,6 @@
                     <button class="testButton" v-on:click="$parent.changeTagImages()">11</button>
                     <button class="testButton" v-on:click="$parent.changeTimer1()">12</button>
                     <button class="testButton" v-on:click="$parent.changeTimer2()">13</button>
-                    <button class="testButton" v-on:click="$parent.reportPlayer()">14</button>
                     
                     
 
@@ -165,7 +164,10 @@ export default {
         }
     },
     methods:{
-        
+        openReport(name, messageId){
+            // called by a message
+            this.$parent.openReport(name, messageId);
+        }
     }
 };
 </script>
