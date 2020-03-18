@@ -26,9 +26,10 @@ exports.ReadUsersFile = function() {
         user.password = splitLine[1];
         user.email = splitLine[2];
         user.chips = parseInt(splitLine[3]);
-        user.hands = parseInt(splitLine[4]);
-        user.lastUpdatedDate = new Date(splitLine[5]);
-        user.createdDate = new Date(splitLine[6]);
+        user.handsWon = parseInt(splitLine[4]);
+        user.handsPlayed = parseInt(splitLine[5]);
+        user.lastUpdatedDate = new Date(splitLine[6]);
+        user.createdDate = new Date(splitLine[7]);
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -44,7 +45,7 @@ exports.AddUserToFile = function(user) {
     // Create a string to store in the text file as a user
     let userString = user.username + ";" + user.password + ";" + 
                      user.email + ";" + user.chips + ";" + 
-                     user.hands + ";" + user.lastUpdatedDate.toISOString() + ";" 
+                     user.handsWon + ";" + user.handsPlayed + ";" + user.lastUpdatedDate.toISOString() + ";" 
                      + user.createdDate.toISOString() + ";\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
@@ -63,7 +64,7 @@ exports.UpdateUser = function(user) {
     // Create a string that will be searched for within the text file
     let originalUserString = originalUser.username + ";" + originalUser.password + ";" + 
                              originalUser.email + ";" + originalUser.chips + ";" + 
-                             originalUser.hands + ";" + originalUser.lastUpdatedDate.toISOString() + ";" 
+                             originalUser.handsWon + ";" + originalUser.handsPlayed + ";" + originalUser.lastUpdatedDate.toISOString() + ";" 
                              + originalUser.createdDate.toISOString() + ";";
 
     // Create a new Date object to set the lastUpdatedDate's to
@@ -72,7 +73,7 @@ exports.UpdateUser = function(user) {
     // Create a new string to update the file to
     let newUserString = user.username + ";" + user.password + ";" + 
                         user.email + ";" + user.chips + ";" + 
-                        user.hands + ";" + newLastUpdatedDate.toISOString() + ";" 
+                        user.handsWon + ";" + user.handsPlayed + ";" + newLastUpdatedDate.toISOString() + ";" 
                         + user.createdDate.toISOString() + ";";
 
     // Create a regexp to find the correct contents to change
