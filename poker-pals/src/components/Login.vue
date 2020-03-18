@@ -8,40 +8,41 @@
     </div>
 
     <div class="row align-items-center">
-
+      <!--  Poker Pals Logo  -->
       <div class="col-md-6 offset-md-0 col-6 offset-3 ">
         <img alt="Poker Pals logo" src="../assets/logo.svg">
       </div>
 
+      <!--  Login/Register Form -->
       <div class="col-md-6">
         <form class="text-left">
           <div class="form-group">
             <label for="email">Email</label>
-            <input class="form-control" type="email" id="email" v-model="email" required="required">
+            <input class="form-control" type="email" id="email" v-model="email" required autocomplete="username"/>
           </div>
 
-          <div class="form-group" v-show="!showLogin">
+          <div class="form-group" v-if="!showLogin">
             <label  for="username">Username</label>
-            <input class="form-control" type="text" id="username" v-model="username" required="required">
+            <input class="form-control" type="text" id="username" v-model="username" required autocomplete="username"/>
           </div>
 
           <div class="form-group">
             <label for="password1">Password</label>
-            <input class="form-control" type="password" id="password1" v-model="password" required="required">
+            <input class="form-control" type="password" id="password1" v-model="password" required autocomplete="current-password"/>
           </div>
 
-          <div class="form-group" v-show="!showLogin">
+          <div class="form-group" v-if="!showLogin">
             <label for="password2">Confirm Password</label>
-            <input class="form-control" type="password" id="password2" v-model="password2" required="required"/>
+            <input class="form-control" type="password" id="password2" v-model="password2" required autocomplete="current-password"/>
           </div>
 
-          <div class="form-group row justify-content-between" v-show="showLogin">
-            <a class="col-4" href="#" @click="toggle()">Create account</a>
+          <div class="form-group row justify-content-between" v-if="showLogin">
+            <a class="col-4" href="#" @click="toggleForm()">Create account</a>
             <input class="col-4 btn" type="submit"  value="Sign In">
           </div>
 
-          <div class="form-group row justify-content-between" v-show="!showLogin">
-            <a class="col-4" href="#" @click="toggle()">Sign in</a>
+          <div class="form-group row justify-content-between" v-if="!showLogin">
+            <a class="col-4" href="#" @click="toggleForm()">Sign in</a>
             <input class="col-4 btn" type="submit"  value="Sign Up">
           </div>
         </form>
@@ -64,7 +65,7 @@
     },
     computed: { },
     methods: {
-      toggle: function() {
+      toggleForm: function() {
         this.showLogin = !this.showLogin;
       }
     }
@@ -88,16 +89,10 @@
 
   form {
     margin: auto;
-
   }
 
   .btn {
     background-color: #01B0D9;
     color: white;
   }
-
-  @media (max-width: 768px) {
-
-  }
-
 </style>
