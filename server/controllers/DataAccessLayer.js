@@ -28,6 +28,7 @@ exports.ReadUsersFile = function() {
         user.chips = parseInt(splitLine[3]);
         user.handsWon = parseInt(splitLine[4]);
         user.handsPlayed = parseInt(splitLine[5]);
+        user.handsLost = user.handsPlayed - user.handsWon;
         user.lastUpdatedDate = new Date(splitLine[6]);
         user.createdDate = new Date(splitLine[7]);
 
@@ -92,6 +93,7 @@ exports.UpdateUser = function(user) {
             // If no error occurred and the result states that the file was successfully changed
             if (result.hasChanged === true) {
                 // Update the cache
+                user.handsLost = user.handsPlayed - user.handsWon;
                 cachedUsers[index] = user;
                 cachedUsers[index].lastUpdatedDate = newLastUpdatedDate;
             }
