@@ -11,10 +11,12 @@
 // import Profile from './components/Profile.vue';
 // import Reports from './components/Reports.vue';
 //import Tables from './components/Tables.vue';
+//import HandRankCalculator from './components/pokerComponents/HandRankCalculator.vue';
 
 export default {
   name: 'App',
   components: {
+    //HandRankCalculator,
     // Login,
     // Poker,
     // Profile,

@@ -5,6 +5,7 @@
             </div>
             <div class="messagesBoxBorder" :style="{ height: heightPercentages.messagesBoxBorder }">
                 <div class="messagesBox" :style="{ height: heightPercentages.messagesBox }">
+                    <!--these buttons are not permanent, only for testing functionality-->
                     <button class="testButton" v-on:click="$parent.revealCommunityCard(1, 'Q_D')">1</button>
                     <button class="testButton" v-on:click="$parent.revealCommunityCard(2, '4_S')">2</button>
                     <button class="testButton" v-on:click="$parent.revealCommunityCard(3, '9_C')">3</button>
@@ -25,8 +26,6 @@
                         <ChatMessage v-bind:you="item.id === '1' ? true : false" v-bind:name="item.name" v-bind:message="item.message" v-bind:messageId="item.id"/>
                         <div class="chatSpace">space</div>
                     </div>
-
-
                 </div>
             </div>
             <div class="inputBoxBorder" :style="{ height: heightPercentages.inputBoxBorder }">
@@ -134,6 +133,7 @@ export default {
         return {
             heightPercentages: {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'},
             items: [
+                // sample messages stored in chat
                 { id: '1', name: 'bob', message: 'Foo kjh g n hy kb jk gbn g n g n ihg n g h b jh gi h gv tgb g' },
                 { id: '2', name: 'john', message: 'Barh g n hy kb jk gbn g n g n ihg n g h b jh' },
                 { id: '1', name: 'happy', message: 'no' },
@@ -146,6 +146,7 @@ export default {
         }
     },
     mounted(){
+        // the chat box needs to shrink if the report box is opened
         if(this.full){
             this.heightPercentages = {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'};
         }
@@ -154,6 +155,7 @@ export default {
         }
     },
     watch: {
+        // the chat box needs to shrink if the report box is opened
         full: function(){
             if(this.full){
                 this.heightPercentages = {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'};
@@ -165,7 +167,7 @@ export default {
     },
     methods:{
         openReport(name, messageId){
-            // called by a message
+            // called by a ChatMessage child
             this.$parent.openReport(name, messageId);
         }
     }

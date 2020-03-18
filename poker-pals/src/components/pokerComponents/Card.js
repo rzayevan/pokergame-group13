@@ -1,3 +1,4 @@
+// included for testing the card rank calculator, not to be used in the final design
 class Card {
     constructor(number, suit) {
         this.number = number;

@@ -1,3 +1,4 @@
+<!-- ignore this, its just to see how the poker page will fit with the nav bar, later will use the real nav bar-->
 <template>
     <div class="navigationTab">
         <div class="logo">

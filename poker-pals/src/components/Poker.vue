@@ -3,7 +3,7 @@
         <NavBar />
         <div class="tableLayoutAndDisplay">
             <div class="tableLayout">
-                <div class="buttonExitTable" v-on:click='myfunction()' @mousedown= "myfunction()">
+                <div class="buttonExitTable" v-on:click='exitTable()'>
                     <img src="../images/exit_symbol.png"/>
                 </div>
                 <div class="tableObjects">
@@ -36,92 +36,20 @@
                             <img src="../images/cards/card_back.png"/>
                         </div>
                     </div>
-                    <div class="players123">
-                        <PlayerSeat id="playerSeat1"
-                            v-bind:classes="{betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}"
-                            v-bind:dealerStatus="dealerStatuses.player1" 
-                            v-bind:_id="1" 
-                            v-bind:cards="playerCards.player1" 
+                    <div class="players">
+                        <PlayerSeat v-for="player in players" :key="player.id" v-bind:id='player.divID'
+                            v-bind:classes="player.classes"
+                            v-bind:dealerStatus="player.dealerStatus" 
+                            v-bind:_id="player.id" 
+                            v-bind:cards="player.cards" 
                             v-bind:cardReveal="cardReveal"
-                            v-bind:betValue="playerBets.player1"
-                            v-bind:tagName="playerTagNames.player1"
-                            v-bind:tagImage="playerTagImages.player1"
-                            v-bind:chipTotal="playerChipTotals.player1"
-                            v-bind:action="playerActions.player1"
-                            v-bind:youTag="playerYouTag.player1"
-                            v-bind:timer="playerTimer.player1"
-                        />
-                        <PlayerSeat id="playerSeat2"
-                            v-bind:classes="{betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}"
-                            v-bind:dealerStatus="dealerStatuses.player2" 
-                            v-bind:_id="2" 
-                            v-bind:cards="playerCards.player2" 
-                            v-bind:cardReveal="cardReveal"
-                            v-bind:betValue="playerBets.player2"
-                            v-bind:tagName="playerTagNames.player2"
-                            v-bind:tagImage="playerTagImages.player2"
-                            v-bind:chipTotal="playerChipTotals.player2"
-                            v-bind:action="playerActions.player2"
-                            v-bind:youTag="playerYouTag.player2"
-                            v-bind:timer="playerTimer.player2"
-                        />
-                        <PlayerSeat id="playerSeat3"
-                            v-bind:classes="{betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}"
-                            v-bind:dealerStatus="dealerStatuses.player3" 
-                            v-bind:_id="3" 
-                            v-bind:cards="playerCards.player3" 
-                            v-bind:cardReveal="cardReveal"
-                            v-bind:betValue="playerBets.player3"
-                            v-bind:tagName="playerTagNames.player3"
-                            v-bind:tagImage="playerTagImages.player3"
-                            v-bind:chipTotal="playerChipTotals.player3"
-                            v-bind:action="playerActions.player3"
-                            v-bind:youTag="playerYouTag.player3"
-                            v-bind:timer="playerTimer.player3"
-                        />
-                    </div>
-                    <div class="players456">
-                        <PlayerSeat id="playerSeat4"
-                            v-bind:classes="{betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}"
-                            v-bind:dealerStatus="dealerStatuses.player4" 
-                            v-bind:_id="4" 
-                            v-bind:cards="playerCards.player4"
-                            v-bind:cardReveal="cardReveal"
-                            v-bind:betValue="playerBets.player4"
-                            v-bind:tagName="playerTagNames.player4"
-                            v-bind:tagImage="playerTagImages.player4"
-                            v-bind:chipTotal="playerChipTotals.player4"
-                            v-bind:action="playerActions.player4"
-                            v-bind:youTag="playerYouTag.player4"
-                            v-bind:timer="playerTimer.player4"
-                        />
-                        <PlayerSeat id="playerSeat5"
-                            v-bind:classes="{betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}"
-                            v-bind:dealerStatus="dealerStatuses.player5" 
-                            v-bind:_id="5" 
-                            v-bind:cards="playerCards.player5"
-                            v-bind:cardReveal="cardReveal"
-                            v-bind:betValue="playerBets.player5"
-                            v-bind:tagName="playerTagNames.player5"
-                            v-bind:tagImage="playerTagImages.player5"
-                            v-bind:chipTotal="playerChipTotals.player5"
-                            v-bind:action="playerActions.player5"
-                            v-bind:youTag="playerYouTag.player5"
-                            v-bind:timer="playerTimer.player5"
-                        />
-                        <PlayerSeat id="playerSeat6"
-                            v-bind:classes="{betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}"
-                            v-bind:dealerStatus="dealerStatuses.player6" 
-                            v-bind:_id="6" 
-                            v-bind:cards="playerCards.player6"
-                            v-bind:cardReveal="cardReveal"
-                            v-bind:betValue="playerBets.player6"
-                            v-bind:tagName="playerTagNames.player6"
-                            v-bind:tagImage="playerTagImages.player6"
-                            v-bind:chipTotal="playerChipTotals.player6"
-                            v-bind:action="playerActions.player6"
-                            v-bind:youTag="playerYouTag.player6"
-                            v-bind:timer="playerTimer.player6"
+                            v-bind:betValue="player.bet"
+                            v-bind:tagName="player.tagName"
+                            v-bind:tagImage="player.tagImage"
+                            v-bind:chipTotal="player.chipTotal"
+                            v-bind:action="player.action"
+                            v-bind:youTag="player.youTag"
+                            v-bind:timer="player.timer"
                         />
                     </div>
                 </div>
@@ -222,7 +150,6 @@
         width: 100%;
         height: 79%;
         margin: 5.3% 0% 0% 0%;
-        background: transparent;
     }
     .tableImage{
         position: absolute;
@@ -291,17 +218,11 @@
         width: 100%;
         height: 100%;
     }
-    .players123{
+    .players{
         position: absolute;
         width: 60%;
-        height: 35%;
+        height: 110%;
         margin: -2% 0% 0% 20%;
-    }
-    .players456{
-        position: absolute;
-        width: 60%;
-        height: 35%;
-        margin: 30% 0% 0% 20%;
     }
     #playerSeat1{
         margin: 0% 0% 0% 0%;
@@ -314,15 +235,15 @@
     }
     #playerSeat4{
         position: absolute;
-        margin: 0% 0% 0% 75%;
+        margin: 54% 0% 0% 75%;
     }
     #playerSeat5{
         position: absolute;
-        margin: 0% 0% 0% 37.5%;
+        margin: 54% 0% 0% 37.5%;
     }
     #playerSeat6{
         position: absolute;
-        margin: 0% 0% 0% 0%;
+        margin: 54% 0% 0% 0%;
     }
     .blindsBox{
         position: absolute;
@@ -505,10 +426,6 @@ export default {
         return {
             report_OffenderName: '',
             report_OffenderMessageId: '',
-
-
-
-
             cardFiles: {
                 _card_Back: require(`../images/cards/card_back.png`),
                 _A_S: require(`../images/cards/A_S.png`),
@@ -571,80 +488,18 @@ export default {
             cheatSheetOpen: true,
             bigBlind: 2000,
             cardReveal: false,
-            dealerStatuses: {
-                player1: true,
-                player2: false,
-                player3: false,
-                player4: false,
-                player5: false,
-                player6: false
-            },
-            playerCards: {
-                player1: {card1: null, card2: null},
-                player2: {card1: null, card2: null},
-                player3: {card1: null, card2: null},
-                player4: {card1: null, card2: null},
-                player5: {card1: null, card2: null},
-                player6: {card1: null, card2: null},
-            },
-            playerBets: {
-                player1: 0,
-                player2: 1000,
-                player3: 2000,
-                player4: 0,
-                player5: 0,
-                player6: 0,
-            },
-            playerTagNames: {
-                player1: "Alex",
-                player2: "Jessica",
-                player3: "Mack",
-                player4: "Curtis",
-                player5: "John",
-                player6: "Clayton",
-            },
-            playerTagImages: {
-                // need to define some player tag icons
-                //player1: require(`../../images/cards/${this.icon}.png`),
-                player1: require(`../images/player_icon_1.png`),
-                player2: require(`../images/player_icon_1.png`),
-                player3: require(`../images/player_icon_1.png`),
-                player4: require(`../images/player_icon_1.png`),
-                player5: require(`../images/player_icon_1.png`),
-                player6: require(`../images/player_icon_1.png`),
-            },
-            playerChipTotals: {
-                player1: "20000",
-                player2: "40000",
-                player3: "60000",
-                player4: "800000",
-                player5: "10000",
-                player6: "20",
-            },
-            playerActions: {
-                player1: "WAITING",
-                player2: "WAITING",
-                player3: "THINKING",
-                player4: "WAITING",
-                player5: "WAITING",
-                player6: "WAITING",
-            },
-            playerYouTag: {
-                player1: false,
-                player2: false,
-                player3: false,
-                player4: false,
-                player5: false,
-                player6: true,
-            },
-            playerTimer: {
-                player1: false,
-                player2: false,
-                player3: true,
-                player4: false,
-                player5: false,
-                player6: false,
-            }
+
+            // information to set up each player seat including css values (depending on seat position some css will change)
+            // most of this will come from the server
+            players: [
+                {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat1', id: 1, dealerStatus: true, cards: {card1: null, card2: null}, bet: 0, tagName: "Alex", tagImage: require(`../images/player_icon_1.png`), chipTotal: "20000", action: "WAITING", youTag: false, timer: false},
+                {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat2', id: 2, dealerStatus: false, cards: {card1: null, card2: null}, bet: 1000, tagName: "Jessica", tagImage: require(`../images/player_icon_1.png`), chipTotal: "40000", action: "WAITING", youTag: false, timer: false},
+                {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat3', id: 3, dealerStatus: false, cards: {card1: null, card2: null}, bet: 2000, tagName: "Mack", tagImage: require(`../images/player_icon_1.png`), chipTotal: "60000", action: "THINKING", youTag: false, timer: true},
+                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', id: 1, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "Curtis", tagImage: require(`../images/player_icon_1.png`), chipTotal: "80000", action: "WAITING", youTag: false, timer: false},
+                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', id: 2, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "John", tagImage: require(`../images/player_icon_1.png`), chipTotal: "10000", action: "WAITING", youTag: false, timer: false},
+                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', id: 3, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "Clayton", tagImage: require(`../images/player_icon_1.png`), chipTotal: "20", action: "WAITING", youTag: true, timer: false},
+            ],
+            //player1: require(`../../images/cards/${this.icon}.png`),
         };
     },
     mounted(){
@@ -655,17 +510,15 @@ export default {
         slider.oninput = function() {
             output.innerHTML = this.value;
         }
-        this.playerCards = {
-                player1: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
-                player2: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
-                player3: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
-                player4: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
-                player5: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
-                player6: {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back},
-        }
+        this.players[0].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
+        this.players[1].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
+        this.players[2].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
+        this.players[3].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
+        this.players[4].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
+        this.players[5].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
     },
     methods:{
-        myfunction(){
+        exitTable(){
             //v-on:click='myfunction()' @mousedown: style= "{ opacity: 0.5 }"
         },
         toggleCheatSheet(){
@@ -709,76 +562,13 @@ export default {
         },
         revealPlayerCards(){
             // when a child looks for prop change they do not inspect the elements inside those props
-            // only the prop itself so we can't just change card1 and card2 we need to change player1
-            this.playerCards.player1 = {card1: this.cardFiles._3_H, card2: this.cardFiles._2_C};
-            this.playerCards.player2 = {card1: this.cardFiles._6_H, card2: this.cardFiles._10_S};
-            this.playerCards.player3 = {card1: this.cardFiles._K_S, card2: this.cardFiles._3_D};
-            this.playerCards.player4 = {card1: this.cardFiles._Q_C, card2: this.cardFiles._J_H};
-            this.playerCards.player5 = {card1: this.cardFiles._8_C, card2: this.cardFiles._3_S};
-            this.playerCards.player6 = {card1: this.cardFiles._2_D, card2: this.cardFiles._A_C};
-        },
-
-
-        switchDealers(){
-            this.dealerStatuses = {
-                player1: false,
-                player2: true,
-                player3: false,
-                player4: false,
-                player5: false,
-                player6: false
-            };
-        },
-        changeBets(){
-            this.playerBets = {
-                // if bet is zero then we shouldn't display anything
-                player1: 0,
-                player2: 0,
-                player3: 1000,
-                player4: 2000,
-                player5: 0,
-                player6: 0,
-            };
-        },
-        changeNames(){
-            this.playerTagNames = {
-                player1: "Alex123",
-                player2: "Jessica234",
-                player3: "Mack345",
-                player4: "Curtis456",
-                player5: "John567",
-                player6: "Clayton678",
-            };
-        },
-        changeTagImages(){
-            this.playerTagImages = {
-                player1: require(`../images/player_icon_1.png`),
-                player2: require(`../images/player_icon_1.png`),
-                player3: require(`../images/player_icon_1.png`),
-                player4: require(`../images/player_icon_1.png`),
-                player5: require(`../images/player_icon_1.png`),
-                player6: require(`../images/player_icon_1.png`),
-            };
-        },
-        changeTimer1(){
-            this.playerTimer = {
-                player1: true,
-                player2: false,
-                player3: false,
-                player4: false,
-                player5: false,
-                player6: false,
-            };
-        },
-        changeTimer2(){
-            this.playerTimer = {
-                player1: false,
-                player2: true,
-                player3: false,
-                player4: false,
-                player5: false,
-                player6: false,
-            };
+            // only the prop itself so we can't just change card1 and card2 we need to change player.cards
+            this.players[0].cards = {card1: this.cardFiles._3_H, card2: this.cardFiles._2_C};
+            this.players[1].cards = {card1: this.cardFiles._6_H, card2: this.cardFiles._10_S};
+            this.players[2].cards = {card1: this.cardFiles._K_S, card2: this.cardFiles._3_D};
+            this.players[3].cards = {card1: this.cardFiles._Q_C, card2: this.cardFiles._J_H};
+            this.players[4].cards = {card1: this.cardFiles._8_C, card2: this.cardFiles._3_S};
+            this.players[5].cards = {card1: this.cardFiles._2_D, card2: this.cardFiles._A_C};
         },
         reportPlayer(){
             this.chatFull = false;
@@ -799,6 +589,56 @@ export default {
         },
         sendReport(){
             // send a report
+        },
+
+        // these next functions are for testing they are linked up the the temporary buttons in the chat
+        switchDealers(){
+            this.players[0].dealerStatus = false;
+            this.players[1].dealerStatus = true;
+            this.players[2].dealerStatus = false;
+            this.players[3].dealerStatus = false;
+            this.players[4].dealerStatus = false;
+            this.players[5].dealerStatus = false;
+        },
+        changeBets(){
+            this.players[0].bet = 0;
+            this.players[1].bet = 0;
+            this.players[2].bet = 1000;
+            this.players[3].bet = 2000;
+            this.players[4].bet = 0;
+            this.players[5].bet = 0;
+        },
+        changeNames(){
+            this.players[0].tagName = "Alex123";
+            this.players[1].tagName = "Jessica234";
+            this.players[2].tagName = "Mack345";
+            this.players[3].tagName = "Curtis456";
+            this.players[4].tagName = "John567";
+            this.players[5].tagName = "Clayton678";
+        },
+        changeTagImages(){
+            this.players[0].tagImage = require(`../images/player_icon_1.png`);
+            this.players[1].tagImage = require(`../images/player_icon_1.png`);
+            this.players[2].tagImage = require(`../images/player_icon_1.png`);
+            this.players[3].tagImage = require(`../images/player_icon_1.png`);
+            this.players[4].tagImage = require(`../images/player_icon_1.png`);
+            this.players[5].tagImage = require(`../images/player_icon_1.png`);
+        },
+        changeTimer1(){
+            this.players[0].timer = true;
+            this.players[1].timer = false;
+            this.players[2].timer = false;
+            this.players[3].timer = false;
+            this.players[4].timer = false;
+            this.players[5].timer = false;
+        },
+        changeTimer2(){
+            this.players[0].timer = false;
+            this.players[1].timer = true;
+            this.players[2].timer = false;
+            this.players[3].timer = false;
+            this.players[4].timer = false;
+            this.players[5].timer = false;
         }
     }
 };

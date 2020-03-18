@@ -57,7 +57,7 @@ export default {
         'timer',
     ],
     data() {
-        return {
+        return { // clock will show whether or not it is your turn
             clockOpacity: this.timer ? 1.0 : 0.0,
         };
     },

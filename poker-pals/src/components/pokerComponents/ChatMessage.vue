@@ -142,14 +142,13 @@ export default {
         
     },
     methods:{
-        toggleOptions(){
+        toggleOptions(){ // show or not show mute and report options
             this.optionsVisible = !this.optionsVisible;
         },
         closeOptions(){
             this.optionsVisible = false;
         },
-        openReport(){
-            // call back with some data
+        openReport(){ // call back with data about the report
             this.$parent.openReport(this.name, this.messageId);
         }
     }

@@ -50,8 +50,7 @@
         float: left;
         position: relative;
         width: 25%;
-        height: 100%;
-        background: transparent;
+        height: 31.82%;
     }
     .border1{
         position: relative;
@@ -266,7 +265,7 @@ export default {
         'tagImage', 'chipTotal', 'action', 'youTag', 'timer'
     ],
     data() {
-        return {
+        return { // various items to set based on the props
             dealerChipOpacity: this.dealerStatus ? 1.0 : 0.0,
             cardRevealOpacity: this.cardReveal ? 1.0 : 0.0,
             betValueStatus: {opacity: this.betValue === 0 ? 0.0 : 1.0, betValue: this.betValue},
