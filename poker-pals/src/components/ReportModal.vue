@@ -1,67 +1,63 @@
 <template>
-    <transition name="modal-fade">
-    <div class="modal-backdrop">
-      <div class="modal"
-        role="dialog"
-        aria-labelledby="modalTitle"
-        aria-describedby="modalDescription"
-      >
-        <header
-          class="modal-header"
-          id="modalTitle"
-        >
-          <slot name="header">
-            This is the default tile!
+  <div>
+    <b-modal centered size="xl" id="modal-1">
+      <template v-slot:modal-header>
+        <div>
+          <h5 reportData="reportData">Report: {{ reportData.offendingUser }}</h5>
+          <p class="no-margin" reportData="reportData">{{ reportData.dateSubmitted }}</p>
+        </div>
 
-            <button
-              type="button"
-              class="btn-close"
-              @click="close"
-              aria-label="Close modal"
-            >
-              x
-            </button>
-          </slot>
-        </header>
-        <section
-          class="modal-body"
-          id="modalDescription"
-        >
-          <slot name="body">
-            I'm the default body!
-          </slot>
-        </section>
-        <footer class="modal-footer">
-          <slot name="footer">
-            I'm the default footer!
+      </template>
 
-            <button
-              type="button"
-              class="btn-green"
-              @click="close"
-              aria-label="Close modal"
-            >
-              Close me!
-            </button>
-          </slot>
-        </footer>
-      </div>
-    </div>
-  </transition>
+      <template v-slot:default>
+        <!-- <p>Modal Body</p> -->
+        <!-- <p hello='hello'>{{ hello }}</p> -->
+
+        <p reportData="reportData">Submitted by {{ reportData.reportedBy }}</p>
+
+        <p>Description</p>
+        <p>Chat Logs</p>
+      </template>
+      
+      <template v-slot:modal-footer>
+        <b-button variant="primary" @click="dismiss()">
+          Dismiss
+        </b-button>
+        <b-button variant="danger" @click="ban()">
+          Ban
+        </b-button>
+      </template>
+    
+      <!-- <p hello= 'hello'>{{ hello }}</p>
+      <p>Submitted by </p>
+      <p>Description</p>
+      <p>Chat Logs</p> -->
+    </b-modal>
+  </div>
 </template>
 
 <script>
 export default {
     name: 'ReportModal',
+    props: ['hello', 'reportData'],
     methods: {
-      close() {
-        this.$emit('close');
+      dismiss: function() {
+        console.log("dismiss");
+        this.$bvModal.hide('modal-1');
       },
+      ban: function() {
+        console.log("ban");
+        this.$bvModal.hide('modal-1');
+      }
     },
   };
 </script>
 
 <style scoped>
+
+.no-margin {
+  margin: 0
+}
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -79,7 +75,11 @@ export default {
     box-shadow: 2px 2px 20px 1px;
     overflow-x: auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
+  }
+
+  div.modal.modal .modal-dialog {
+    width: 80% !important;
   }
 
   .modal-header,

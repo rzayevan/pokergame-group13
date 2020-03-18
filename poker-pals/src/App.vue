@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view></router-view>
+     <ReportGrid :data="gridData" :columns="gridColumns" />
   </div>
 </template>
 
@@ -11,6 +12,7 @@
 // import Profile from './components/Profile.vue';
 // import Reports from './components/Reports.vue';
 //import Tables from './components/Tables.vue';
+import ReportGrid from './components/ReportGrid.vue'
 
 export default {
   name: 'App',
@@ -20,6 +22,20 @@ export default {
     // Profile,
     // Reports,
     //Tables
+    ReportGrid
+  },
+  data() {
+    return {
+     gridData: [
+          { "id": 0, "Offending User": "JohnSun333", "Submitted": "2/27/2020", "Offense": "Harassment", "Reported By": "Kimchee553"},
+          { "id": 1, "Offending User": "Ligma420", "Submitted": "2/27/2020", "Offense": "Racism", "Reported By": "KingSimp"},
+          { "id": 2, "Offending User": "PoppingJimbo", "Submitted": "2/27/2020", "Offense": "Swearing", "Reported By": "WeebKing123"},
+          { "id": 3, "Offending User": "EatMyPeen", "Submitted": "2/27/2020", "Offense": "Offensive Username", "Reported By": "SonChaeyoungie"},
+          { "id": 4, "Offending User": "xXPokerKillerXx", "Submitted": "2/27/2020", "Offense": "Harassment", "Reported By": "PotentPeter"},
+          { "id": 5, "Offending User": "Kirito", "Submitted": "2/27/2020", "Offense": "Spamming", "Reported By": "StonkMillionaire"},
+        ],
+        gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
+    }
   }
 }
 

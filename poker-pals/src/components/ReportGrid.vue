@@ -1,5 +1,9 @@
 <template>
   <div class="wrapper">
+      <ReportModal
+      :hello=hello
+      :reportData=reportData
+    />
   <form id="search">
     Search <input name="query" v-model="searchQuery">
   </form>
@@ -7,12 +11,12 @@
     <div class="table-header-wrapper">
       <table class="table-header">
         <thead>
-          <th v-for="key in columns" :key="key"
-            @click="sortBy(key)"
-            :class="{ active: sortKey == key }"
+          <th v-for="column in columns" :key="column.id"
+            @click="sortBy(column)"
+            :class="{ active: sortKey == column.id }"
           >
-            {{ key | capitalize }}
-            <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'"></span>
+            {{ column | capitalize }}
+            <span class="arrow" :class="sortOrders[column.id] > 0 ? 'asc' : 'dsc'"></span>
           </th>
         </thead>
       </table>
@@ -20,17 +24,13 @@
     <div class="table-body-wrapper">
       <table class="table-body">
         <tbody>
-          <tr v-for="entry in filteredData" :key="entry" v-on:click="onClick(entry)">
+          <tr v-for="entry in filteredData" :key="entry.id" v-on:click="onClick(entry)">
             <td v-for="key in columns" :key="key"> {{entry[key]}}</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
-  <ReportModal
-      v-show="isModalVisible"
-      @close="closeModal"
-    />
 </div>
 </template>
 
@@ -51,7 +51,14 @@ import ReportModal from './ReportModal.vue';
       searchQuery: '',
       sortKey: '',
       sortOrders: {},
-      isModalVisible: false
+      hello: "hi",
+      reportData: {
+        id: 0,
+        offendingUser: "",
+        dateSubmitted: "",
+        offense: "", 
+        reportedBy: ""
+      }
     }
   },
   computed: {
@@ -89,20 +96,22 @@ import ReportModal from './ReportModal.vue';
       this.sortOrders[key] = this.sortOrders[key] * -1
     },
     showModal: function() {
-        this.isModalVisible = true;
+        this.$bvModal.show("modal-1");
     },
-    closeModal: function() {
-        this.isModalVisible = false;
-    },
-    onClick: function (key) {
-        console.log("clicked! " + key)
+    onClick: function (entry) {
+        console.log(entry)
+      //  console.log(this.hello);
+        this.hello = "stop";
+        this.reportData.id = entry["id"];
+        this.reportData.offendingUser = entry["Offending User"];
+        this.reportData.dateSubmitted = entry["Submitted"]
+        this.reportData.offense = entry["Offense"];
+        this.reportData.reportedBy = entry["Reported By"];
         this.showModal();
     },
   },
   created(){
     let sortOrders = {};
-    console.log(this);
-    console.log(this.columns);
     this.columns.forEach(function (key) {
       sortOrders[key] = 1;
     })
@@ -139,7 +148,7 @@ td {
 }
 
 th, td {
-  min-width: 150px;
+  width: 25%;
   padding: 10px 20px;
 }
 
@@ -181,6 +190,7 @@ tr:hover {
   display: -webkit-flex;
   flex-direction: column;
   -webkit-flex-direction: column;
-  width: 600px;
+  width: 80%;
+  margin: auto;
 }
 </style>
