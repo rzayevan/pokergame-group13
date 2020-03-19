@@ -160,9 +160,10 @@ export default {
         },
         submitReport(){
             if(this.selected === ''){
-                alert('please select reason');
+                alert('please select reason'); // later use alternative option to indicate this
             }
             else{
+                // send off report to the parent
                 this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId);
             }
         }

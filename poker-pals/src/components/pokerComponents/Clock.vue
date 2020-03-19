@@ -2,7 +2,7 @@
     <div class="clock" :style="{ opacity: clockOpacity }">
         <img src="../../images/clock.png"/>
         <div class="clock_pointer">
-            <transition name="rotate">
+            <transition name="rotate"> <!--animation for clock needle-->
                 <img v-if="timer" src="../../images/clock_pointer.png"/>
             </transition>
         </div>
@@ -64,9 +64,9 @@ export default {
     mounted(){
         
     },
-    watch: {// everything you put in here will watch for changes from parent props
+    watch: {
         timer: function(){
-            this.clockOpacity = this.timer ? 1.0 : 0.0;
+            this.clockOpacity = this.timer ? 1.0 : 0.0; // on timer===true the animation starts
         },
     },
     methods:{

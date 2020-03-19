@@ -132,7 +132,7 @@ export default {
     ],
     data() {
         return {
-            optionsVisible: false,
+            optionsVisible: false, // show or hide mute and report options
         }
     },
     mounted(){
@@ -142,7 +142,7 @@ export default {
         
     },
     methods:{
-        toggleOptions(){ // show or not show mute and report options
+        toggleOptions(){ // show or hide mute and report options
             this.optionsVisible = !this.optionsVisible;
         },
         closeOptions(){

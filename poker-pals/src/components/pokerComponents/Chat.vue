@@ -131,6 +131,7 @@ export default {
     ],
     data() {
         return {
+            // the css values to use based on the cat being either full or half
             heightPercentages: {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'},
             items: [
                 // sample messages stored in chat
@@ -146,7 +147,7 @@ export default {
         }
     },
     mounted(){
-        // the chat box needs to shrink if the report box is opened
+        // set the chat box css
         if(this.full){
             this.heightPercentages = {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'};
         }
@@ -155,7 +156,7 @@ export default {
         }
     },
     watch: {
-        // the chat box needs to shrink if the report box is opened
+        // change the chat box css
         full: function(){
             if(this.full){
                 this.heightPercentages = {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'};
@@ -168,6 +169,7 @@ export default {
     methods:{
         openReport(name, messageId){
             // called by a ChatMessage child
+            // pass the message along to the parent
             this.$parent.openReport(name, messageId);
         }
     }

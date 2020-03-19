@@ -1,3 +1,4 @@
+<!--when the server is ready this code will be transferred over and converted into a js file-->
 <template>
     <div class="box">
         <button v-on:click="calculate()">get number</button>

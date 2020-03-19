@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div v-bind:class= classesT.betBox>
+        <div v-bind:class= classes.betBox>
             <div class="betImage" :style="{ opacity: betValueStatus.opacity }">
                 <img src="../../images/chip.png"/>
             </div>
@@ -31,10 +31,10 @@
                 <img src="../../images/dealer_icon.png" />
             </div>
         </div>
-        <div v-bind:class= classesT.youTag :style="{ opacity: youTagOpacity }">
+        <div v-bind:class= classes.youTag :style="{ opacity: youTagOpacity }">
             <div class="youTagText">YOU</div>
         </div>
-        <div v-bind:class= classesT.playerCards :style="{ opacity: cardRevealOpacity }">
+        <div v-bind:class= classes.playerCards :style="{ opacity: cardRevealOpacity }">
             <div class="playerCard">
                 <img v-bind:src="cards.card1"/>
             </div>
@@ -266,19 +266,17 @@ export default {
     ],
     data() {
         return { // various items to set based on the props
-            dealerChipOpacity: this.dealerStatus ? 1.0 : 0.0,
-            cardRevealOpacity: this.cardReveal ? 1.0 : 0.0,
-            betValueStatus: {opacity: this.betValue === 0 ? 0.0 : 1.0, betValue: this.betValue},
-            youTagOpacity: this.youTag ? 1.0 : 0.0,
-            playerTurnBackground: this.timer ? 'black' : 'transparent',
-            top: true,
-            classesT: {betBox: this.classes.betBox, youTag: this.classes.youTag, playerCards: this.classes.playerCards},
+            dealerChipOpacity: this.dealerStatus ? 1.0 : 0.0, // show who is the current dealer
+            cardRevealOpacity: this.cardReveal ? 1.0 : 0.0, // upon the show down the player cards are revealed
+            betValueStatus: {opacity: this.betValue === 0 ? 0.0 : 1.0, betValue: this.betValue}, // display bet when made
+            youTagOpacity: this.youTag ? 1.0 : 0.0, // tag indicating which seat belows to you
+            playerTurnBackground: this.timer ? 'black' : 'transparent', // on player turn the black outline will be present
         };
     },
     mounted(){
         
     },
-    watch: {// everything you put in here will watch for changes from parent props
+    watch: {
         dealerStatus: function(){
             this.dealerChipOpacity = this.dealerStatus ? 1.0 : 0.0;
         },

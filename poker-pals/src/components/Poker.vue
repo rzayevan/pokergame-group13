@@ -426,6 +426,7 @@ export default {
         return {
             report_OffenderName: '',
             report_OffenderMessageId: '',
+            // the image resource files for the card images
             cardFiles: {
                 _card_Back: require(`../images/cards/card_back.png`),
                 _A_S: require(`../images/cards/A_S.png`),
@@ -484,10 +485,10 @@ export default {
                 _Q_D: require(`../images/cards/Q_D.png`),
                 _K_D: require(`../images/cards/K_D.png`),
             },
-            chatFull: true,
-            cheatSheetOpen: true,
+            chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
+            cheatSheetOpen: true, // toggle to diplay cheat sheet or not
             bigBlind: 2000,
-            cardReveal: false,
+            cardReveal: false, // set to false until the show down, the players will show their cards
 
             // information to set up each player seat including css values (depending on seat position some css will change)
             // most of this will come from the server
@@ -495,11 +496,10 @@ export default {
                 {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat1', id: 1, dealerStatus: true, cards: {card1: null, card2: null}, bet: 0, tagName: "Alex", tagImage: require(`../images/player_icon_1.png`), chipTotal: "20000", action: "WAITING", youTag: false, timer: false},
                 {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat2', id: 2, dealerStatus: false, cards: {card1: null, card2: null}, bet: 1000, tagName: "Jessica", tagImage: require(`../images/player_icon_1.png`), chipTotal: "40000", action: "WAITING", youTag: false, timer: false},
                 {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat3', id: 3, dealerStatus: false, cards: {card1: null, card2: null}, bet: 2000, tagName: "Mack", tagImage: require(`../images/player_icon_1.png`), chipTotal: "60000", action: "THINKING", youTag: false, timer: true},
-                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', id: 1, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "Curtis", tagImage: require(`../images/player_icon_1.png`), chipTotal: "80000", action: "WAITING", youTag: false, timer: false},
-                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', id: 2, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "John", tagImage: require(`../images/player_icon_1.png`), chipTotal: "10000", action: "WAITING", youTag: false, timer: false},
-                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', id: 3, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "Clayton", tagImage: require(`../images/player_icon_1.png`), chipTotal: "20", action: "WAITING", youTag: true, timer: false},
+                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', id: 4, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "Curtis", tagImage: require(`../images/player_icon_1.png`), chipTotal: "80000", action: "WAITING", youTag: false, timer: false},
+                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', id: 5, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "John", tagImage: require(`../images/player_icon_1.png`), chipTotal: "10000", action: "WAITING", youTag: false, timer: false},
+                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', id: 6, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "Clayton", tagImage: require(`../images/player_icon_1.png`), chipTotal: "20", action: "WAITING", youTag: true, timer: false},
             ],
-            //player1: require(`../../images/cards/${this.icon}.png`),
         };
     },
     mounted(){
@@ -510,6 +510,8 @@ export default {
         slider.oninput = function() {
             output.innerHTML = this.value;
         }
+        // asign the standard card_back image to each of player cards inititally
+        // later the server will send the true cards at the show down
         this.players[0].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
         this.players[1].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
         this.players[2].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
@@ -570,11 +572,9 @@ export default {
             this.players[4].cards = {card1: this.cardFiles._8_C, card2: this.cardFiles._3_S};
             this.players[5].cards = {card1: this.cardFiles._2_D, card2: this.cardFiles._A_C};
         },
-        reportPlayer(){
-            this.chatFull = false;
-        },
         submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
             // pass this off to the server
+            // later add to reportPocket an indication the message was sent
             alert(JSON.stringify(selected) + " " + JSON.stringify(message) + " " + JSON.stringify(report_OffenderName) + " " + JSON.stringify(report_OffenderMessageId));
             this.chatFull = true;
         },
@@ -583,7 +583,8 @@ export default {
         },
         openReport(name, messageId){
             // called by child
-            this.chatFull = false;
+            this.chatFull = false; // shrink the chat
+            // set up the report with some data
             this.report_OffenderName = name;
             this.report_OffenderMessageId = messageId;
         },
@@ -591,7 +592,7 @@ export default {
             // send a report
         },
 
-        // these next functions are for testing they are linked up the the temporary buttons in the chat
+        // these next functions are for testing, they are linked up the the temporary buttons in the chat
         switchDealers(){
             this.players[0].dealerStatus = false;
             this.players[1].dealerStatus = true;
