@@ -17,7 +17,7 @@ exports.ReadUsersFile = function() {
     while (line = liner.next()) {
         // Convert the buffer recieved to an ascii string
         let lineString = line.toString('ascii');
-        // Split the string by a semicolon
+        // Split the string by a comma
         let splitLine = lineString.split(',');
         // Create a user object based upon the line read
         let user = new User();
