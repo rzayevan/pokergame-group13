@@ -22,13 +22,14 @@ exports.ReadUsersFile = function() {
         // Create a user object based upon the line read
         let user = new User();
 
-        user.username = splitLine[0];
-        user.password = splitLine[1];
-        user.email = splitLine[2];
-        user.chips = parseInt(splitLine[3]);
-        user.hands = parseInt(splitLine[4]);
-        user.lastUpdatedDate = new Date(splitLine[5]);
-        user.createdDate = new Date(splitLine[6]);
+        user.id = splitLine[0];
+        user.username = splitLine[1];
+        user.password = splitLine[2];
+        user.email = splitLine[3];
+        user.chips = parseInt(splitLine[4]);
+        user.hands = parseInt(splitLine[5]);
+        user.lastUpdatedDate = new Date(splitLine[6]);
+        user.createdDate = new Date(splitLine[7]);
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -42,7 +43,7 @@ exports.ReadUsersFile = function() {
  */
 exports.AddUserToFile = function(user) {
     // Create a string to store in the text file as a user
-    let userString = user.username + ";" + user.password + ";" + 
+    let userString = user.id + ";" + user.username + ";" + user.password + ";" + 
                      user.email + ";" + user.chips + ";" + 
                      user.hands + ";" + user.lastUpdatedDate.toISOString() + ";" 
                      + user.createdDate.toISOString() + ";\n";
@@ -56,12 +57,12 @@ exports.AddUserToFile = function(user) {
  */
 exports.UpdateUser = function(user) {
     // Find the index in the cache for the original User object
-    let index = cachedUsers.findIndex(x => x.username === user.username && x.email === user.email);
+    let index = cachedUsers.findIndex(x => x.id === user.id);
     // Get a pointer to the original User object
     let originalUser = cachedUsers[index];
 
     // Create a string that will be searched for within the text file
-    let originalUserString = originalUser.username + ";" + originalUser.password + ";" + 
+    let originalUserString = originalUser.id + ";" + originalUser.username + ";" + originalUser.password + ";" + 
                              originalUser.email + ";" + originalUser.chips + ";" + 
                              originalUser.hands + ";" + originalUser.lastUpdatedDate.toISOString() + ";" 
                              + originalUser.createdDate.toISOString() + ";";
@@ -70,7 +71,7 @@ exports.UpdateUser = function(user) {
     let newLastUpdatedDate = new Date();
 
     // Create a new string to update the file to
-    let newUserString = user.username + ";" + user.password + ";" + 
+    let newUserString = user.id + ";" + user.username + ";" + user.password + ";" + 
                         user.email + ";" + user.chips + ";" + 
                         user.hands + ";" + newLastUpdatedDate.toISOString() + ";" 
                         + user.createdDate.toISOString() + ";";
