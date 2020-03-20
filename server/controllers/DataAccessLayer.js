@@ -18,7 +18,7 @@ exports.ReadUsersFile = function() {
         // Convert the buffer recieved to an ascii string
         let lineString = line.toString('ascii');
         // Split the string by a semicolon
-        let splitLine = lineString.split(';');
+        let splitLine = lineString.split(',');
         // Create a user object based upon the line read
         let user = new User();
 
@@ -45,10 +45,10 @@ exports.ReadUsersFile = function() {
  */
 exports.AddUserToFile = function(user) {
     // Create a string to store in the text file as a user
-    let userString = user.id + ";" + user.username + ";" + user.password + ";" + 
-                     user.email + ";" + user.chips + ";" + 
-                     user.handsWon + ";" + user.handsPlayed + ";" + user.lastUpdatedDate.toISOString() + ";" 
-                     + user.createdDate.toISOString() + ";\n";
+    let userString = user.id + "," + user.username + "," + user.password + "," + 
+                     user.email + "," + user.chips + "," + 
+                     user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," 
+                     + user.createdDate.toISOString() + ",\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
 }
@@ -64,19 +64,19 @@ exports.UpdateUser = function(user) {
     let originalUser = cachedUsers[index];
 
     // Create a string that will be searched for within the text file
-    let originalUserString = originalUser.id + ";" + originalUser.username + ";" + originalUser.password + ";" + 
-                             originalUser.email + ";" + originalUser.chips + ";" + 
-                             originalUser.handsWon + ";" + originalUser.handsPlayed + ";" + originalUser.lastUpdatedDate.toISOString() + ";" 
-                             + originalUser.createdDate.toISOString() + ";";
+    let originalUserString = originalUser.id + "," + originalUser.username + "," + originalUser.password + "," + 
+                             originalUser.email + "," + originalUser.chips + "," + 
+                             originalUser.handsWon + "," + originalUser.handsPlayed + "," + originalUser.lastUpdatedDate.toISOString() + "," 
+                             + originalUser.createdDate.toISOString() + ",";
 
     // Create a new Date object to set the lastUpdatedDate's to
     let newLastUpdatedDate = new Date();
 
     // Create a new string to update the file to
-    let newUserString = user.id + ";" + user.username + ";" + user.password + ";" + 
-                        user.email + ";" + user.chips + ";" + 
-                        user.handsWon + ";" + user.handsPlayed + ";" + newLastUpdatedDate.toISOString() + ";" 
-                        + user.createdDate.toISOString() + ";";
+    let newUserString = user.id + "," + user.username + "," + user.password + "," + 
+                        user.email + "," + user.chips + "," + 
+                        user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," 
+                        + user.createdDate.toISOString() + ",";
 
     // Create a regexp to find the correct contents to change
     const regex = new RegExp(originalUserString, "g");
