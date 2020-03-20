@@ -1,6 +1,10 @@
+const { v1: uuid } = require('uuid');
+
 class User {
     // Creates an empty user
     constructor() {
+         // The uuid of the user
+         this.id;
          // The username of the user
          this.username;
          // The password of the user
@@ -21,8 +25,10 @@ class User {
          this.createdDate;
     }
 
-    // Creates a user with all fields populated
+    // Populates the fields of a newly created User object
     CreateNewUser(username, password, email) {
+        // The uuid of the user
+        this.id = uuid();
         // The username of the user
         this.username = username;
         // The password of the user
@@ -48,6 +54,8 @@ class User {
      * @param {User} userToCopy The user that is being copied into this User object
      */
     CopyUser(userToCopy) {
+         // The id of the user
+         this.id = userToCopy.id;
          // The username of the user
          this.username = userToCopy.username;
          // The password of the user
