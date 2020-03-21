@@ -15,7 +15,7 @@
 
       <!--  Login/Register Form -->
       <div class="col-md-6">
-        <form class="text-left">
+        <form class="text-left" v-on:submit="navigateForm">
           <div class="form-group">
             <label for="email">Email</label>
             <input class="form-control" type="email" id="email" ref="email" v-model="email" required autocomplete="username"/>
@@ -38,7 +38,7 @@
 
           <div class="form-group row justify-content-between" v-if="showLogin">
             <a class="col-4" href="#" @click="toggleForm()">Create account</a>
-            <input class="col-4 btn" type="submit" @click="navigateForm" value="Sign In">
+            <input class="col-4 btn" type="submit"  value="Sign In">
           </div>
 
           <div class="form-group row justify-content-between" v-if="!showLogin">
