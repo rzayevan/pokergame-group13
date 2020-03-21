@@ -18,7 +18,7 @@
         <form class="text-left">
           <div class="form-group">
             <label for="email">Email</label>
-            <input class="form-control" type="email" id="email" v-model="email" required autocomplete="username"/>
+            <input class="form-control" type="email" id="email" ref="email" v-model="email" required autocomplete="username"/>
           </div>
 
           <div class="form-group" v-if="!showLogin">
@@ -28,7 +28,7 @@
 
           <div class="form-group">
             <label for="password1">Password</label>
-            <input class="form-control" type="password" id="password1" v-model="password" required autocomplete="current-password"/>
+            <input class="form-control" type="password" id="password1" ref="password" v-model="password" required autocomplete="current-password"/>
           </div>
 
           <div class="form-group" v-if="!showLogin">
@@ -38,12 +38,12 @@
 
           <div class="form-group row justify-content-between" v-if="showLogin">
             <a class="col-4" href="#" @click="toggleForm()">Create account</a>
-            <input class="col-4 btn" type="submit"  value="Sign In">
+            <input class="col-4 btn" type="submit" @click="navigateForm" value="Sign In">
           </div>
 
           <div class="form-group row justify-content-between" v-if="!showLogin">
             <a class="col-4" href="#" @click="toggleForm()">Sign in</a>
-            <input class="col-4 btn" type="submit"  value="Sign Up">
+            <input class="col-4 btn" type="submit" value="Sign Up">
           </div>
         </form>
       </div>
@@ -52,21 +52,47 @@
 </template>
 
 <script>
+  import io from "socket.io-client"
   export default {
     name: 'Login',
     data: function() {
       return {
+        socket: {},
         email: '',
         username: '',
         password: '',
         password2: '',
-        showLogin: true
+        showLogin: true,
       }
     },
+     // gets called before the view is rendered
+    created() {
+      this.socket = io("http://localhost:3000"); // connect to our server
+    },
+
+    // gets called after the view is rendered
+    mounted() {
+      this.socket.on("connected", data => {
+        console.log("client received a message: " + data);
+      });
+
+      this.socket.on("authenticated", () => {
+        this.$router.push({ name: "Poker" });
+      });
+    },
+
     computed: { },
     methods: {
       toggleForm: function() {
         this.showLogin = !this.showLogin;
+      },
+      navigateForm: function () {
+        event.preventDefault();
+        console.log(this.$router);
+        console.log(this.$refs.email.value);
+        console.log(this.$refs.password.value);
+        this.socket.emit('authenticate user', {email: this.$refs.email.value, pass: this.$refs.password.value});
+        // this.$router.push({ name: "Poker" });
       }
     }
   }
