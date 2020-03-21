@@ -27,6 +27,7 @@ export default {
 
 <style>
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
 
 #app {
   font-family: Roboto, sans-serif;

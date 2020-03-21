@@ -73,7 +73,7 @@
 </script>
 
 
-<style scoped>
+<style scoped>  
   [v-cloak] {
     display: none;
   }
