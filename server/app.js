@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
         // create a new user if the email provided is unique
         if (!UserUtils.emailExists(user)) {
             let newUser = new User();
-            newUser.CreateNewUser(user.username, user.email, user.password);
+            newUser.CreateNewUser(user.username, user.password, user.email);
             DataAccessLayer.AddUserToFile(newUser);
         } else {
             socket.emit("error text", "Email provided already exists. Please try again.");

@@ -48,6 +48,8 @@ exports.AddUserToFile = function(user) {
                      + user.createdDate.toISOString() + ";\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
+    // Add the User to the cache
+    cachedUsers.push(user);
 }
 
 /**
