@@ -89,37 +89,53 @@
       this.socket = io("http://localhost:3000"); // connect to our server
     },
 
-    // gets called after the view is rendered
+    // Add client side listeners
     mounted() {
       this.socket.on("connected", data => {
         console.log("client received a message: " + data);
       });
 
       this.socket.on("authenticated", () => {
-        this.$router.push({ name: "Poker" });
+        this.$router.push({ name: "Tables" });
       });
     },
 
     computed: { },
     methods: {
+      // a toggle to switch between login and sign up views
       toggleForm: function() {
         this.showLogin = !this.showLogin;
       },
+
+      // gets triggered when the login form is submitted
       loginAction: function (event) {
-        event.preventDefault();
+        event.preventDefault(); // prevent page reload
+        
+        // send a request to the server
         this.socket.emit('authenticate user', {
           email: this.loginData.email,
           password: this.loginData.password
         });
+
         this.loginData = {}; // reset the data
       },
+
+      // gets triggered when the sign up form is submitted
       signUpAction: function(event) {
-        event.preventDefault();
-        this.socket.emit('add-new-user', {
-          email: this.signUpData.email,
-          username: this.signUpData.username,
-          password: this.signUpData.password,
-        });
+        event.preventDefault(); // prevent page reload
+
+        // check if the password and confirm password fields match
+        if (this.signUpData.password === this.signUpData.confirm_password) {
+          // send a request to the server with user information
+          this.socket.emit('add-new-user', {
+            email: this.signUpData.email,
+            username: this.signUpData.username,
+            password: this.signUpData.password,
+          });
+        } else {
+          alert("Passwords don't match. Please try again.");
+        }
+        
         this.signUpData = {}; // reset the data
       }
     }
