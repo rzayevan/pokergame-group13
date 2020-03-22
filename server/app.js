@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('authenticate user', function(user) {
-        if (UserUtils.userMatched(user)) {
+        if (UserUtils.isExistingUser(user)) {
             socket.emit("authenticated");
         }
     });
