@@ -2,9 +2,9 @@
     <nav>
         <b-navbar toggleable="sm">
             <b-navbar-brand to="reports" class="mx-3">Poker Pals <span class="p-1">admin</span> </b-navbar-brand>
-            <b-navbar-nav class="ml-auto mx-3" >
-                <b-nav-item to="/" class="b-nav-text">
-                    <span class="material-icons"> logout </span>
+            <b-navbar-nav class="ml-auto mx-3">
+                <b-nav-item to="/">
+                    <b-nav-text class="material-icons"> logout </b-nav-text>
                 </b-nav-item>
             </b-navbar-nav>
         </b-navbar>
