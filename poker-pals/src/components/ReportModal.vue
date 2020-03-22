@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <b-modal centered size="xl" id="modal-1">
+  <div class="modal-container">
+    <b-modal centered size="xl" id="report-modal">
       <template v-slot:modal-header>
         <div>
           <h5 reportData="reportData">Report: {{ reportData.offendingUser }} &ndash; {{ reportData.offense }} </h5>
@@ -12,18 +12,13 @@
 
       </template>
 
-      <template v-slot:default>
-        <!-- <p>Modal Body</p> -->
-        <!-- <p hello='hello'>{{ hello }}</p> -->
-
+      <template v-slot:default class="modal-body">
         <p reportData="reportData">Submitted by {{ reportData.reportedBy }}</p>
 
         <p>Description</p>
         <p reportData="reportData">{{ reportData.description }}</p>
         <p>Chat Logs</p>
         <ul class="chat-display">
-          <!-- <li>Chat 1</li>
-          <li>Chat 2</li> -->
           <li reportData="reportData" class="row" v-for="chat in reportData.chatLogs" :key="chat.message">
             <p>{{ chat.username + ": "}}</p>
             <p class="space"></p>
@@ -55,19 +50,16 @@
 <script>
 export default {
     name: 'ReportModal',
-    props: ['hello', 'reportData'],
+    props: ['reportData'],
     methods: {
       cancel: function() {
-        this.$bvModal.hide('modal-1');
+        this.$bvModal.hide("report-modal");
       },
       dismiss: function() {
-        console.log("dismiss");
-        console.log(this.reportData);
-        this.$bvModal.hide('modal-1');
+        this.$bvModal.hide("report-modal");
       },
       ban: function() {
-        console.log("ban");
-        this.$bvModal.hide('modal-1');
+        this.$bvModal.hide("report-modal");
       }
     },
   };
@@ -75,32 +67,59 @@ export default {
 
 <style scoped>
 
-.close:hover {
-  background: white;
-}
+  body {
+    height: 100%;
+  }
 
-.space {
-  width: 0.3em;
-}
+  #report-modal {
+    height: 100%; 
+  }
 
-.chat-display {
-  border-width: 1px;
-  border-color: grey;
-  border-style: solid;
+  .modal-container {
+    height: 100%;
+  }
 
-  padding: 10px;
-}
+  #report-modal {
+    height: 100%;
+  }
 
+  .modal-body {
+    height: 100%;
+  }
 
-li {
-  list-style-type: none;
-  margin: 0;
-}
+  .modal-content {
+    height: 100%;
+  }
 
-.no-margin {
-  margin: 0
-}
-.modal-backdrop {
+  .modal-dialog.modal-xl.modal-dialog-centered {
+    height: 100%;
+  }
+
+  .close:hover {
+    background: white;
+  }
+
+  .space {
+    width: 0.3em;
+  }
+
+  .chat-display {
+    border-width: 1px;
+    border-color: grey;
+    border-style: solid;
+    padding: 10px;
+  }
+
+  li {
+    list-style-type: none;
+    margin: 0;
+  }
+
+  .no-margin {
+    margin: 0
+  }
+
+  .modal-backdrop {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -120,10 +139,6 @@ li {
     flex-direction: column; 
   }
 
-  div.modal.modal .modal-dialog {
-    width: 80% !important;
-  }
-
   .modal-header,
   .modal-footer {
     padding: 15px;
@@ -141,11 +156,6 @@ li {
     justify-content: flex-end;
   }
 
-  .modal-body {
-    position: relative;
-    padding: 20px 10px;
-  }
-
   .btn-close {
     border: none;
     font-size: 20px;
@@ -154,22 +164,5 @@ li {
     font-weight: bold;
     color: #4AAE9B;
     background: transparent;
-  }
-
-  .btn-green {
-    color: white;
-    background: #4AAE9B;
-    border: 1px solid #4AAE9B;
-    border-radius: 2px;
-  }
-
-  .modal-fade-enter,
-  .modal-fade-leave-active {
-    opacity: 0;
-  }
-
-  .modal-fade-enter-active,
-  .modal-fade-leave-active {
-    transition: opacity .5s ease
   }
 </style>

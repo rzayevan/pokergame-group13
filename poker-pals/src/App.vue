@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view></router-view>
-     <ReportGrid :data="gridData" :columns="gridColumns" />
+     <Reports :data="gridData" :columns="gridColumns" />
   </div>
 </template>
 
@@ -10,9 +10,8 @@
 // import Login from './components/Login.vue';
 // import Poker from './components/Poker.vue';
 // import Profile from './components/Profile.vue';
-// import Reports from './components/Reports.vue';
+ import Reports from './components/Reports.vue';
 //import Tables from './components/Tables.vue';
-import ReportGrid from './components/ReportGrid.vue'
 
 export default {
   name: 'App',
@@ -20,12 +19,13 @@ export default {
     // Login,
     // Poker,
     // Profile,
-    // Reports,
+     Reports,
     //Tables
-    ReportGrid
+    //ReportGrid
   },
   data() {
     return {
+     // Temporary hardcoded data for use on the Report screen.  Will be replaced when backend functionality is implemented.
      gridData: [
           { 
             "id": 0, 
@@ -58,7 +58,7 @@ export default {
               {
                 username: "JohnSun333",
                 message: "No u. uwu"
-              },
+              }
             ]
           },
           { "id": 1, "Offending User": "Ligma420", "Submitted": "2/27/2020", "Offense": "Racism", "Reported By": "KingSimp"},
