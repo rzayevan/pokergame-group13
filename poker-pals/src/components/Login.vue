@@ -95,8 +95,14 @@
         console.log("client received a message: " + data);
       });
 
+      // Navigate to tables page if authentication was successful
       this.socket.on("authenticated", () => {
         this.$router.push({ name: "Tables" });
+      });
+
+      // display error message sent from server
+      this.socket.on("error text", errorText => {
+        alert(errorText);
       });
     },
 

@@ -22,6 +22,8 @@ io.on('connection', (socket) => {
             let newUser = new User();
             newUser.CreateNewUser(user.username, user.email, user.password);
             DataAccessLayer.AddUserToFile(newUser);
+        } else {
+            socket.emit("error text", "Email provided already exists. Please try again.");
         }
     });
 
@@ -29,6 +31,8 @@ io.on('connection', (socket) => {
         // authenticate the user if the credentials provided exist in the stored data
         if (UserUtils.credentialsMatch(user)) {
             socket.emit("authenticated", user);
+        } else {
+            socket.emit("error text", "Authentication failed. Please try again.");
         }
     });
 });

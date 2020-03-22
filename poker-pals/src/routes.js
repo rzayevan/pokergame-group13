@@ -6,7 +6,7 @@ import tablesComponent from './components/Tables.vue';
 import exampleComponent from './components/HelloWorld.vue';
 
 export default [
-    {path: '/', component: loginComponent},//redirect: { name: 'Login'}},
+    {path: '/', redirect: { name: 'Login'}},
     {path: '/login', name: 'Login', component: loginComponent},
     {path: '/poker', name: 'Poker', component: pokerComponent},
     {path: '/profile', name: 'Profile', component: profileComponent},
