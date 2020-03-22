@@ -8,10 +8,10 @@
                 <b-navbar-nav class="ml-auto mx-3">
                     <b-nav-item to="profile" class="mx-2">
                         <img class="mr-2 img-fluid" src="../assets/chip.png" alt="Poker Chip"/>
-                        <span class="b-nav-text">1,200,450</span>
+                        <span class="b-nav-text">{{userData.chips}}</span>
                     </b-nav-item>
                     <b-nav-item to="profile">
-                        <img class="img-fluid" src="../assets/player_icon_1.png" alt="User Profile Image"/>
+                        <img class="img-fluid" v-bind:src="userData.playerIcon" alt="User Profile Image"/>
                     </b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
@@ -45,9 +45,16 @@
     }
 
 </style>
-
 <script>
     export default {
         name: "UserNavbar.vue",
+        data: function() {
+            return {
+                userData : {
+                    chips: 1200450,
+                    playerIcon: require("../assets/player_icon_1.png")
+                }
+            }
+        },
     };
 </script>
