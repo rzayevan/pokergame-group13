@@ -101,8 +101,8 @@
       });
 
       // display error message sent from server
-      this.socket.on("error text", errorText => {
-        alert(errorText);
+      this.socket.on("alert text", alertText => {
+        alert(alertText);
       });
     },
 
