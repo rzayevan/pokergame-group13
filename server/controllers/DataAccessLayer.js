@@ -17,18 +17,21 @@ exports.ReadUsersFile = function() {
     while (line = liner.next()) {
         // Convert the buffer recieved to an ascii string
         let lineString = line.toString('ascii');
-        // Split the string by a semicolon
-        let splitLine = lineString.split(';');
+        // Split the string by a comma
+        let splitLine = lineString.split(',');
         // Create a user object based upon the line read
         let user = new User();
 
-        user.username = splitLine[0];
-        user.password = splitLine[1];
-        user.email = splitLine[2];
-        user.chips = parseInt(splitLine[3]);
-        user.hands = parseInt(splitLine[4]);
-        user.lastUpdatedDate = new Date(splitLine[5]);
-        user.createdDate = new Date(splitLine[6]);
+        user.id = splitLine[0];
+        user.username = splitLine[1];
+        user.password = splitLine[2];
+        user.email = splitLine[3];
+        user.chips = parseInt(splitLine[4]);
+        user.handsWon = parseInt(splitLine[5]);
+        user.handsPlayed = parseInt(splitLine[6]);
+        user.handsLost = user.handsPlayed - user.handsWon;
+        user.lastUpdatedDate = new Date(splitLine[7]);
+        user.createdDate = new Date(splitLine[8]);
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -42,10 +45,10 @@ exports.ReadUsersFile = function() {
  */
 exports.AddUserToFile = function(user) {
     // Create a string to store in the text file as a user
-    let userString = user.username + ";" + user.password + ";" + 
-                     user.email + ";" + user.chips + ";" + 
-                     user.hands + ";" + user.lastUpdatedDate.toISOString() + ";" 
-                     + user.createdDate.toISOString() + ";\n";
+    let userString = user.id + "," + user.username + "," + user.password + "," + 
+                     user.email + "," + user.chips + "," + 
+                     user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," 
+                     + user.createdDate.toISOString() + ",\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
 }
@@ -56,24 +59,24 @@ exports.AddUserToFile = function(user) {
  */
 exports.UpdateUser = function(user) {
     // Find the index in the cache for the original User object
-    let index = cachedUsers.findIndex(x => x.username === user.username && x.email === user.email);
+    let index = cachedUsers.findIndex(x => x.id === user.id);
     // Get a pointer to the original User object
     let originalUser = cachedUsers[index];
 
     // Create a string that will be searched for within the text file
-    let originalUserString = originalUser.username + ";" + originalUser.password + ";" + 
-                             originalUser.email + ";" + originalUser.chips + ";" + 
-                             originalUser.hands + ";" + originalUser.lastUpdatedDate.toISOString() + ";" 
-                             + originalUser.createdDate.toISOString() + ";";
+    let originalUserString = originalUser.id + "," + originalUser.username + "," + originalUser.password + "," + 
+                             originalUser.email + "," + originalUser.chips + "," + 
+                             originalUser.handsWon + "," + originalUser.handsPlayed + "," + originalUser.lastUpdatedDate.toISOString() + "," 
+                             + originalUser.createdDate.toISOString() + ",";
 
     // Create a new Date object to set the lastUpdatedDate's to
     let newLastUpdatedDate = new Date();
 
     // Create a new string to update the file to
-    let newUserString = user.username + ";" + user.password + ";" + 
-                        user.email + ";" + user.chips + ";" + 
-                        user.hands + ";" + newLastUpdatedDate.toISOString() + ";" 
-                        + user.createdDate.toISOString() + ";";
+    let newUserString = user.id + "," + user.username + "," + user.password + "," + 
+                        user.email + "," + user.chips + "," + 
+                        user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," 
+                        + user.createdDate.toISOString() + ",";
 
     // Create a regexp to find the correct contents to change
     const regex = new RegExp(originalUserString, "g");
@@ -91,6 +94,7 @@ exports.UpdateUser = function(user) {
             // If no error occurred and the result states that the file was successfully changed
             if (result.hasChanged === true) {
                 // Update the cache
+                user.handsLost = user.handsPlayed - user.handsWon;
                 cachedUsers[index] = user;
                 cachedUsers[index].lastUpdatedDate = newLastUpdatedDate;
             }
