@@ -18,12 +18,12 @@
         <form class="text-left" v-on:submit="loginAction" v-if="showLogin">
           <div class="form-group">
             <label for="email">Email</label>
-            <input class="form-control" type="email" id="email" v-model="loginData.loginEmail" required autocomplete="username"/>
+            <input class="form-control" type="email" id="loginEmail" v-model="loginData.email" required/>
           </div>
 
           <div class="form-group">
             <label for="password1">Password</label>
-            <input class="form-control" type="password" id="password1" v-model="loginData.loginPassword" required autocomplete="current-password"/>
+            <input class="form-control" type="password" id="loginPassword" v-model="loginData.password" required/>
           </div>
 
           <div class="form-group row justify-content-between" v-if="showLogin">
@@ -36,22 +36,22 @@
         <form class="text-left" v-on:submit="signUpAction" v-if="!showLogin">
           <div class="form-group">
             <label for="email">Email</label>
-            <input class="form-control" type="email" id="email" v-model="signUpData.signUpEmail" required autocomplete="username"/>
+            <input class="form-control" type="email" id="signUpEmail" v-model="signUpData.email" required/>
           </div>
 
           <div class="form-group">
             <label  for="username">Username</label>
-            <input class="form-control" type="text" id="username" v-model="signUpData.signUpUsername" required autocomplete="username"/>
+            <input class="form-control" type="text" id="signUpUsername" v-model="signUpData.username" required>
           </div>
 
           <div class="form-group">
             <label for="password1">Password</label>
-            <input class="form-control" type="password" id="password1" v-model="signUpData.signUpPassword" required autocomplete="current-password"/>
+            <input class="form-control" type="password" id="signUpPassword" v-model="signUpData.password" required/>
           </div>
 
           <div class="form-group">
             <label for="password2">Confirm Password</label>
-            <input class="form-control" type="password" id="password2" v-model="signUpData.signUpPassword2" required autocomplete="current-password"/>
+            <input class="form-control" type="password" id="signUpPassword2" v-model="signUpData.confirm_password" required/>
           </div>
 
           <div class="form-group row justify-content-between">
@@ -73,14 +73,14 @@
         socket: {},
         showLogin: true,
         loginData: {
-          loginEmail: '',
-          loginPassword: ''
+          email: '',
+          password: ''
         },
         signUpData: {
-          signUpEmail: '',
-          signUpUsername: '',
-          signUpPassword: '',
-          signUpPassword2: ''
+          email: '',
+          username: '',
+          password: '',
+          confirm_password: ''
         }
       }
     },
@@ -108,18 +108,17 @@
       loginAction: function (event) {
         event.preventDefault();
         this.socket.emit('authenticate user', {
-          email: this.loginData.loginEmail,
-          password: this.loginData.loginPassword
+          email: this.loginData.email,
+          password: this.loginData.password
         });
         this.loginData = {}; // reset the data
       },
       signUpAction: function(event) {
         event.preventDefault();
         this.socket.emit('add-new-user', {
-          email: this.signUpData.signUpEmail,
-          username: this.signUpData.signUpUsername,
-          password: this.signUpData.signUpPassword,
-          confirm_password: this.signUpData.signUpPassword2,
+          email: this.signUpData.email,
+          username: this.signUpData.username,
+          password: this.signUpData.password,
         });
         this.signUpData = {}; // reset the data
       }

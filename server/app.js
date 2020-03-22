@@ -16,10 +16,9 @@ io.on('connection', (socket) => {
     console.log("Client connected.");          
     socket.emit("connected", "Hello from server");
 
-    socket.on('add-new-user', function(msg) {
-        let splitUserString = msg.split(';');
+    socket.on('add-new-user', function(user) {
         let newUser = new User();
-        newUser.CreateNewUser(splitUserString[0], splitUserString[1], splitUserString[2]);
+        newUser.CreateNewUser(user.username, user.email, user.password);
         DataAccessLayer.AddUserToFile(newUser);
     });
 
