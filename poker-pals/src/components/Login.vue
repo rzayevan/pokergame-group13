@@ -17,17 +17,17 @@
         <!-- Login Form -->
         <form class="text-left" v-on:submit="loginAction" v-if="showLogin">
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="loginEmail">Email</label>
             <input class="form-control" type="email" id="loginEmail" v-model="loginData.email" required/>
           </div>
 
           <div class="form-group">
-            <label for="password1">Password</label>
+            <label for="loginPassword">Password</label>
             <input class="form-control" type="password" id="loginPassword" v-model="loginData.password" required/>
           </div>
 
           <div class="form-group row justify-content-between" v-if="showLogin">
-            <a class="col-4" href="#" @click="toggleForm()">Create account</a>
+            <a class="col-4" @click="toggleForm()">Create account</a>
             <input class="col-4 btn" type="submit"  value="Sign In">
           </div>
         </form>
@@ -35,27 +35,27 @@
         <!-- Register Form -->
         <form class="text-left" v-on:submit="signUpAction" v-if="!showLogin">
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="signUpEmail">Email</label>
             <input class="form-control" type="email" id="signUpEmail" v-model="signUpData.email" required/>
           </div>
 
           <div class="form-group">
-            <label  for="username">Username</label>
+            <label  for="signUpUsername">Username</label>
             <input class="form-control" type="text" id="signUpUsername" v-model="signUpData.username" required>
           </div>
 
           <div class="form-group">
-            <label for="password1">Password</label>
+            <label for="signUpPassword">Password</label>
             <input class="form-control" type="password" id="signUpPassword" v-model="signUpData.password" required/>
           </div>
 
           <div class="form-group">
-            <label for="password2">Confirm Password</label>
-            <input class="form-control" type="password" id="signUpPassword2" v-model="signUpData.confirm_password" required/>
+            <label for="signUpConfirmPassword">Confirm Password</label>
+            <input class="form-control" type="password" id="signUpConfirmPassword" v-model="signUpData.confirm_password" required/>
           </div>
 
           <div class="form-group row justify-content-between">
-            <a class="col-4" href="#" @click="toggleForm()">Sign in</a>
+            <a class="col-4" @click="toggleForm()">Sign in</a>
             <input class="col-4 btn" type="submit" value="Sign Up">
           </div>
         </form>
