@@ -13,8 +13,8 @@
         <img alt="Poker Pals logo" src="../assets/logo.svg">
       </div>
 
-      <!-- Login Form -->
       <div class="col-md-6">
+        <!-- Login Form -->
         <form class="text-left" v-on:submit="loginAction" v-if="showLogin">
           <div class="form-group">
             <label for="email">Email</label>
