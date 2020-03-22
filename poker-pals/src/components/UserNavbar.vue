@@ -1,78 +1,54 @@
 <template>
-    <div id="navigation-bar">
-        <div id="app-logo">
-            <p id="app-logo-text">Poker Pals</p>
-        </div> 
-        <div id="user-info">
-            <div id="chip-info">
-                <img id="chip-img" src="../assets/chip.png"/>
-                <p id="chip-amount">1,200,450</p>
-            </div>
-            <div id="user-logo">
-                <img id="user-img" src="../assets/player_icon_1.png"/>
-            </div>
-        </div>
-    </div>
+    <nav>
+        <b-navbar toggleable="sm">
+            <b-navbar-brand href="#" class="mx-3">Poker Pals</b-navbar-brand>
+            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+            <b-collapse id="nav-collapse" is-nav>
+                <!-- Right aligned nav items -->
+                <b-navbar-nav class="ml-auto mx-3">
+                    <b-nav-item to="profile" class="mx-2">
+                        <img class="mr-2 img-fluid" src="../assets/chip.png" alt="Poker Chip"/>
+                        <span class="b-nav-text">1,200,450</span>
+                    </b-nav-item>
+                    <b-nav-item to="profile">
+                        <img class="img-fluid" src="../assets/player_icon_1.png" alt="User Profile Image"/>
+                    </b-nav-item>
+                </b-navbar-nav>
+            </b-collapse>
+        </b-navbar>
+    </nav>
 </template>
 
 <style scoped>
     @import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
-    #navigation-bar {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        height: 8%;
+    nav {
+        color: white;
         background-color: #01B0D9;
+        padding: 0;
     }
-    #app-logo {
-        width: 100%;
-        height: 100%;
-        float: left;
-    }
-    #app-logo-text {
-        font-family: 'Pacifico', cursive;
+
+    .navbar-brand {
+        font-family: 'Pacifico', sans-serif;
         color: white;
         font-size: 28px;
-        float: left;
-        padding-top: 5px;
-        padding-left: 30px;
-    }
-    #user-info {
-        display: flex;
-        flex-direction: row;
-        padding-top: 4px;
-        padding-right: 20px;
     }
 
-    #chip-info {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding-right: 50px;
+    .navbar-collapse {
+        background-color: #01B0D9;
     }
 
-    #chip-amount {
-        font-family: 'Roboto';
+    .b-nav-text {
         color: white;
-        font-size: 22px;
-        font-style: italic;
     }
 
-    #chip-img {
-        width: 30px;
-        height: 30px;
+    img {
+        height: 40px;
     }
 
-    #user-img {
-        margin-top: 5px;
-        margin-bottom: 5px;
-        width: 45px;
-        height: 45px;
-    }
 </style>
 
 <script>
-export default {
-    name: "UserNavbar",
-};
+    export default {
+        name: "UserNavbar.vue",
+    };
 </script>
