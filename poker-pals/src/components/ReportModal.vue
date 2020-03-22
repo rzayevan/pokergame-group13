@@ -3,9 +3,12 @@
     <b-modal centered size="xl" id="modal-1">
       <template v-slot:modal-header>
         <div>
-          <h5 reportData="reportData">Report: {{ reportData.offendingUser }}</h5>
+          <h5 reportData="reportData">Report: {{ reportData.offendingUser }} &ndash; {{ reportData.offense }} </h5>
           <p class="no-margin" reportData="reportData">{{ reportData.dateSubmitted }}</p>
         </div>
+        <b-button class="close" @click="cancel()">
+          &times;
+        </b-button>
 
       </template>
 
@@ -16,10 +19,23 @@
         <p reportData="reportData">Submitted by {{ reportData.reportedBy }}</p>
 
         <p>Description</p>
+        <p reportData="reportData">{{ reportData.description }}</p>
         <p>Chat Logs</p>
+        <ul class="chat-display">
+          <!-- <li>Chat 1</li>
+          <li>Chat 2</li> -->
+          <li reportData="reportData" class="row" v-for="chat in reportData.chatLogs" :key="chat.message">
+            <p>{{ chat.username + ": "}}</p>
+            <p class="space"></p>
+            <p>{{ chat.message }}</p>
+          </li>
+        </ul>
       </template>
       
+
+
       <template v-slot:modal-footer>
+
         <b-button variant="primary" @click="dismiss()">
           Dismiss
         </b-button>
@@ -41,8 +57,12 @@ export default {
     name: 'ReportModal',
     props: ['hello', 'reportData'],
     methods: {
+      cancel: function() {
+        this.$bvModal.hide('modal-1');
+      },
       dismiss: function() {
         console.log("dismiss");
+        console.log(this.reportData);
         this.$bvModal.hide('modal-1');
       },
       ban: function() {
@@ -54,6 +74,28 @@ export default {
 </script>
 
 <style scoped>
+
+.close:hover {
+  background: white;
+}
+
+.space {
+  width: 0.3em;
+}
+
+.chat-display {
+  border-width: 1px;
+  border-color: grey;
+  border-style: solid;
+
+  padding: 10px;
+}
+
+
+li {
+  list-style-type: none;
+  margin: 0;
+}
 
 .no-margin {
   margin: 0

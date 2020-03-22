@@ -57,7 +57,9 @@ import ReportModal from './ReportModal.vue';
         offendingUser: "",
         dateSubmitted: "",
         offense: "", 
-        reportedBy: ""
+        reportedBy: "",
+        description: "",
+        chatLogs: []
       }
     }
   },
@@ -67,10 +69,11 @@ import ReportModal from './ReportModal.vue';
       let filterKey = this.searchQuery && this.searchQuery.toLowerCase();
       let order = this.sortOrders[sortKey] || 1;
       let data = this.data;
+      let columns = this.columns;
 
       if (filterKey) {
-        data = data.filter(function (row) {
-          return Object.keys(row).some(function (key) {
+        data = data.filter(function (row) {  
+          return columns.some(function (key) {
             return String(row[key]).toLowerCase().indexOf(filterKey) > -1;
           })
         })
@@ -107,6 +110,8 @@ import ReportModal from './ReportModal.vue';
         this.reportData.dateSubmitted = entry["Submitted"]
         this.reportData.offense = entry["Offense"];
         this.reportData.reportedBy = entry["Reported By"];
+        this.reportData.description = entry["Description"];
+        this.reportData.chatLogs = entry["chatLogs"];
         this.showModal();
     },
   },
@@ -121,6 +126,10 @@ import ReportModal from './ReportModal.vue';
 </script>
 
 <style scoped>
+form {
+  padding-bottom: 15px;
+}
+
 body{
   font-family: Helvetica Neue, Arial, sans-serif;
   font-size: 14px;
@@ -130,7 +139,6 @@ body{
 table {
   border-spacing: 0;
   width: 100%;
-
 }
 
 th {
@@ -144,7 +152,7 @@ th {
 }
 
 td {
-  border-bottom: 1px #008f68 solid;
+  border-bottom: 1px #0097b8 solid;
 }
 
 th, td {
@@ -176,13 +184,13 @@ tr:hover {
 .arrow.asc {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-bottom: 4px solid #FAE042;
+  border-bottom: 4px solid white;
 }
 
 .arrow.dsc {
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
-  border-top: 4px solid #FAE042;
+  border-top: 4px solid white;
 }
 
 #grid-template {
