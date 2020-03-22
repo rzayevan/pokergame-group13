@@ -4,6 +4,7 @@ import profileComponent from './components/Profile.vue';
 import reportsComponent from './components/Reports.vue';
 import tablesComponent from './components/Tables.vue';
 import exampleComponent from './components/HelloWorld.vue';
+import navigationBar from './components/UserNavbar.vue';
 
 export default [
     {path: '/', redirect: { name: 'Login'}},
