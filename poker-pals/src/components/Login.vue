@@ -27,7 +27,7 @@
           </div>
 
           <div class="form-group row justify-content-between" v-if="showLogin">
-            <a class="col-4" @click="toggleForm()">Create account</a>
+            <a class="col-4 button-text" @click="toggleForm()">Create account</a>
             <input class="col-4 btn" type="submit"  value="Sign In">
           </div>
         </form>
@@ -55,7 +55,7 @@
           </div>
 
           <div class="form-group row justify-content-between">
-            <a class="col-4" @click="toggleForm()">Sign in</a>
+            <a class="col-4 button-text" @click="toggleForm()">Sign in</a>
             <input class="col-4 btn" type="submit" value="Sign Up">
           </div>
         </form>
@@ -170,5 +170,9 @@
   .btn {
     background-color: #01B0D9;
     color: white;
+  }
+
+  .button-text {
+    color: #01B0D9;
   }
 </style>

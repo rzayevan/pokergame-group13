@@ -98,6 +98,12 @@ exports.UpdateUser = function(user) {
         .catch(err => {
             // Log the error if the text file is not successfully updated
             console.log(err);
-        });
-        
+        });    
+}
+
+/**
+ * Retrieves cached users
+ */
+exports.GetCachedUsers = function() {
+    return cachedUsers;
 }
