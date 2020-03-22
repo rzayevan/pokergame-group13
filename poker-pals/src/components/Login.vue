@@ -88,10 +88,10 @@
       },
       navigateForm: function () {
         event.preventDefault();
-        console.log(this.$router);
+        // console.log(this.$router);
         console.log(this.$refs.email.value);
         console.log(this.$refs.password.value);
-        this.socket.emit('authenticate user', {email: this.$refs.email.value, pass: this.$refs.password.value});
+        this.socket.emit('authenticate user', {email: this.$refs.email.value, password: this.$refs.password.value});
         // this.$router.push({ name: "Poker" });
       }
     }

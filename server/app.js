@@ -4,7 +4,8 @@ let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let User = require("./model/User.js");
 
-const DataAccessLayer = require('./controllers/DataAccessLayer.js')
+const DataAccessLayer = require('./controllers/DataAccessLayer.js');
+const UserUtils = require('./utilities/UserUtils.js');
 
 http.listen(3000, () => {
     let users = DataAccessLayer.ReadUsersFile();
@@ -20,5 +21,11 @@ io.on('connection', (socket) => {
         let newUser = new User();
         newUser.CreateNewUser(splitUserString[0], splitUserString[1], splitUserString[2]);
         DataAccessLayer.AddUserToFile(newUser);
+    });
+
+    socket.on('authenticate user', function(user) {
+        if (UserUtils.userMatched(user)) {
+            socket.emit("authenticated");
+        }
     });
 });
