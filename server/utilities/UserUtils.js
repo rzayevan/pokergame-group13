@@ -1,9 +1,9 @@
 const DataAccessLayer = require('../controllers/DataAccessLayer.js')
 
 /**
- * Checks if the user
+ * Checks if the provided credentials match the ones stored in the application
  */
-exports.isExistingUser = function(user) {
+exports.credentialsMatch = function(user) {
     let users = DataAccessLayer.ReadUsersFile();
     let matchFound = false;
 
@@ -14,4 +14,20 @@ exports.isExistingUser = function(user) {
     });
 
     return matchFound;
+}
+
+/**
+ * Checks whether or not the provided email is unique
+ */
+exports.emailExists = function(user) {
+    let users = DataAccessLayer.ReadUsersFile();
+    let emailExists = false;
+
+    users.forEach(existingUser => {
+        if (user.email.toLowerCase() === existingUser.email.toLowerCase()) {
+            emailExists = true;
+        }
+    });
+
+    return emailExists;
 }

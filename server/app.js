@@ -17,13 +17,17 @@ io.on('connection', (socket) => {
     socket.emit("connected", "Hello from server");
 
     socket.on('add-new-user', function(user) {
-        let newUser = new User();
-        newUser.CreateNewUser(user.username, user.email, user.password);
-        DataAccessLayer.AddUserToFile(newUser);
+        // create a new user is the email provided is unique
+        if (!UserUtils.emailExists(user)) {
+            let newUser = new User();
+            newUser.CreateNewUser(user.username, user.email, user.password);
+            DataAccessLayer.AddUserToFile(newUser);
+        }
     });
 
     socket.on('authenticate user', function(user) {
-        if (UserUtils.isExistingUser(user)) {
+        // authenticate the user if the credentials provided exist in the stored data
+        if (UserUtils.credentialsMatch(user)) {
             socket.emit("authenticated", user);
         }
     });
