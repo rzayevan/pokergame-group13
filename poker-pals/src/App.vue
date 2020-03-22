@@ -26,6 +26,8 @@ export default {
 </script>
 
 <style>
+  @import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
+  @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
   @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
   html, body, #app {
     width: 100%;

@@ -12,8 +12,6 @@
 </template>
 
 <style scoped>
-    @import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
-    @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
     nav {
         color: white;
         background-color: #01B0D9;

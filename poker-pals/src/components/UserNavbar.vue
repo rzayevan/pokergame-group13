@@ -20,7 +20,6 @@
 </template>
 
 <style scoped>
-    @import url('https://fonts.googleapis.com/css?family=Pacifico&display=swap');
     nav {
         color: white;
         background-color: #01B0D9;
