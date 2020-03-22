@@ -13,35 +13,48 @@
         <img alt="Poker Pals logo" src="../assets/logo.svg">
       </div>
 
-      <!--  Login/Register Form -->
+      <!-- Login Form -->
       <div class="col-md-6">
-        <form class="text-left" v-on:submit="navigateForm">
+        <form class="text-left" v-on:submit="loginAction" v-if="showLogin">
           <div class="form-group">
             <label for="email">Email</label>
-            <input class="form-control" type="email" id="email" ref="email" v-model="email" required autocomplete="username"/>
-          </div>
-
-          <div class="form-group" v-if="!showLogin">
-            <label  for="username">Username</label>
-            <input class="form-control" type="text" id="username" v-model="username" required autocomplete="username"/>
+            <input class="form-control" type="email" id="email" v-model="loginData.loginEmail" required autocomplete="username"/>
           </div>
 
           <div class="form-group">
             <label for="password1">Password</label>
-            <input class="form-control" type="password" id="password1" ref="password" v-model="password" required autocomplete="current-password"/>
-          </div>
-
-          <div class="form-group" v-if="!showLogin">
-            <label for="password2">Confirm Password</label>
-            <input class="form-control" type="password" id="password2" v-model="password2" required autocomplete="current-password"/>
+            <input class="form-control" type="password" id="password1" v-model="loginData.loginPassword" required autocomplete="current-password"/>
           </div>
 
           <div class="form-group row justify-content-between" v-if="showLogin">
             <a class="col-4" href="#" @click="toggleForm()">Create account</a>
             <input class="col-4 btn" type="submit"  value="Sign In">
           </div>
+        </form>
 
-          <div class="form-group row justify-content-between" v-if="!showLogin">
+        <!-- Register Form -->
+        <form class="text-left" v-on:submit="signUpAction" v-if="!showLogin">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input class="form-control" type="email" id="email" v-model="signUpData.signUpEmail" required autocomplete="username"/>
+          </div>
+
+          <div class="form-group">
+            <label  for="username">Username</label>
+            <input class="form-control" type="text" id="username" v-model="signUpData.signUpUsername" required autocomplete="username"/>
+          </div>
+
+          <div class="form-group">
+            <label for="password1">Password</label>
+            <input class="form-control" type="password" id="password1" v-model="signUpData.signUpPassword" required autocomplete="current-password"/>
+          </div>
+
+          <div class="form-group">
+            <label for="password2">Confirm Password</label>
+            <input class="form-control" type="password" id="password2" v-model="signUpData.signUpPassword2" required autocomplete="current-password"/>
+          </div>
+
+          <div class="form-group row justify-content-between">
             <a class="col-4" href="#" @click="toggleForm()">Sign in</a>
             <input class="col-4 btn" type="submit" value="Sign Up">
           </div>
@@ -58,11 +71,17 @@
     data: function() {
       return {
         socket: {},
-        email: '',
-        username: '',
-        password: '',
-        password2: '',
         showLogin: true,
+        loginData: {
+          loginEmail: '',
+          loginPassword: ''
+        },
+        signUpData: {
+          signUpEmail: '',
+          signUpUsername: '',
+          signUpPassword: '',
+          signUpPassword2: ''
+        }
       }
     },
      // gets called before the view is rendered
@@ -86,13 +105,23 @@
       toggleForm: function() {
         this.showLogin = !this.showLogin;
       },
-      navigateForm: function () {
+      loginAction: function (event) {
         event.preventDefault();
-        // console.log(this.$router);
-        console.log(this.$refs.email.value);
-        console.log(this.$refs.password.value);
-        this.socket.emit('authenticate user', {email: this.$refs.email.value, password: this.$refs.password.value});
-        // this.$router.push({ name: "Poker" });
+        this.socket.emit('authenticate user', {
+          email: this.loginData.loginEmail,
+          password: this.loginData.loginPassword
+        });
+        this.loginData = {}; // reset the data
+      },
+      signUpAction: function(event) {
+        event.preventDefault();
+        this.socket.emit('add-new-user', {
+          email: this.signUpData.signUpEmail,
+          username: this.signUpData.signUpUsername,
+          password: this.signUpData.signUpPassword,
+          confirm_password: this.signUpData.signUpPassword2,
+        });
+        this.signUpData = {}; // reset the data
       }
     }
   }
