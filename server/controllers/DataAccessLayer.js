@@ -17,6 +17,13 @@ exports.getCachedReports = function() {
 }
 
 /**
+ * Retrieves cached users
+ */
+exports.GetCachedUsers = function() {
+    return cachedUsers;
+}
+
+/**
  * Returns the array of user objects that are stored in the local text file
  */
 exports.ReadUsersFile = function() {
@@ -62,6 +69,8 @@ exports.AddUserToFile = function(user) {
                      + user.createdDate.toISOString() + ",\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
+    // Add the User to the cache
+    cachedUsers.push(user);
 }
 
 /**
@@ -251,4 +260,5 @@ GetChatLogString = function(chatMessages) {
         chatLogString += chatMessageString;
     }
     return chatLogString;
+        });    
 }
