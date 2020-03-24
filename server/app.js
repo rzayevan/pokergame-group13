@@ -9,9 +9,7 @@ const UserUtils = require('./utilities/UserUtils.js');
 
 http.listen(3000, () => {
     let users = DataAccessLayer.ReadUsersFile();
-    console.log(users);
     let reports = DataAccessLayer.ReadReportsFile();
-    console.log(reports);
     console.log('Listening on port *: 3000');
 });
 
