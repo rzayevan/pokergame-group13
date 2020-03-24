@@ -34,7 +34,8 @@
 </template>
 
 <script>
-import ReportModal from './ReportModal.vue';
+  import ReportModal from './ReportModal.vue';
+  import io from "socket.io-client";
 
   export default {
   name: "grid",
@@ -67,6 +68,7 @@ import ReportModal from './ReportModal.vue';
       let filterKey = this.searchQuery && this.searchQuery.toLowerCase();
       let order = this.sortOrders[sortKey] || 1;
       let data = this.data;
+     // let data = this.temp;
       let columns = this.columns;
 
       if (filterKey) {
@@ -117,6 +119,27 @@ import ReportModal from './ReportModal.vue';
       sortOrders[key] = 1;
     })
     this.sortOrders = sortOrders;
+
+
+    this.socket = io("http://localhost:3000");
+    this.socket.on("connected", data => {
+        console.log("client received a message: " + data);
+    });
+
+
+    this.socket.emit('request reports');
+
+    this.socket.on('receive reports', data => {
+      console.log("ehlp")
+      console.log(data);
+      this.temp = data.reports;
+    });
+
+    // this.socket.on("get reports", data => {
+    //   console.log("get reports: " + data);
+    // })
+
+   // console.log(this);
   }
 }
 </script>

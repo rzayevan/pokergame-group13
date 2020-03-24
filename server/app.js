@@ -6,6 +6,7 @@ let User = require("./model/User.js");
 
 const DataAccessLayer = require('./controllers/DataAccessLayer.js');
 const UserUtils = require('./utilities/UserUtils.js');
+const ReportUtils = require('./utilities/ReportUtils.js');
 
 http.listen(3000, () => {
     let users = DataAccessLayer.ReadUsersFile();
@@ -37,4 +38,13 @@ io.on('connection', (socket) => {
             socket.emit("alert text", "Authentication failed. Please try again.");
         }
     });
+
+    socket.on('request reports', function() {
+        console.log("request reports");
+        let reportData = {
+            reports: ReportUtils.getReports(),
+            gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
+        };
+        socket.emit("receive reports", reportData);
+    })
 });
