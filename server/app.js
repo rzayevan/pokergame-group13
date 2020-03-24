@@ -4,7 +4,8 @@ let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let User = require("./model/User.js");
 
-const DataAccessLayer = require('./controllers/DataAccessLayer.js')
+const DataAccessLayer = require('./controllers/DataAccessLayer.js');
+const UserUtils = require('./utilities/UserUtils.js');
 
 http.listen(3000, () => {
     let users = DataAccessLayer.ReadUsersFile();
@@ -15,10 +16,24 @@ io.on('connection', (socket) => {
     console.log("Client connected.");          
     socket.emit("connected", "Hello from server");
 
-    socket.on('add-new-user', function(msg) {
-        let splitUserString = msg.split(';');
-        let newUser = new User();
-        newUser.CreateNewUser(splitUserString[0], splitUserString[1], splitUserString[2]);
-        DataAccessLayer.AddUserToFile(newUser);
+    socket.on('add-new-user', function(user) {
+        // create a new user if the email provided is unique
+        if (!UserUtils.emailExists(user)) {
+            let newUser = new User();
+            newUser.CreateNewUser(user.username, user.password, user.email);
+            DataAccessLayer.AddUserToFile(newUser);
+            socket.emit("alert text", "Successfully signed up!");
+        } else {
+            socket.emit("alert text", "Email provided already exists. Please try again.");
+        }
+    });
+
+    socket.on('authenticate user', function(user) {
+        // authenticate the user if the credentials provided exist in the stored data
+        if (UserUtils.credentialsMatch(user)) {
+            socket.emit("authenticated", user);
+        } else {
+            socket.emit("alert text", "Authentication failed. Please try again.");
+        }
     });
 });

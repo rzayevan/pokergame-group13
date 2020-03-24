@@ -51,6 +51,8 @@ exports.AddUserToFile = function(user) {
                      + user.createdDate.toISOString() + ",\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
+    // Add the User to the cache
+    cachedUsers.push(user);
 }
 
 /**
@@ -102,6 +104,12 @@ exports.UpdateUser = function(user) {
         .catch(err => {
             // Log the error if the text file is not successfully updated
             console.log(err);
-        });
-        
+        });    
+}
+
+/**
+ * Retrieves cached users
+ */
+exports.GetCachedUsers = function() {
+    return cachedUsers;
 }
