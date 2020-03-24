@@ -209,12 +209,12 @@ exports.UpdateReport = function(report) {
     // Create a regex that will be searched for within the text file
     let originalReportStringRegex = ".*" + originalReport.id + ".*";
 
-    // Create a new Date object to set the lastUpdatedDate's to
+    // Create a new Date object to set the lastUpdatedDate's of Report objects to.
     let newLastUpdatedDate = new Date();
 
     let newChatLogString = GetChatLogString(report.chatLogs);
 
-    // Create a new string to update the file to
+    // Create a new string to update the file to.
     let newReportString = report.id + "|||" + report.offendingUserId + "|||" + 
                         report.submittingUserId + "|||" + report.reportType + "|||" + 
                         report.reportComment + "|||" + report.dateSubmitted.toISOString() + "|||" + 
