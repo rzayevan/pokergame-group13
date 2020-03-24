@@ -260,5 +260,4 @@ GetChatLogString = function(chatMessages) {
         chatLogString += chatMessageString;
     }
     return chatLogString;
-        });    
 }
