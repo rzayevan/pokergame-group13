@@ -247,7 +247,7 @@ exports.UpdateReport = function(report) {
 }
 
 /**
- * Returns a string based on the supplied array of ChatMessage's
+ * Returns a string based on the supplied array of ChatMessages
  * @param {ChatMessage[]} chatMessages An array of ChatMessage's that is supplied
  */
 GetChatLogString = function(chatMessages) {
@@ -256,7 +256,7 @@ GetChatLogString = function(chatMessages) {
     for (let i = 0; i < chatMessages.length; i++) {
         // Create a unique string for the message
         let chatMessageString = "{" + chatMessages[i].username + "," + chatMessages[i].message + "}";
-        // Apoend the string to the chatLogString
+        // Append the string to the chatLogString
         chatLogString += chatMessageString;
     }
     return chatLogString;
