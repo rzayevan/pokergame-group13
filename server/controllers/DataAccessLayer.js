@@ -209,7 +209,7 @@ exports.UpdateReport = function(report) {
     // Create a regex that will be searched for within the text file
     let originalReportStringRegex = ".*" + originalReport.id + ".*";
 
-    // Create a new Date object to set the lastUpdatedDate's of Report objects to.
+    // Create a new Date object to set the lastUpdatedDate's of Reportobjects to.
     let newLastUpdatedDate = new Date();
 
     let newChatLogString = GetChatLogString(report.chatLogs);
@@ -248,7 +248,7 @@ exports.UpdateReport = function(report) {
 
 /**
  * Returns a string based on the supplied array of ChatMessages
- * @param {ChatMessage[]} chatMessages An array of ChatMessages that is supplied
+ * @param {ChatMessage[]} chatMessages An array of ChatMessage's that is supplied
  */
 GetChatLogString = function(chatMessages) {
     let chatLogString = "";
@@ -260,5 +260,4 @@ GetChatLogString = function(chatMessages) {
         chatLogString += chatMessageString;
     }
     return chatLogString;
-        });    
 }
