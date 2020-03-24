@@ -109,7 +109,7 @@ exports.UpdateUser = function(user) {
     replace(replaceOptions)
         .then(result => {
             // If no error occurred and the result states that the file was successfully changed
-            if (result.hasChanged === true) {
+            if (result.hasChanged) {
                 // Update the cache
                 user.handsLost = user.handsPlayed - user.handsWon;
                 cachedUsers[index] = user;
@@ -234,7 +234,7 @@ exports.UpdateReport = function(report) {
     replace(replaceOptions)
         .then(result => {
             // If no error occurred and the result states that the file was successfully changed
-            if (result.hasChanged === true) {
+            if (result.hasChanged) {
                 // Update the cache
                 cachedReports[index] = report;
                 cachedReports[index].lastUpdatedDate = newLastUpdatedDate;
