@@ -12,6 +12,7 @@
 // import Profile from './components/Profile.vue';
  import Reports from './components/Reports.vue';
 //import Tables from './components/Tables.vue';
+  import io from "socket.io-client";
 
 export default {
   name: 'App',
@@ -24,50 +25,38 @@ export default {
     //ReportGrid
   },
   data() {
-    return {
+    console.log("data");
+
+    this.getReports();
+
+    return {    
+
      // Temporary hardcoded data for use on the Report screen.  Will be replaced when backend functionality is implemented.
-     gridData: [
-          { 
-            "id": 0, 
-            "Offending User": "JohnSun333", 
-            "Submitted": "2/27/2020", 
-            "Offense": "Harassment", 
-            "Reported By": "Kimchee553", 
-            "Description": "This user threatened to DOX another player for winning the pot. They put the last 4 digits of the victim’s phone number in the chat and proceeded to send threats during the game.",
-            chatLogs: [
-              {
-                username: "JohnSun333",
-                message: "I have your phone number"
-              },
-              {
-                username: "SadBoyLyfe3",
-                message: "No you dont"
-              },
-              {
-                username: "JohnSun333",
-                message: "The last 4 numbers are 1337"
-              },
-              {
-                username: "JohnSun333",
-                message: "you sure>"
-              },
-              {
-                username: "SadBoyLyfe3",
-                message: "stop or i will get you banned"
-              },
-              {
-                username: "JohnSun333",
-                message: "No u. uwu"
-              }
-            ]
-          },
-          { "id": 1, "Offending User": "Ligma420", "Submitted": "2/27/2020", "Offense": "Racism", "Reported By": "KingSimp"},
-          { "id": 2, "Offending User": "PoppingJimbo", "Submitted": "2/27/2020", "Offense": "Swearing", "Reported By": "WeebKing123"},
-          { "id": 3, "Offending User": "EatMyPeen", "Submitted": "2/27/2020", "Offense": "Offensive Username", "Reported By": "SonChaeyoungie"},
-          { "id": 4, "Offending User": "xXPokerKillerXx", "Submitted": "2/27/2020", "Offense": "Harassment", "Reported By": "PotentPeter"},
-          { "id": 5, "Offending User": "Kirito", "Submitted": "2/27/2020", "Offense": "Spamming", "Reported By": "StonkMillionaire"},
-        ],
-        gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
+
+      // Initial data that is sent to the Reports component
+      gridData: [],
+      gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
+    }
+  },
+  beforeCreate() {
+    console.log("beforeCreate");
+      this.socket = io("http://localhost:3000");
+    this.socket.on("connected", data => {
+        console.log("client received a message: " + data);
+    });
+
+       this.socket.on('receive reports', data => {
+      console.log("receive reports");
+      this.gridData = data.reports;
+      this.columns = data.gridColumns;
+    });
+  },
+  methods: {
+    getReports: function() {
+      this.socket.emit('request reports');
+
+
+     // return result;
     }
   }
 }

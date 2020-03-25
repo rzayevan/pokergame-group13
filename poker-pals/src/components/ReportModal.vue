@@ -15,9 +15,9 @@
       <template v-slot:default class="modal-body">
         <p reportData="reportData">Submitted by {{ reportData.reportedBy }}</p>
 
-        <p>Description</p>
+        <p><strong>Description</strong></p>
         <p reportData="reportData">{{ reportData.description }}</p>
-        <p>Chat Logs</p>
+        <p><strong>Chat Logs</strong></p>
         <ul class="chat-display">
           <li reportData="reportData" class="row" v-for="chat in reportData.chatLogs" :key="chat.message">
             <p>{{ chat.username + ": "}}</p>
@@ -38,28 +38,35 @@
           Ban
         </b-button>
       </template>
-    
-      <!-- <p hello= 'hello'>{{ hello }}</p>
-      <p>Submitted by </p>
-      <p>Description</p>
-      <p>Chat Logs</p> -->
     </b-modal>
   </div>
 </template>
 
 <script>
+import io from "socket.io-client";
 export default {
     name: 'ReportModal',
     props: ['reportData'],
+    mounted() {
+      this.socket = io("http://localhost:3000");
+      this.socket.on("connected", data => {
+        console.log("client received a message: " + data);
+      });
+
+    },
     methods: {
       cancel: function() {
         this.$bvModal.hide("report-modal");
       },
       dismiss: function() {
         this.$bvModal.hide("report-modal");
+
+        this.socket.emit("review report", { id: this.reportData.id, newStatus: "dismissed" });
       },
       ban: function() {
         this.$bvModal.hide("report-modal");
+
+        this.socket.emit("review report", { id: this.reportData.id, newStatus: "banned" });
       }
     },
   };

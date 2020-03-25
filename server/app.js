@@ -41,10 +41,27 @@ io.on('connection', (socket) => {
 
     socket.on('request reports', function() {
         console.log("request reports");
+        retrieveReports(this, false);
+    });
+
+    socket.on('review report', function(updateData) {
+        console.log("review report");
+        ReportUtils.reviewReport(updateData);
+        retrieveReports(this, true);
+
+    });
+
+    retrieveReports = function(socket, isUpdate) {
         let reportData = {
             reports: ReportUtils.getReports(),
             gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
         };
-        socket.emit("receive reports", reportData);
-    })
+
+        if (isUpdate) {
+            socket.broadcast.emit("receive reports", reportData);
+        }
+        else {
+            socket.emit("receive reports", reportData);
+        }
+    }
 });

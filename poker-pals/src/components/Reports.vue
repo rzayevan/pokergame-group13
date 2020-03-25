@@ -23,7 +23,7 @@
     <div class="table-body-wrapper">
       <table class="table-body">
         <tbody>
-          <tr v-for="entry in filteredData" :key="entry.id" v-on:click="onClick(entry)">
+          <tr v-for="entry in filteredData" :key="entry.id" v-on:click="onClick(entry)" v-bind:class="getEntryClass(entry)">
             <td v-for="key in columns" :key="key"> {{entry[key]}}</td>
           </tr>
         </tbody>
@@ -112,6 +112,12 @@
       // Opens the modal
       this.showModal();
     },
+    getEntryClass: function(entry) {
+     // console.log(entry);
+      return {
+        isReviewed: entry.isReviewed
+      }
+    }
   },
   created(){
     let sortOrders = {};
@@ -125,21 +131,6 @@
     this.socket.on("connected", data => {
         console.log("client received a message: " + data);
     });
-
-
-    this.socket.emit('request reports');
-
-    this.socket.on('receive reports', data => {
-      console.log("ehlp")
-      console.log(data);
-      this.temp = data.reports;
-    });
-
-    // this.socket.on("get reports", data => {
-    //   console.log("get reports: " + data);
-    // })
-
-   // console.log(this);
   }
 }
 </script>
@@ -189,6 +180,10 @@ th.active .arrow {
 
 tr:hover {
     background-color: rgb(233, 233, 233);
+}
+
+.isReviewed {
+  background-color: rgb(190, 190, 190);
 }
 
 .arrow {
