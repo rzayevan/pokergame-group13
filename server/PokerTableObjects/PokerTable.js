@@ -77,13 +77,11 @@ module.exports = class PokerTable {
         for(let i = 0; i < 6; i++){
             seatStates.push(this.tableSeats[i].getSeatState());
         }
-        if(this.showdown){
-            //console.log(JSON.stringify(seatStates));
-        }
         return {
             seatStates: seatStates, // all the table seat states
             communityCards: this.getCommunityCards(), // the community cards that have been shown 
-            currentBet: this.currentBet // the current bet of the table
+            currentBet: this.currentBet, // the current bet of the table
+            potTotal: this.potTotal
         };
     }
 
@@ -134,10 +132,12 @@ module.exports = class PokerTable {
     }
 
     getCommunityCards(){
+        console.log('number:' + this.communityCardsShown);
         let comCards = [];
         for(let i = 0; i < this.communityCardsShown; i++){
             comCards.push(this.communityCards[i]);
         }
+        console.log('number again: ' + JSON.stringify(comCards));
         return comCards;
     }
 
@@ -558,6 +558,7 @@ module.exports = class PokerTable {
         for(let i = 0; i < 6; i++){
             this.tableSeats[i].chips += players[i].returnPot;
         }
+        this.potTotal = 0;
         console.log("the results now: " + JSON.stringify(players));
     }
 

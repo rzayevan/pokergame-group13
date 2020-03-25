@@ -13,7 +13,7 @@
                     <div class="tableItems"> <!--a container to hold the pot count and community cards-->
                         <div class="potCount">
                             <div class="potTag">POT</div>
-                            <div class="potAmount">14,000</div>
+                            <div class="potAmount">{{ potTotal }}</div>
                         </div>
                         <div class="tableCards"> <!--the community cards container-->
                             <div class="tableCard" id="communityCard1">
@@ -417,7 +417,6 @@
 <script>
 
 import PlayerSeat from './pokerComponents/PlayerSeat.vue';
-//import NavBar from './pokerComponents/NavBar.vue';
 import UserNavbar from './UserNavbar.vue';
 import Chat from './pokerComponents/Chat.vue';
 import ReportPocket from './pokerComponents/ReportPocket.vue';
@@ -429,7 +428,6 @@ export default {
     name: "Poker",
     components: {
         PlayerSeat,
-        //NavBar,
         UserNavbar,
         Chat,
         ReportPocket,
@@ -512,7 +510,7 @@ export default {
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
             bigBlind: 2000,
             cardReveal: false, // set to false until the show down, the players will show their cards
-
+            potTotal: 0,
             // information to set up each player seat including css values (depending on seat position some css will change)
             // most of this will come from the server
             myCards: [{src:null}, {src:null}],
@@ -533,7 +531,6 @@ export default {
             let msg = JSON.parse(msgJSON);
             let seatStates = msg.seatStates;
             let receivedCommunityCards = msg.communityCards;
-            console.log(JSON.stringify(seatStates) + ' ' + JSON.stringify(receivedCommunityCards));
             for(let i = 0; i < this.players.length; i++){
                 this.players[i].occupied = !seatStates[i].seatOpen;
                 this.players[i].dealerStatus = seatStates[i].dealer;
@@ -546,6 +543,8 @@ export default {
             for(let i = 0; i < receivedCommunityCards.length; i++){
                 this.communityCards[i].src = this.cardFiles.find(file => file.name === receivedCommunityCards[i]).src;
             }
+
+            this.potTotal = msg.potTotal;
 
             if(this.seatID !== '' && this.players[this.seatID].timer === true && this.checkFold){
                 // the player wants to check, if can't then fold
@@ -598,7 +597,7 @@ export default {
             ];
             this.hidePlayerCards(); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)
         });
-
+        // end of socket.on functions
 
 
 
@@ -637,7 +636,8 @@ export default {
         ];
     },
     methods:{
-        // define all of the socket.emit methods here
+        // define all of the socket.emit methods here,
+        // for now this page alone will login and join users, later remove and use the login and tables page
         logIn(userID){ // a temporary socket function to let a player join a table, later use real athentication
             this.userID = userID;
             this.socket.emit("logIn", this.userID);
@@ -649,6 +649,9 @@ export default {
             });
         },
 
+
+
+
         makeDecision(action){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
             this.socket.emit("turnDecision", {
                 userID: this.userID,
@@ -656,7 +659,13 @@ export default {
                 action: action,
                 raiseToValue: this.getRaiseToValue(), // only used if player is raising
             });
+            // later use v-bind and not getElementById
+            this.checkFold = false;
+            let b = document.getElementById("buttonCheckFold");
+            b.style.backgroundColor = '#ffffff'; // color theme for button not selected
         },
+        // end of socket.emit functions
+
 
 
 
@@ -672,7 +681,7 @@ export default {
             }
         },
         exitTable(){ // allows a player to leave the table, player will forfeit any chips in the pot
-            
+            // when all pages are linked this function will be implemented
         },
         toggleCheatSheet(){
             if(this.cheatSheetOpen){
@@ -710,26 +719,11 @@ export default {
             let value = parseInt(slider.value);
             return value;
         },
-        revealCommunityCard(cardNumber, cardImageName){
-            let communityCard = document.getElementById('communityCard' + cardNumber.toString());
-            communityCard.getElementsByTagName('img')[0].src = 
-                require(`../images/cards/${cardImageName}.png`);
-        },
         showPlayerCards(){
             this.cardReveal = true;
         },
         hidePlayerCards(){
             this.cardReveal = false;
-        },
-        revealPlayerCards(){
-            // when a child looks for prop change they do not inspect the elements inside those props
-            // only the prop itself so we can't just change card1 and card2 we need to change player.cards
-            this.players[0].cards = {card1: this.cardFiles.find(card => card.name === '3_H'), card2: this.cardFiles.find(card => card.name === '2_C')};
-            this.players[1].cards = {card1: this.cardFiles.find(card => card.name === '6_H'), card2: this.cardFiles.find(card => card.name === '10_S')};
-            this.players[2].cards = {card1: this.cardFiles.find(card => card.name === 'K_S'), card2: this.cardFiles.find(card => card.name === '3_D')};
-            this.players[3].cards = {card1: this.cardFiles.find(card => card.name === 'Q_C'), card2: this.cardFiles.find(card => card.name === 'J_H')};
-            this.players[4].cards = {card1: this.cardFiles.find(card => card.name === '8_C'), card2: this.cardFiles.find(card => card.name === '3_S')};
-            this.players[5].cards = {card1: this.cardFiles.find(card => card.name === '2_D'), card2: this.cardFiles.find(card => card.name === 'A_C')};
         },
         submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
             // pass this off to the server
@@ -749,62 +743,6 @@ export default {
         },
         sendReport(){
             // send a report
-        },
-
-
-
-
-
-
-        // these next functions are for testing, they are linked up to the temporary buttons in the chat
-        // will be removed later
-        switchDealers(){
-            this.players[0].dealerStatus = false;
-            this.players[1].dealerStatus = true;
-            this.players[2].dealerStatus = false;
-            this.players[3].dealerStatus = false;
-            this.players[4].dealerStatus = false;
-            this.players[5].dealerStatus = false;
-        },
-        changeBets(){
-            this.players[0].bet = 0;
-            this.players[1].bet = 0;
-            this.players[2].bet = 1000;
-            this.players[3].bet = 2000;
-            this.players[4].bet = 0;
-            this.players[5].bet = 0;
-        },
-        changeNames(){
-            this.players[0].tagName = "Alex123";
-            this.players[1].tagName = "Jessica234";
-            this.players[2].tagName = "Mack345";
-            this.players[3].tagName = "Curtis456";
-            this.players[4].tagName = "John567";
-            this.players[5].tagName = "Clayton678";
-        },
-        changeTagImages(){
-            this.players[0].tagImage = require(`../images/player_icon_1.png`);
-            this.players[1].tagImage = require(`../images/player_icon_1.png`);
-            this.players[2].tagImage = require(`../images/player_icon_1.png`);
-            this.players[3].tagImage = require(`../images/player_icon_1.png`);
-            this.players[4].tagImage = require(`../images/player_icon_1.png`);
-            this.players[5].tagImage = require(`../images/player_icon_1.png`);
-        },
-        changeTimer1(){
-            this.players[0].timer = true;
-            this.players[1].timer = false;
-            this.players[2].timer = false;
-            this.players[3].timer = false;
-            this.players[4].timer = false;
-            this.players[5].timer = false;
-        },
-        changeTimer2(){
-            this.players[0].timer = false;
-            this.players[1].timer = true;
-            this.players[2].timer = false;
-            this.players[3].timer = false;
-            this.players[4].timer = false;
-            this.players[5].timer = false;
         },
     }
 };

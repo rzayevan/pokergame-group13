@@ -4,7 +4,7 @@ module.exports =  {
     calculate: function(communityCards, playerCards){
         console.log(JSON.stringify(communityCards) + ' ' + JSON.stringify(playerCards));
         let cards = new Array(7);
-        for(let i = 0; i < 5; i++){
+        for(let i = 0; i < 5; i++){ // convert the five community cards into objects the calcultor can use
             let split = communityCards[i].split("_");
             let number;
             if(split[0] === 'A'){
@@ -25,7 +25,7 @@ module.exports =  {
             let suit = split[1];
             cards[i] = new Card(number, suit);
         }
-        for(let i = 0; i < 2; i++){
+        for(let i = 0; i < 2; i++){ // convert the two player cards into objects the calcultor can use
             let split = playerCards[i].split("_");
             let number;
             if(split[0] === 'A'){

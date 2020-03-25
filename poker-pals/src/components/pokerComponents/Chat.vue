@@ -22,6 +22,9 @@
                     <button class="testButton" v-on:click="$parent.logIn(1000)">log in as userID:1000</button>
                     <button class="testButton" v-on:click="$parent.logIn(2000)">log in as userID:2000</button>
                     <button class="testButton" v-on:click="$parent.logIn(3000)">log in as userID:3000</button>
+                    <button class="testButton" v-on:click="$parent.logIn(4000)">log in as userID:4000</button>
+                    <button class="testButton" v-on:click="$parent.logIn(5000)">log in as userID:5000</button>
+                    <button class="testButton" v-on:click="$parent.logIn(6000)">log in as userID:6000</button>
                     <button class="testButton" v-on:click="$parent.joinTable()">join table 0</button>
                     
 

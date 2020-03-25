@@ -28,7 +28,7 @@ module.exports = class PokerPlayerSeat {
         // action: FOLDED and ALL IN means the player cannot make anymore decisions, skip turn
     }
 
-    resetSeat(){
+    resetSeat(){ // will clear the seat of that player, (sets the seat to empty)
         this.socketID = -1;
         this.userID = -1;
         this.pot = 0;
@@ -54,15 +54,20 @@ module.exports = class PokerPlayerSeat {
         this.dealer = false;
         this.action = 'WAITING';
         this.turn = false;
+        this.pot = 0;
     }
 
-    getChipDistributionObject(){
+    getChipDistributionObject(){ // a small object sent back for the chip distribution calculator to use
         return {id: this.seatID, rank: this.handRank, moneyPot: this.pot, returnPot: 0};
     }
     
     // this function will receive the action and raise value (only used during a raise)
     // it will assess whether or not the move is valid and return a yes or no reponse
     playerAction(action, currentBet, raiseToValue, bigBlind){// action the player wants to make, current bet of the table, the value the player wishes to raise to
+        
+        console.log(this.seatID + ' ' + action + ' ' + currentBet + ' ' + raiseToValue + ' ' + bigBlind);
+        
+        
         if(action === "CALL"){
             return this.playerCallAction(currentBet); // check if call action is allowed by the player if so then act on it
         }
@@ -74,7 +79,7 @@ module.exports = class PokerPlayerSeat {
         }
         else if(action === "CHECK/FOLD"){ // we first check if a check is possible, if so then check, else then fold
             if(this.bet === currentBet){
-                return this.playerCheckAction();
+                return this.playerCheckAction(currentBet);
             }
             else{
                 return this.playerFoldAction();
