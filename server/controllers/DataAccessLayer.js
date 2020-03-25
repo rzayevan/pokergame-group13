@@ -27,6 +27,8 @@ exports.GetCachedUsers = function() {
  * Returns the array of user objects that are stored in the local text file
  */
 exports.ReadUsersFile = function() {
+    // Reset Cached Users
+    cachedUsers = [];
     // Create a new LineReader object
     let liner = new lineReader('data/Users.txt');
     // Declare an empty variable line
@@ -126,6 +128,8 @@ exports.UpdateUser = function(user) {
  * Returns the array of user objects that are stored in the local text file
  */
 exports.ReadReportsFile = function() {
+    // Reset CachedReports
+    cachedReports = [];
     // Create a new LineReader object
     let liner = new lineReader('data/Reports.txt');
     // Declare an empty variable line
