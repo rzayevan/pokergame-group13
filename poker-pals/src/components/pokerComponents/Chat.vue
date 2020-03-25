@@ -6,19 +6,6 @@
             <div class="messagesBoxBorder" :style="{ height: heightPercentages.messagesBoxBorder }"> <!--contains all the chat messages in the form of a list-->
                 <div class="messagesBox" :style="{ height: heightPercentages.messagesBox }">
                     <!--these buttons are not permanent, only for testing functionality-->
-                    <button class="testButton" v-on:click="$parent.revealCommunityCard(1, 'Q_D')">1</button>
-                    <button class="testButton" v-on:click="$parent.revealCommunityCard(2, '4_S')">2</button>
-                    <button class="testButton" v-on:click="$parent.revealCommunityCard(3, '9_C')">3</button>
-                    <button class="testButton" v-on:click="$parent.revealCommunityCard(4, '6_S')">4</button>
-                    <button class="testButton" v-on:click="$parent.revealCommunityCard(5, '10_C')">5</button>
-                    <button class="testButton" v-on:click="$parent.switchDealers()">6</button>
-                    <button class="testButton" v-on:click="$parent.changeBets()">7</button>
-                    <button class="testButton" v-on:click="$parent.showPlayerCards()">8</button>
-                    <button class="testButton" v-on:click="$parent.revealPlayerCards()">9</button>
-                    <button class="testButton" v-on:click="$parent.changeNames()">10</button>
-                    <button class="testButton" v-on:click="$parent.changeTagImages()">11</button>
-                    <button class="testButton" v-on:click="$parent.changeTimer1()">12</button>
-                    <button class="testButton" v-on:click="$parent.changeTimer2()">13</button>
                     <button class="testButton" v-on:click="$parent.logIn(1000)">log in as userID:1000</button>
                     <button class="testButton" v-on:click="$parent.logIn(2000)">log in as userID:2000</button>
                     <button class="testButton" v-on:click="$parent.logIn(3000)">log in as userID:3000</button>
