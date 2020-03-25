@@ -46,7 +46,7 @@ export default {
             // 100$ and the other five players went all in with 10$, the lowest wager amongst the winners is 10$ so that is removed from
             // each wager slot thus 90$ 0$ 0$ 0$ 0$ 0$, and then split amonst the five winners 60/5 = 12$ each, the next highest wager is the loser
             // who wagered now 90$ and he takes upto 90$ from each slot (which are now all empty)
-            // thus the loser lost only 10 which got distributed among the 4 that tied
+            // thus the loser lost only 10 which got distributed among the 5 that tied
            
             
             for(let i = 0; i < slots.length; i++){

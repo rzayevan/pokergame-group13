@@ -1,6 +1,6 @@
 <template>
     <div class="playerSeat">
-        <div class="border1" :style="{ background: playerTurnBackground }">
+        <div v-if="occupied" class="border1" :style="{ background: playerTurnBackground }">
             <div class="box">
                 <div class="action">
                     <div class="actionText">{{ action }}</div>
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div v-bind:class= classes.betBox>
+        <div v-if="occupied" v-bind:class= classes.betBox>
             <div class="betImage" :style="{ opacity: betValueStatus.opacity }">
                 <img src="../../images/chip.png"/>
             </div>
@@ -31,21 +31,52 @@
                 <img src="../../images/dealer_icon.png" />
             </div>
         </div>
-        <div v-bind:class= classes.youTag :style="{ opacity: youTagOpacity }">
+        <div v-if="occupied" v-bind:class= classes.youTag :style="{ opacity: youTagOpacity }">
             <div class="youTagText">YOU</div>
         </div>
-        <div v-bind:class= classes.playerCards :style="{ opacity: cardRevealOpacity }">
+        <div v-if="occupied" v-bind:class= classes.playerCards :style="{ opacity: cardRevealOpacity }">
             <div class="playerCard">
-                <img v-bind:src="cards.card1"/>
+                <img v-bind:src="cards.card1.src"/>
             </div>
             <div class="playerCard">
-                <img v-bind:src="cards.card2"/>
+                <img v-bind:src="cards.card2.src"/>
+            </div>
+        </div>
+        <div v-if="!occupied" class="seatOpen">
+            <div class="seatOpenBox">
+                <div class="seatOpenText">Seat Open</div>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+
+    .seatOpen{
+        position: relative;
+        width: 90%;
+        height: 40%;
+        background: black;
+        border-radius: 15%;
+        margin: 25% 0% 0% 10%;
+    }
+    .seatOpenBox{
+        position: relative;
+        width: 95%;
+        height: 90%;
+        background: white;
+        border-radius: 15%;
+        margin: 0% 0% 0% 2.5%;
+        top: 5%;
+    }
+    .seatOpenText{
+        position: absolute;
+        width: 100%;
+        font-size: 1vw;
+        margin: 10% 0% 0% 0%;
+    }
+
+
     .playerSeat{
         float: left;
         position: relative;
@@ -261,8 +292,8 @@ export default {
         Clock,
     },
     props: [
-        'classes', 'dealerStatus', '_id', 'cards', 'cardReveal', 'betValue', 'tagName',
-        'tagImage', 'chipTotal', 'action', 'youTag', 'timer'
+        'occupied', 'classes', 'dealerStatus', '_id', 'cards', 'cardReveal', 'betValue', 'tagName',
+        'tagImage', 'chipTotal', 'action', 'youTag', 'timer', 'active'
     ],
     data() {
         return { // various items to set based on the props

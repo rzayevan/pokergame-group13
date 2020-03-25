@@ -17,27 +17,28 @@
                         </div>
                         <div class="tableCards">
                             <div class="tableCard" id="communityCard1">
-                                <img src="../images/cards/empty.png"/>
+                                <img v-bind:src="communityCards[0].src"/>
                             </div>
                             <div class="tableCard" id="communityCard2">
-                                <img src="../images/cards/empty.png"/>
+                                <img v-bind:src="communityCards[1].src"/>
                             </div>
                             <div class="tableCard" id="communityCard3">
-                                <img src="../images/cards/empty.png"/>
+                                <img v-bind:src="communityCards[2].src"/>
                             </div>
                             <div class="tableCard" id="communityCard4">
-                                <img src="../images/cards/empty.png"/>
+                                <img v-bind:src="communityCards[3].src"/>
                             </div>
                             <div class="tableCard" id="communityCard5">
-                                <img src="../images/cards/empty.png"/>
+                                <img v-bind:src="communityCards[4].src"/>
                             </div>
                         </div>
                         <div class="tableDeck">
-                            <img src="../images/cards/card_back.png"/>
+                            <img v-bind:src="cardFiles[0].src"/>
                         </div>
                     </div>
                     <div class="players">
                         <PlayerSeat v-for="player in players" :key="player.id" v-bind:id='player.divID'
+                            v-bind:occupied="player.occupied"
                             v-bind:classes="player.classes"
                             v-bind:dealerStatus="player.dealerStatus" 
                             v-bind:_id="player.id" 
@@ -64,16 +65,16 @@
                 </div>
                 <div class="playerCards">
                     <div class="playerCard" id="playerCard1">
-                        <img src="../images/cards/6_H.png"/>
+                        <img v-bind:src="myCards[0].src"/>
                     </div>
                     <div class="playerCard" id="playerCard2">
-                        <img src="../images/cards/7_H.png"/>
+                        <img v-bind:src="myCards[1].src"/>
                     </div>
                 </div>
                 <div class="playerInputs">
-                    <button class="InputButton1 centerText" id="buttonFold">FOLD</button>
-                    <button class="InputButton1 centerText" id="buttonCheck">CHECK</button>
-                    <button class="InputButton1 centerText" id="buttonCall">CALL</button>
+                    <button class="InputButton1 centerText" id="buttonFold" v-on:click="makeDecision('FOLD')">FOLD</button>
+                    <button class="InputButton1 centerText" id="buttonCheck" v-on:click="makeDecision('CHECK')">CHECK</button>
+                    <button class="InputButton1 centerText" id="buttonCall" v-on:click="makeDecision('CALL')">CALL</button>
                     <div class="raiseToggle">
                         <div class="raiseButtonOuter" id="buttonMinus" v-on:click="decrementRaise()">
                             <div class="raiseButton centerText">-</div>
@@ -84,9 +85,9 @@
                             <div class="raiseButton centerText">+</div>
                         </div>
                     </div>
-                    <button class="InputButton1 centerText" id="buttonRaise">RAISE</button>
-                    <button class="InputButton2 centerText" id="buttonCheckFold">CHECK/FOLD</button>
-                    <button class="InputButton1 centerText" id="buttonAllIn">ALL IN</button>
+                    <button class="InputButton1 centerText" id="buttonRaise" v-on:click="makeDecision('RAISE')">RAISE</button>
+                    <button class="InputButton2 centerText" id="buttonCheckFold" v-on:click="toggleCheckFoldButton()">CHECK/FOLD</button>
+                    <button class="InputButton1 centerText" id="buttonAllIn" v-on:click="makeDecision('ALL IN')">ALL IN</button>
                 </div>
             </div>
         </div>
@@ -414,6 +415,9 @@ import NavBar from './pokerComponents/NavBar.vue';
 import Chat from './pokerComponents/Chat.vue';
 import ReportPocket from './pokerComponents/ReportPocket.vue';
 
+
+import io from "socket.io-client";
+
 export default {
     name: "Poker",
     components: {
@@ -422,69 +426,80 @@ export default {
         Chat,
         ReportPocket,
     },
+    created() {
+        this.socket = io("http://localhost:3000");
+    },
     data() {
         return {
+            socket: {},
+            userID: '',
+            seatID: '',
+
+            checkFold: false,
+
             report_OffenderName: '',
             report_OffenderMessageId: '',
             // the image resource files for the card images
-            cardFiles: {
-                _card_Back: require(`../images/cards/card_back.png`),
-                _A_S: require(`../images/cards/A_S.png`),
-                _2_S: require(`../images/cards/2_S.png`),
-                _3_S: require(`../images/cards/3_S.png`),
-                _4_S: require(`../images/cards/4_S.png`),
-                _5_S: require(`../images/cards/5_S.png`),
-                _6_S: require(`../images/cards/6_S.png`),
-                _7_S: require(`../images/cards/7_S.png`),
-                _8_S: require(`../images/cards/8_S.png`),
-                _9_S: require(`../images/cards/9_S.png`),
-                _10_S: require(`../images/cards/10_S.png`),
-                _J_S: require(`../images/cards/J_S.png`),
-                _Q_S: require(`../images/cards/Q_S.png`),
-                _K_S: require(`../images/cards/K_S.png`),
+            cardFiles: [
+                {src: require(`../images/cards/card_back.png`), name: 'card_back'},
+                {src: require(`../images/cards/empty.png`), name: 'card_empty'},
+                {src: require(`../images/cards/invisible.png`), name: 'invisible'},
+                {src: require(`../images/cards/A_S.png`), name: 'A_S'},
+                {src: require(`../images/cards/2_S.png`), name: '2_S'},
+                {src: require(`../images/cards/3_S.png`), name: '3_S'},
+                {src: require(`../images/cards/4_S.png`), name: '4_S'},
+                {src: require(`../images/cards/5_S.png`), name: '5_S'},
+                {src: require(`../images/cards/6_S.png`), name: '6_S'},
+                {src: require(`../images/cards/7_S.png`), name: '7_S'},
+                {src: require(`../images/cards/8_S.png`), name: '8_S'},
+                {src: require(`../images/cards/9_S.png`), name: '9_S'},
+                {src: require(`../images/cards/10_S.png`), name: '10_S'},
+                {src: require(`../images/cards/J_S.png`), name: 'J_S'},
+                {src: require(`../images/cards/Q_S.png`), name: 'Q_S'},
+                {src: require(`../images/cards/K_S.png`), name: 'K_S'},
                 
-                _A_C: require(`../images/cards/A_C.png`),
-                _2_C: require(`../images/cards/2_C.png`),
-                _3_C: require(`../images/cards/3_C.png`),
-                _4_C: require(`../images/cards/4_C.png`),
-                _5_C: require(`../images/cards/5_C.png`),
-                _6_C: require(`../images/cards/6_C.png`),
-                _7_C: require(`../images/cards/7_C.png`),
-                _8_C: require(`../images/cards/8_C.png`),
-                _9_C: require(`../images/cards/9_C.png`),
-                _10_C: require(`../images/cards/10_C.png`),
-                _J_C: require(`../images/cards/J_C.png`),
-                _Q_C: require(`../images/cards/Q_C.png`),
-                _K_C: require(`../images/cards/K_C.png`),
+                {src: require(`../images/cards/A_C.png`), name: 'A_C'},
+                {src: require(`../images/cards/2_C.png`), name: '2_C'},
+                {src: require(`../images/cards/3_C.png`), name: '3_C'},
+                {src: require(`../images/cards/4_C.png`), name: '4_C'},
+                {src: require(`../images/cards/5_C.png`), name: '5_C'},
+                {src: require(`../images/cards/6_C.png`), name: '6_C'},
+                {src: require(`../images/cards/7_C.png`), name: '7_C'},
+                {src: require(`../images/cards/8_C.png`), name: '8_C'},
+                {src: require(`../images/cards/9_C.png`), name: '9_C'},
+                {src: require(`../images/cards/10_C.png`), name: '10_C'},
+                {src: require(`../images/cards/J_C.png`), name: 'J_C'},
+                {src: require(`../images/cards/Q_C.png`), name: 'Q_C'},
+                {src: require(`../images/cards/K_C.png`), name: 'K_C'},
 
-                _A_H: require(`../images/cards/A_H.png`),
-                _2_H: require(`../images/cards/2_H.png`),
-                _3_H: require(`../images/cards/3_H.png`),
-                _4_H: require(`../images/cards/4_H.png`),
-                _5_H: require(`../images/cards/5_H.png`),
-                _6_H: require(`../images/cards/6_H.png`),
-                _7_H: require(`../images/cards/7_H.png`),
-                _8_H: require(`../images/cards/8_H.png`),
-                _9_H: require(`../images/cards/9_H.png`),
-                _10_H: require(`../images/cards/10_H.png`),
-                _J_H: require(`../images/cards/J_H.png`),
-                _Q_H: require(`../images/cards/Q_H.png`),
-                _K_H: require(`../images/cards/K_H.png`),
+                {src: require(`../images/cards/A_H.png`), name: 'A_H'},
+                {src: require(`../images/cards/2_H.png`), name: '2_H'},
+                {src: require(`../images/cards/3_H.png`), name: '3_H'},
+                {src: require(`../images/cards/4_H.png`), name: '4_H'},
+                {src: require(`../images/cards/5_H.png`), name: '5_H'},
+                {src: require(`../images/cards/6_H.png`), name: '6_H'},
+                {src: require(`../images/cards/7_H.png`), name: '7_H'},
+                {src: require(`../images/cards/8_H.png`), name: '8_H'},
+                {src: require(`../images/cards/9_H.png`), name: '9_H'},
+                {src: require(`../images/cards/10_H.png`), name: '10_H'},
+                {src: require(`../images/cards/J_H.png`), name: 'J_H'},
+                {src: require(`../images/cards/Q_H.png`), name: 'Q_H'},
+                {src: require(`../images/cards/K_H.png`), name: 'K_H'},
 
-                _A_D: require(`../images/cards/A_D.png`),
-                _2_D: require(`../images/cards/2_D.png`),
-                _3_D: require(`../images/cards/3_D.png`),
-                _4_D: require(`../images/cards/4_D.png`),
-                _5_D: require(`../images/cards/5_D.png`),
-                _6_D: require(`../images/cards/6_D.png`),
-                _7_D: require(`../images/cards/7_D.png`),
-                _8_D: require(`../images/cards/8_D.png`),
-                _9_D: require(`../images/cards/9_D.png`),
-                _10_D: require(`../images/cards/10_D.png`),
-                _J_D: require(`../images/cards/J_D.png`),
-                _Q_D: require(`../images/cards/Q_D.png`),
-                _K_D: require(`../images/cards/K_D.png`),
-            },
+                {src: require(`../images/cards/A_D.png`), name: 'A_D'},
+                {src: require(`../images/cards/2_D.png`), name: '2_D'},
+                {src: require(`../images/cards/3_D.png`), name: '3_D'},
+                {src: require(`../images/cards/4_D.png`), name: '4_D'},
+                {src: require(`../images/cards/5_D.png`), name: '5_D'},
+                {src: require(`../images/cards/6_D.png`), name: '6_D'},
+                {src: require(`../images/cards/7_D.png`), name: '7_D'},
+                {src: require(`../images/cards/8_D.png`), name: '8_D'},
+                {src: require(`../images/cards/9_D.png`), name: '9_D'},
+                {src: require(`../images/cards/10_D.png`), name: '10_D'},
+                {src: require(`../images/cards/J_D.png`), name: 'J_D'},
+                {src: require(`../images/cards/Q_D.png`), name: 'Q_D'},
+                {src: require(`../images/cards/K_D.png`), name: 'K_D'},
+            ],
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
             bigBlind: 2000,
@@ -492,17 +507,101 @@ export default {
 
             // information to set up each player seat including css values (depending on seat position some css will change)
             // most of this will come from the server
+            myCards: [{src:null}, {src:null}],
             players: [
-                {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat1', id: 1, dealerStatus: true, cards: {card1: null, card2: null}, bet: 0, tagName: "Alex", tagImage: require(`../images/player_icon_1.png`), chipTotal: "20000", action: "WAITING", youTag: false, timer: false},
-                {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat2', id: 2, dealerStatus: false, cards: {card1: null, card2: null}, bet: 1000, tagName: "Jessica", tagImage: require(`../images/player_icon_1.png`), chipTotal: "40000", action: "WAITING", youTag: false, timer: false},
-                {classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat3', id: 3, dealerStatus: false, cards: {card1: null, card2: null}, bet: 2000, tagName: "Mack", tagImage: require(`../images/player_icon_1.png`), chipTotal: "60000", action: "THINKING", youTag: false, timer: true},
-                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', id: 4, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "Curtis", tagImage: require(`../images/player_icon_1.png`), chipTotal: "80000", action: "WAITING", youTag: false, timer: false},
-                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', id: 5, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "John", tagImage: require(`../images/player_icon_1.png`), chipTotal: "10000", action: "WAITING", youTag: false, timer: false},
-                {classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', id: 6, dealerStatus: false, cards: {card1: null, card2: null}, bet: 0, tagName: "Clayton", tagImage: require(`../images/player_icon_1.png`), chipTotal: "20", action: "WAITING", youTag: true, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat1', id: 1, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat2', id: 2, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat3', id: 3, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', id: 4, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', id: 5, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', id: 6, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
             ],
+            communityCards: [{src:null},{src:null},{src:null},{src:null},{src:null}],
         };
     },
     mounted(){
+        // define all of the socket.on methods here
+        this.socket.on('tableState', msgJSON => {
+            let msg = JSON.parse(msgJSON);
+            let seatStates = msg.seatStates;
+            let receivedCommunityCards = msg.communityCards;
+            console.log(JSON.stringify(seatStates) + ' ' + JSON.stringify(receivedCommunityCards));
+            for(let i = 0; i < this.players.length; i++){
+                this.players[i].occupied = !seatStates[i].seatOpen;
+                this.players[i].dealerStatus = seatStates[i].dealer;
+                this.players[i].bet = seatStates[i].bet;
+                this.players[i].tagName = seatStates[i].name;
+                this.players[i].chipTotal = seatStates[i].chips;
+                this.players[i].action = seatStates[i].action;
+                this.players[i].timer = seatStates[i].turn;
+            }
+            for(let i = 0; i < receivedCommunityCards.length; i++){
+                this.communityCards[i].src = this.cardFiles.find(file => file.name === receivedCommunityCards[i]).src;
+            }
+
+            if(this.seatID !== '' && this.players[this.seatID].timer === true && this.checkFold){
+                // the player wants to check, if can't then fold
+                this.makeDecision('CHECK/FOLD');
+            }
+        });
+        
+        this.socket.on('yourSeatID', msg => {
+            this.seatID = msg;
+            this.players[this.seatID].youTag = true;
+        });
+        
+        this.socket.on('beginTheGame', msgJSON => {
+            let msg = JSON.parse(msgJSON);
+            this.myCards[0].src = this.cardFiles.find(file => file.name === msg[0]).src;
+            this.myCards[1].src = this.cardFiles.find(file => file.name === msg[1]).src;
+        });
+        
+        this.socket.on('showdownCardRevealState', msgJSON => {
+            let msg = JSON.parse(msgJSON);
+            for(let i = 0; i < 6; i++){
+                this.players[i].cards = {
+                    card1: {src: this.cardFiles.find(file => file.name === msg[i][0]).src}, 
+                    card2: {src: this.cardFiles.find(file => file.name === msg[i][1]).src}
+                };
+            }
+            this.showPlayerCards(); // move this to a separate socket call, it only needs to execute once
+        });
+
+        this.socket.on('winner', msg => {
+            console.log('winner ' + msg);
+        });
+
+        this.socket.on('reset', msg => {
+            console.log(msg);
+            // each player will reset the ui for a new game
+            this.players[0].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+            this.players[1].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+            this.players[2].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+            this.players[3].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+            this.players[4].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+            this.players[5].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+
+            this.communityCards = [
+                {src: this.cardFiles[1].src}, 
+                {src: this.cardFiles[1].src}, 
+                {src: this.cardFiles[1].src}, 
+                {src: this.cardFiles[1].src}, 
+                {src: this.cardFiles[1].src}
+            ];
+            this.hidePlayerCards();
+        });
+
+
+
+
+
+
+
+
+
+
+
+        
         let slider = document.getElementById("slider");
         let output = document.getElementById("raiseValue");
         output.innerHTML = slider.value;
@@ -512,14 +611,57 @@ export default {
         }
         // asign the standard card_back image to each of player cards inititally
         // later the server will send the true cards at the show down
-        this.players[0].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
-        this.players[1].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
-        this.players[2].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
-        this.players[3].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
-        this.players[4].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
-        this.players[5].cards = {card1: this.cardFiles._card_Back, card2: this.cardFiles._card_Back};
+        this.myCards = [{src: this.cardFiles[1].src}, {src: this.cardFiles[1].src}];
+        
+        this.players[0].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
+        this.players[1].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
+        this.players[2].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
+        this.players[3].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
+        this.players[4].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
+        this.players[5].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
+
+        this.communityCards = [
+            {src: this.cardFiles[1].src}, 
+            {src: this.cardFiles[1].src}, 
+            {src: this.cardFiles[1].src}, 
+            {src: this.cardFiles[1].src}, 
+            {src: this.cardFiles[1].src}
+        ];
     },
     methods:{
+        // define all of the socket.emit methods here
+        logIn(userID){
+            this.userID = userID;
+            this.socket.emit("logIn", this.userID);
+        },
+        joinTable() { // for now use this function to join into the game
+            this.socket.emit("joinTable", { // we send our assigned user id
+                userID: this.userID,
+                tableID: 0, // the table the player wants to join
+            });
+        },
+        makeDecision(action){
+            this.socket.emit("turnDecision", {
+                userID: this.userID,
+                seatID: this.seatID,
+                action: action,
+                raiseToValue: this.getRaiseToValue(), // only used if player is raising
+            });
+        },
+
+
+
+
+        toggleCheckFoldButton(){
+            this.checkFold = !this.checkFold;
+            let b = document.getElementById("buttonCheckFold");
+            if(this.checkFold){
+                b.style.backgroundColor = '#aaaaaa';
+            }
+            else{
+                b.style.backgroundColor = '#ffffff';
+            }
+        },
         exitTable(){
             //v-on:click='myfunction()' @mousedown: style= "{ opacity: 0.5 }"
         },
@@ -554,6 +696,11 @@ export default {
             slider.value = (value - remove).toString();
             output.innerHTML = slider.value;
         },
+        getRaiseToValue(){
+            let slider = document.getElementById("slider");
+            let value = parseInt(slider.value);
+            return value;
+        },
         revealCommunityCard(cardNumber, cardImageName){
             let communityCard = document.getElementById('communityCard' + cardNumber.toString());
             communityCard.getElementsByTagName('img')[0].src = 
@@ -562,15 +709,18 @@ export default {
         showPlayerCards(){
             this.cardReveal = true;
         },
+        hidePlayerCards(){
+            this.cardReveal = false;
+        },
         revealPlayerCards(){
             // when a child looks for prop change they do not inspect the elements inside those props
             // only the prop itself so we can't just change card1 and card2 we need to change player.cards
-            this.players[0].cards = {card1: this.cardFiles._3_H, card2: this.cardFiles._2_C};
-            this.players[1].cards = {card1: this.cardFiles._6_H, card2: this.cardFiles._10_S};
-            this.players[2].cards = {card1: this.cardFiles._K_S, card2: this.cardFiles._3_D};
-            this.players[3].cards = {card1: this.cardFiles._Q_C, card2: this.cardFiles._J_H};
-            this.players[4].cards = {card1: this.cardFiles._8_C, card2: this.cardFiles._3_S};
-            this.players[5].cards = {card1: this.cardFiles._2_D, card2: this.cardFiles._A_C};
+            this.players[0].cards = {card1: this.cardFiles.find(card => card.name === '3_H'), card2: this.cardFiles.find(card => card.name === '2_C')};
+            this.players[1].cards = {card1: this.cardFiles.find(card => card.name === '6_H'), card2: this.cardFiles.find(card => card.name === '10_S')};
+            this.players[2].cards = {card1: this.cardFiles.find(card => card.name === 'K_S'), card2: this.cardFiles.find(card => card.name === '3_D')};
+            this.players[3].cards = {card1: this.cardFiles.find(card => card.name === 'Q_C'), card2: this.cardFiles.find(card => card.name === 'J_H')};
+            this.players[4].cards = {card1: this.cardFiles.find(card => card.name === '8_C'), card2: this.cardFiles.find(card => card.name === '3_S')};
+            this.players[5].cards = {card1: this.cardFiles.find(card => card.name === '2_D'), card2: this.cardFiles.find(card => card.name === 'A_C')};
         },
         submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
             // pass this off to the server
@@ -640,7 +790,20 @@ export default {
             this.players[3].timer = false;
             this.players[4].timer = false;
             this.players[5].timer = false;
+        },
+
+        /*
+        updatePlayerCardsTest(){
+            this.cardsShownToAllPlayers = [ // sent to all players at the show down and updated with each players real cards on reveal
+                this.players[0].cards = {card1: {src: this.cardFiles.find(file => file.name === msg[0][0])}, card2: {src: this.cardFiles.find(file => file.name === msg[0][1])}},
+                this.players[1].cards = {card1: {src: this.cardFiles.find(file => file.name === msg[1][0])}, card2: {src: this.cardFiles.find(file => file.name === msg[1][1])}},
+                this.players[2].cards = {card1: {src: this.cardFiles.find(file => file.name === msg[2][0])}, card2: {src: this.cardFiles.find(file => file.name === msg[2][1])}},
+                this.players[3].cards = {card1: {src: this.cardFiles.find(file => file.name === msg[3][0])}, card2: {src: this.cardFiles.find(file => file.name === msg[3][1])}},
+                this.players[4].cards = {card1: {src: this.cardFiles.find(file => file.name === msg[4][0])}, card2: {src: this.cardFiles.find(file => file.name === msg[4][1])}},
+                this.players[5].cards = {card1: {src: this.cardFiles.find(file => file.name === msg[5][0])}, card2: {src: this.cardFiles.find(file => file.name === msg[5][1])}},
+            ];
         }
+        */
     }
 };
 </script>

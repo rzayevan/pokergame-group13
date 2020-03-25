@@ -19,7 +19,10 @@
                     <button class="testButton" v-on:click="$parent.changeTagImages()">11</button>
                     <button class="testButton" v-on:click="$parent.changeTimer1()">12</button>
                     <button class="testButton" v-on:click="$parent.changeTimer2()">13</button>
-                    
+                    <button class="testButton" v-on:click="$parent.logIn(1000)">log in as userID:1000</button>
+                    <button class="testButton" v-on:click="$parent.logIn(2000)">log in as userID:2000</button>
+                    <button class="testButton" v-on:click="$parent.logIn(3000)">log in as userID:3000</button>
+                    <button class="testButton" v-on:click="$parent.joinTable()">join table 0</button>
                     
 
                     <div v-for="item in items" :key="item.message">
