@@ -7,7 +7,7 @@
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto mx-3">
                     <b-nav-item to="profile" class="mx-2">
-                        <img class="mr-2 img-fluid" src="../assets/chip.png" alt="Poker Chip"/>
+                        <img class="mr-2 img-fluid" src="../../assets/chip.png" alt="Poker Chip"/>
                         <span class="b-nav-text">{{userData.chips}}</span>
                     </b-nav-item>
                     <b-nav-item to="profile">
@@ -52,7 +52,7 @@
             return {
                 userData : {
                     chips: 1200450,
-                    playerIcon: require("../assets/player_icon_1.png")
+                    playerIcon: require("../../assets/player_icon_1.png")
                 }
             }
         },

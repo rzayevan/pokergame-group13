@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import Navbar from "./Navbar";
+    import Navbar from "./navbars/Navbar";
     export default {
         name: "Banned.vue",
         components: {
