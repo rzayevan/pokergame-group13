@@ -1,7 +1,7 @@
 <template>
     <nav>
         <b-navbar toggleable="sm">
-            <b-navbar-brand href="#" class="mx-3">Poker Pals</b-navbar-brand>
+            <b-navbar-brand to="tables" class="mx-3">Poker Pals</b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             <b-collapse id="nav-collapse" is-nav>
                 <!-- Right aligned nav items -->
