@@ -11,7 +11,7 @@
                         <img src="../images/table.png"/>
                     </div>
                     <div class="tableItems"> <!--a container to hold the pot count and community cards-->
-                        <div class="potCount">
+                        <div class="potContainer">
                             <div class="potTag">POT</div>
                             <div class="potAmount">{{ potTotal }}</div>
                         </div>
@@ -54,7 +54,7 @@
                         />
                     </div>
                 </div>
-                <div class="blindsBox">Blinds: 1,000/2,000</div> <!--shows the blinds of this particular table, later bind it to a variable-->
+                <div class="blindsBox">Blinds: 1,000/2,000</div> <!--shows the blinds of this particular table, TODO later bind it to a variable-->
             </div>
             <div class="display">
                 <div class="cheatSheetToggle" v-on:click="toggleCheatSheet()"> <!--a toggle to show or hide the cheat sheet-->
@@ -72,9 +72,9 @@
                     </div>
                 </div>
                 <div class="playerInputs"> <!--container holding all the players button options-->
-                    <button class="InputButton1 centerText" id="buttonFold" v-on:click="makeDecision('FOLD')">FOLD</button>
-                    <button class="InputButton1 centerText" id="buttonCheck" v-on:click="makeDecision('CHECK')">CHECK</button>
-                    <button class="InputButton1 centerText" id="buttonCall" v-on:click="makeDecision('CALL')">CALL</button>
+                    <button class="inputButton1 centerText" id="buttonFold" v-on:click="makeDecision('FOLD')">FOLD</button>
+                    <button class="inputButton1 centerText" id="buttonCheck" v-on:click="makeDecision('CHECK')">CHECK</button>
+                    <button class="inputButton1 centerText" id="buttonCall" v-on:click="makeDecision('CALL')">CALL</button>
                     <div class="raiseToggle"> <!--the container holding the raise input, it contains two buttons, a slider, and a value display-->
                         <div class="raiseButtonOuter" id="buttonMinus" v-on:click="decrementRaise()">
                             <div class="raiseButton centerText">-</div>
@@ -85,13 +85,13 @@
                             <div class="raiseButton centerText">+</div>
                         </div>
                     </div>
-                    <button class="InputButton1 centerText" id="buttonRaise" v-on:click="makeDecision('RAISE')">RAISE</button>
-                    <button class="InputButton2 centerText" id="buttonCheckFold" v-on:click="toggleCheckFoldButton()">CHECK/FOLD</button>
-                    <button class="InputButton1 centerText" id="buttonAllIn" v-on:click="makeDecision('ALL IN')">ALL IN</button>
+                    <button class="inputButton1 centerText" id="buttonRaise" v-on:click="makeDecision('RAISE')">RAISE</button>
+                    <button class="inputButton2 centerText" id="buttonCheckFold" v-on:click="toggleCheckFoldButton()">CHECK/FOLD</button>
+                    <button class="inputButton1 centerText" id="buttonAllIn" v-on:click="makeDecision('ALL IN')">ALL IN</button>
                 </div>
             </div>
         </div>
-        <Chat v-bind:full="chatFull"/> <!--the chat container holding all items related to messenging other players-->
+        <Chat v-bind:full="chatFull"/> <!--the chat container holding all items related to messaging other players-->
         <ReportPocket v-if="!chatFull"
             v-bind:report_OffenderName="report_OffenderName" 
             v-bind:report_OffenderMessageId="report_OffenderMessageId"
@@ -118,7 +118,6 @@
     -moz-appearance: textfield;
     }
     .outerFrame{
-        /*position: absolute;*/
         width: 80vw;
         height: 45vw;
     }
@@ -127,7 +126,6 @@
         float: left;
         width: 70%;
         height: 93%;
-        background: purple;
     }
     .tableLayout{
         position: relative;
@@ -149,8 +147,6 @@
     }
     .buttonExitTable img{
         float: left;
-        width: 100%;
-        height: 100%;
     }
     .tableObjects{
         position: absolute;
@@ -165,10 +161,6 @@
         margin: 5.75% 0% 0% 11.5%;
         background: transparent;
     }
-    .tableImage img{
-        width: 100%;
-        height: 100%;
-    }
     .tableItems{
         position: absolute;
         width: 50%;
@@ -176,7 +168,7 @@
         background: transparent;
         margin: 17.75% 0% 0% 25%;
     }
-    .potCount{
+    .potContainer{
         position: absolute;
         width: 25%;
         height: 100%;
@@ -188,7 +180,7 @@
     .potTag{
         color: white;
         font-size: 80%;
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
         font-size: 1.25vw;
     }
     .potAmount{
@@ -209,10 +201,6 @@
         margin: 0% 0% 0% 2%;
         border-radius: 15%;
     }
-    .tableCard img{
-        width: 100%;
-        height: 100%;
-    }
     .tableDeck{
         position: absolute;
         width: 11.5%;
@@ -221,10 +209,6 @@
         margin: 0% 0% 0% 88.5%;
         border-radius: 15%;
     }
-    .tableDeck img{
-        width: 100%;
-        height: 100%;
-    }
     .players{
         position: absolute;
         width: 60%;
@@ -232,7 +216,7 @@
         margin: -2% 0% 0% 20%;
     }
     #playerSeat1{
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
     }
     #playerSeat2{
         margin: 0% 0% 0% 12.5%;
@@ -266,7 +250,7 @@
         width: 100%;
         height: 30%;
         background: #eeeeee;
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
     }
     .cheatSheetToggle{
         float: left;
@@ -291,10 +275,6 @@
         background: transparent;
         margin: 1% 0% 0% 1%;
     }
-    .cheatSheet img{
-        width: 100%;
-        height: 100%;
-    }
     .playerCards{
         float: left;
         width: 28%;
@@ -307,10 +287,6 @@
         width: 45%;
         margin: 5.5% 0% 0% 3%;
     }
-    .playerCard img{
-        width: 100%;
-        height: 100%;
-    }
     .playerInputs{
         float: left;
         width: 32%;
@@ -318,7 +294,7 @@
         background: transparent;
         margin: 2% 0% 0% 2%;
     }
-    .InputButton1{
+    .inputButton1{
         float: left;
         width: 30%;
         height: 25%;
@@ -327,7 +303,7 @@
         border-radius: 15%/30%;
         font-size: 1vw;
     }
-    .InputButton2{
+    .inputButton2{
         float: left;
         width: 60%;
         height: 25%;
@@ -337,7 +313,7 @@
         font-size: 1vw;
     }
     #buttonFold{
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
     }
     #buttonCheck{
         margin: 0% 0% 0% 5%;
@@ -370,7 +346,7 @@
         margin: 2.5% 0% 0% 2.5%;
     }
     #buttonMinus{
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
     }
     .raiseValue{
         position: absolute;
@@ -394,7 +370,7 @@
         cursor: pointer;
     }
     #buttonPlus{
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
     }
     #buttonRaise{
         margin: 6.75% 0% 0% 5%;
@@ -411,6 +387,11 @@
         display : flex;
         align-items : center;
         justify-content: center;
+    }
+
+    img{
+        width: 100%;
+        height: 100%;
     }
 </style>
 
@@ -439,6 +420,7 @@ export default {
         return {
             socket: {},
             userID: '',
+            tableID: 0,
             seatID: '',
 
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
@@ -543,9 +525,11 @@ export default {
             for(let i = 0; i < receivedCommunityCards.length; i++){
                 this.communityCards[i].src = this.cardFiles.find(file => file.name === receivedCommunityCards[i]).src;
             }
-
             this.potTotal = msg.potTotal;
 
+            // on each tablestate update this code will run to see if: the player is seated, it is the players turn, the check/fold is toggled
+            // if all these conditions are meet then the code will send a check/fold decision without the player's input
+            // the server will either check or fold for the player automatically
             if(this.seatID !== '' && this.players[this.seatID].timer === true && this.checkFold){
                 // the player wants to check, if can't then fold
                 this.makeDecision('CHECK/FOLD');
@@ -563,7 +547,7 @@ export default {
             this.myCards[1].src = this.cardFiles.find(file => file.name === msg[1]).src;
         });
         
-        this.socket.on('showdownCardRevealState', msgJSON => { // the showdown has begun, now all player cards are being shown
+        this.socket.on('showdown', msgJSON => { // the showdown has begun, now all player cards are being shown
             let msg = JSON.parse(msgJSON);
             for(let i = 0; i < 6; i++){
                 this.players[i].cards = {
@@ -571,43 +555,24 @@ export default {
                     card2: {src: this.cardFiles.find(file => file.name === msg[i][1]).src}
                 };
             }
-            this.showPlayerCards(); // move this to a separate socket call, it only needs to execute once
+            this.setPlayerCardsVisibility(true); // TODO: move this to a separate socket call, it only needs to execute once
         });
 
-        this.socket.on('winner', msg => { // later add some animation to indicate that they won
-            console.log('winner ' + msg);
+        this.socket.on('winner', () => { // later add some animation to indicate that they won
+            // TODO: winner animation goes here
         });
 
-        this.socket.on('reset', msg => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
-            console.log(msg);
+        this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
             // each player will reset the ui for a new game
-            this.players[0].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
-            this.players[1].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
-            this.players[2].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
-            this.players[3].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
-            this.players[4].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
-            this.players[5].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
-
-            this.communityCards = [
-                {src: this.cardFiles[1].src}, // cardfiles[1] is an empty card image, used to show where a community card will go
-                {src: this.cardFiles[1].src}, 
-                {src: this.cardFiles[1].src}, 
-                {src: this.cardFiles[1].src}, 
-                {src: this.cardFiles[1].src}
-            ];
-            this.hidePlayerCards(); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)
+            for(let i = 0; i < 6; i++){
+                this.players[i].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+            }
+            for(let i = 0; i < 5; i++){
+                this.communityCards[i].src = this.cardFiles[1].src;
+            }
+            this.setPlayerCardsVisibility(false); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)
         });
         // end of socket.on functions
-
-
-
-
-
-
-
-
-
-
         // set up the slider for raises
         let slider = document.getElementById("slider");
         let output = document.getElementById("raiseValue");
@@ -620,24 +585,17 @@ export default {
         // later the server will send the true cards at the show down
         this.myCards = [{src: this.cardFiles[1].src}, {src: this.cardFiles[1].src}];
         
-        this.players[0].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
-        this.players[1].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
-        this.players[2].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
-        this.players[3].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
-        this.players[4].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
-        this.players[5].cards = {card1: {src: this.cardFiles[2].src}, card2: {src: this.cardFiles[2].src}};
-
-        this.communityCards = [
-            {src: this.cardFiles[1].src}, 
-            {src: this.cardFiles[1].src}, 
-            {src: this.cardFiles[1].src}, 
-            {src: this.cardFiles[1].src}, 
-            {src: this.cardFiles[1].src}
-        ];
+        for(let i = 0; i < 6; i++){
+            this.players[i].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+        }
+        for(let i = 0; i < 5; i++){
+            this.communityCards[i].src = this.cardFiles[1].src;
+        }
     },
     methods:{
         // define all of the socket.emit methods here,
-        // for now this page alone will login and join users, later remove and use the login and tables page
+        // for now this page alone will login and join users
+        // TODO: later remove and use the login and tables page
         logIn(userID){ // a temporary socket function to let a player join a table, later use real athentication
             this.userID = userID;
             this.socket.emit("logIn", this.userID);
@@ -645,31 +603,23 @@ export default {
         joinTable() { // for now use this function to join into the game
             this.socket.emit("joinTable", { // we send our assigned user id
                 userID: this.userID,
-                tableID: 0, // the table the player wants to join
+                tableID: this.tableID, // the table the player wants to join
             });
         },
-
-
-
-
         makeDecision(action){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
             this.socket.emit("turnDecision", {
                 userID: this.userID,
+                tableID: this.tableID,
                 seatID: this.seatID,
                 action: action,
                 raiseToValue: this.getRaiseToValue(), // only used if player is raising
             });
-            // later use v-bind and not getElementById
+            // TODO: later use v-bind and not getElementById
             this.checkFold = false;
             let b = document.getElementById("buttonCheckFold");
             b.style.backgroundColor = '#ffffff'; // color theme for button not selected
         },
         // end of socket.emit functions
-
-
-
-
-
         toggleCheckFoldButton(){ // toggle the check/fold button, this will allow the client to automatically send an action without user input
             this.checkFold = !this.checkFold;
             let b = document.getElementById("buttonCheckFold");
@@ -681,7 +631,7 @@ export default {
             }
         },
         exitTable(){ // allows a player to leave the table, player will forfeit any chips in the pot
-            // when all pages are linked this function will be implemented
+            // TODO: when all pages are linked this function will be implemented
         },
         toggleCheatSheet(){
             if(this.cheatSheetOpen){
@@ -709,7 +659,7 @@ export default {
             // subtract up to the big blind
             let remove = value % this.bigBlind;
             if(remove === 0){
-                remove = 2000;
+                remove = this.bigBlind;
             }
             slider.value = (value - remove).toString();
             output.innerHTML = slider.value;
@@ -719,14 +669,11 @@ export default {
             let value = parseInt(slider.value);
             return value;
         },
-        showPlayerCards(){
-            this.cardReveal = true;
-        },
-        hidePlayerCards(){
-            this.cardReveal = false;
+        setPlayerCardsVisibility(visible){
+            this.cardReveal = visible;
         },
         submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
-            // pass this off to the server
+            // TODO: pass this off to the server
             // later add to reportPocket an indication the message was sent
             alert(JSON.stringify(selected) + " " + JSON.stringify(message) + " " + JSON.stringify(report_OffenderName) + " " + JSON.stringify(report_OffenderMessageId));
             this.chatFull = true;
@@ -740,9 +687,6 @@ export default {
             // set up the report with some data
             this.report_OffenderName = name;
             this.report_OffenderMessageId = messageId;
-        },
-        sendReport(){
-            // send a report
         },
     }
 };

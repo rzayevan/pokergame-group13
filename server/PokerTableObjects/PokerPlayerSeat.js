@@ -64,10 +64,6 @@ module.exports = class PokerPlayerSeat {
     // this function will receive the action and raise value (only used during a raise)
     // it will assess whether or not the move is valid and return a yes or no reponse
     playerAction(action, currentBet, raiseToValue, bigBlind){// action the player wants to make, current bet of the table, the value the player wishes to raise to
-        
-        console.log(this.seatID + ' ' + action + ' ' + currentBet + ' ' + raiseToValue + ' ' + bigBlind);
-        
-        
         if(action === "CALL"){
             return this.playerCallAction(currentBet); // check if call action is allowed by the player if so then act on it
         }
@@ -139,7 +135,6 @@ module.exports = class PokerPlayerSeat {
     playerRaiseAction(currentBet, raiseToValue, bigBlind){
         // check if the player is allowed to raise, if not then send a invalid move response
         if(raiseToValue < currentBet + bigBlind){ // a minimum raise by the value of a bigblind against the current bet is needed
-            console.log('raise not big enough');
             return {success: false}; // the raise to value is invalid
         }
         if(this.chips + this.bet >= raiseToValue){ // player can make the bet
@@ -158,7 +153,6 @@ module.exports = class PokerPlayerSeat {
         }
         else{
             // the player cannot make the raise
-            console.log('cant make the raise' + player.chips + ' ' + player.bet + ' ' + raiseToValue);
             return {success: false};
         }
     }
@@ -197,10 +191,6 @@ module.exports = class PokerPlayerSeat {
         this.ableToAct = true;
         if(!gameStarted){
             this.inPlay = true;
-            console.log('player is part of round');
-        }
-        else{
-            console.log('player is not part of round');
         }
         this.seatOpen = false;
         this.name = profile.name;

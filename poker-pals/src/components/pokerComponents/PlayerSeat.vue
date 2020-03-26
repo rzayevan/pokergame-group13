@@ -126,7 +126,7 @@
     .youTagText{
         width: 100%;
         height: 70%;
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
     }
     .action{
         position: absolute;
@@ -139,7 +139,7 @@
         color: white;
     }
     .actionText{
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
         font-size: 1vw;
     }
     .identification{
@@ -304,9 +304,6 @@ export default {
             playerTurnBackground: this.timer ? 'black' : 'transparent', // on player turn the black outline will be present
         };
     },
-    mounted(){
-        
-    },
     watch: { // watch for these values to change
         dealerStatus: function(){
             this.dealerChipOpacity = this.dealerStatus ? 1.0 : 0.0;
@@ -323,9 +320,6 @@ export default {
         timer: function(){
             this.playerTurnBackground = this.timer ? 'black' : 'transparent';
         },
-    },
-    methods:{
-
     }
 }
 </script>

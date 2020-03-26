@@ -49,7 +49,7 @@
         height: 12%;
         background: #eeeeee;
         background: black;
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
     }
     .title_text{
         width: 99%;
@@ -87,7 +87,7 @@
         float: left;
         width: 78%;
         height: 93%;
-        margin: 0% 0% 0% 0%;
+        margin: 0%;
         overflow: hidden;
         border: none;
         background: transparent;

@@ -61,16 +61,10 @@ export default {
             clockOpacity: this.timer ? 1.0 : 0.0,
         };
     },
-    mounted(){
-        
-    },
     watch: {
         timer: function(){
             this.clockOpacity = this.timer ? 1.0 : 0.0; // on timer===true the animation starts
         },
-    },
-    methods:{
-
     }
 }
 </script>

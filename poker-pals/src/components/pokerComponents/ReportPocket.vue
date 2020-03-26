@@ -5,15 +5,15 @@
             <div class="buttonXOuter" v-on:click="cancelReport()">
                 <div class="buttonX centerText">X</div>
             </div>
-            <div class="title1">Filing a report against player: <strong class="extraBold">{{ report_OffenderName }}</strong></div>
-            <div class="title2">Did you witness any of the following?</div>
+            <div class="mainTitle">Filing a report against player: <strong class="extraBold">{{ report_OffenderName }}</strong></div>
+            <div class="witnessQuestionText">Did you witness any of the following?</div>
             <select class="selector" v-model="selected">
                 <option disabled value="">Select an option</option>
-                <option>Beating me, because that's not fair</option>
-                <option>Taking all my chips</option>
-                <option>Having a better hand than me</option>
+                <option>option 1</option>
+                <option>option 2</option>
+                <option>option 3</option>
             </select>
-            <div class="title3">Please describe the reason for reporting.</div>
+            <div class="describeReasonText">Please describe the reason for reporting.</div>
             <textarea class="inputTextBox" v-model="message"></textarea>
             <button class="buttonCancel centerText" v-on:click="cancelReport()">Cancel</button>
             <button class="buttonSubmit centerText" v-on:click="submitReport()">Submit</button>
@@ -64,7 +64,7 @@
         background: #bf214b;
         color: white;
     }
-    .title1{
+    .mainTitle{
         float: left;
         width: 94%;
         height: 10%;
@@ -74,7 +74,7 @@
         text-align: left;
         color: black;
     }
-    .title2{
+    .witnessQuestionText{
         float: left;
         width: 94%;
         height: 10%;
@@ -92,7 +92,7 @@
         border-radius: 2%/12%;
         margin: 0% 0% 0% 3%;
     }
-    .title3{
+    .describeReasonText{
         float: left;
         width: 94%;
         height: 10%;

@@ -69,7 +69,7 @@ let profiles = [
 ];
 // the entire list of tables, might need a better way to store them?
 let tables = [];
-tables.push(new PokerTable()); // initially we will have one table, when socket rooms are implemented then multiple tables will be added
+tables.push(new PokerTable(2000)); // initially we will have one table, with a big blind of 2000, when socket rooms are implemented then multiple tables will be added
 
 
 // these next three functions are for signing up a client to the poker table, need to use the real login and tables page to do this
@@ -79,7 +79,6 @@ function login(socket, msg){
         return;
     }
     else{// send the current table state
-        console.log('emitted');
         socket.emit('tableState', JSON.stringify(tables[0].getTableState()));
     }
 }
@@ -107,25 +106,14 @@ function joinTable(io, socket, msg){
         return; // the user can not join the table
     }
 }
-
-
-
-
-
-
-
-
-
 // the functions for communication between the server and the poker.vue page
 function beginTheGame(io, table){ // function will begin the game with a time out of 5 seconds
     setTimeout(function() { // in five seconds the game will begin
-        console.log('beginning the game');
         table.beginTheGame(); // the game is set up
         io.emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the new table state
         for(let i = 0; i < 6; i++){
             let seat = table.tableSeats[i];
             if(seat.socketID !== -1){
-                console.log('yes');
                 io.to(`${seat.socketID}`).emit('beginTheGame', JSON.stringify(seat.cards));
             }
         }
@@ -133,25 +121,24 @@ function beginTheGame(io, table){ // function will begin the game with a time ou
     }, 5000);
 }
 function turnDecision(io, socket, msg){ // each player when clicking the poker.vue buttons will trigger this function, it will assess whether or not the move was valid
-    if(tables[0].isItTheirTurn(msg.userID, msg.seatID, socket.id)){
+    let table = tables[msg.tableID];
+    if(table.isItTheirTurn(msg.userID, msg.seatID, socket.id)){
         // there is a limited number of actions a player can take based on their current state
         // ask if they can make that move, if not then do nothing, later also disable buttons based on lack of options
-        let response = tables[0].playerAction(msg.action, msg.raiseToValue); // will assess the action and return a response
+        let response = table.playerAction(msg.action, msg.raiseToValue); // will assess the action and return a response
         if(response){
-            io.emit('tableState', JSON.stringify(tables[0].getTableState()));
+            io.emit('tableState', JSON.stringify(table.getTableState()));
         }
         else{
-            console.log('bad move');
+            console.log('bad move'); // later send message back to client that their move was invalid
         }
-        if(tables[0].showdown){// after each move we need to check if the table is ready for a showdown
-            console.log("show down begin");
-           beginShowingTheRemainingCommunityCards(io, tables[0]);
+        if(table.showdown){// after each move we need to check if the table is ready for a showdown
+           beginShowingTheRemainingCommunityCards(io, table);
         }
     }
 }
 function beginShowingTheRemainingCommunityCards(io, table){ // the remaining community cards are revealed, one at a time (used if a premature show down is called)
-    let count = 5 - tables[0].communityCardsShown;
-    console.log
+    let count = 5 - table.communityCardsShown;
     function showCommunityCard() {
         if(count <= 0){
             clearInterval(timeout);
@@ -168,7 +155,7 @@ function beginShowingTheRemainingCommunityCards(io, table){ // the remaining com
 }
 function showRemainingPlayerCards(io, table){ // the players still in play will show their cards (backside)
     setTimeout(function() {
-        io.emit('showdownCardRevealState', JSON.stringify(table.getShowdownCardRevealState()));
+        io.emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
         beginFlippingOverEachPlayersCards(io, table);
     }, 2000);
 }
@@ -181,13 +168,13 @@ function beginFlippingOverEachPlayersCards(io, table){ // one at a time each pla
             setTimeout(function() {
                 let winners = table.getWinnerSocketIDs();
                 for(let i = 0; i < winners.length; i++){
-                    io.to(`${winners[i]}`).emit('winner', i);
+                    io.to(`${winners[i]}`).emit('winner');
                     calculateAndDistributeChips(io, table);
                 }
             }, 1000);
         }
         table.showNextPlayerCards();
-        io.emit('showdownCardRevealState', JSON.stringify(table.getShowdownCardRevealState()));
+        io.emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
     }
     let timeout = setInterval(flipNextPlayerCards, 2000);
 }
@@ -203,7 +190,7 @@ function bootPlayers(io, table){ // any players that lost all their chips are re
         table.bootPlayers(); // will remove all players that have no more chips
         table.reset(); // reset the table for a new game
         io.emit('tableState', JSON.stringify(table.getTableState()));
-        io.emit('reset', 'reset');
+        io.emit('reset');
         if(table.canAGameBegin()){
             beginTheGame(io, table);
         }

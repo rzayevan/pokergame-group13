@@ -2,25 +2,26 @@ let Card = require("./Card.js"); // later will remove the need for the card clas
 
 module.exports =  {
     calculate: function(communityCards, playerCards){
-        console.log(JSON.stringify(communityCards) + ' ' + JSON.stringify(playerCards));
         let cards = new Array(7);
-        for(let i = 0; i < 5; i++){ // convert the five community cards into objects the calcultor can use
+        for(let i = 0; i < 5; i++){ // convert the five community cards into objects the calculator can use
             let split = communityCards[i].split("_");
             let number;
-            if(split[0] === 'A'){
-                number = 1;
-            }
-            else if(split[0] === 'J'){
-                number = 11;
-            }
-            else if(split[0] === 'Q'){
-                number = 12;
-            }
-            else if(split[0] === 'K'){
-                number = 13;
-            }
-            else{
-                number = parseInt(split[0]);
+            // the poker cards use the notation 'number_suit' in string format, the number portion needs to be converted
+            switch(split[0]) {
+                case 'A':
+                    number = 1; // ace is the value of 1, some functions in the code will also treat it as 14 (1+ than king=13)
+                    break;
+                case 'J':
+                    number = 11; // jack is worth 11
+                    break;
+                case 'Q':
+                    number = 12; // queen is worth 12
+                    break;
+                case 'K':
+                    number = 13; // king is worth 13
+                    break;
+                default:
+                    number = parseInt(split[0]); // all other numbers are worth themselves ex: 2 => 2
             }
             let suit = split[1];
             cards[i] = new Card(number, suit);
@@ -28,60 +29,38 @@ module.exports =  {
         for(let i = 0; i < 2; i++){ // convert the two player cards into objects the calcultor can use
             let split = playerCards[i].split("_");
             let number;
-            if(split[0] === 'A'){
-                number = 1;
-            }
-            else if(split[0] === 'J'){
-                number = 11;
-            }
-            else if(split[0] === 'Q'){
-                number = 12;
-            }
-            else if(split[0] === 'K'){
-                number = 13;
-            }
-            else{
-                number = parseInt(split[0]);
+            // the poker cards use the notation 'number_suit' in string format, the number portion needs to be converted
+            switch(split[0]) {
+                case 'A':
+                    number = 1; // ace is the value of 1, some functions in the code will also treat it as 14 (1+ than king=13)
+                    break;
+                case 'J':
+                    number = 11; // jack is worth 11
+                    break;
+                case 'Q':
+                    number = 12; // queen is worth 12
+                    break;
+                case 'K':
+                    number = 13; // king is worth 13
+                    break;
+                default:
+                    number = parseInt(split[0]); // all other numbers are worth themselves ex: 2 => 2
             }
             let suit = split[1];
             cards[i+5] = new Card(number, suit);
         }
-        console.log(JSON.stringify(cards));
         // we will iterate through the functions until one returns a positive value
-        /*
-        let allFunctions = [
-            this.handStraightFlushValue,
-            this.handQuadsValue,
-            this.handFullHouseValue,
-            this.handFlushValue,
-            this.handStraightValue,
-            this.handThreeOfAKindValue,
-            this.handTwoPairValue,
-            this.handSinglePairValue,
-            this.handHighCardValue
-        ];
-        */
+
         // number refers to how many cards to include in the highcard calculation
         // condition refers to how that function is to return that result, each function
-        // uses condition to its own definition
+        // uses the condition to its own definition
         let setUps = [{},{},{},{condition: false}, {condition: true}, {number: 2}, {number: 1}, {number: 3}, {number: 5, condition: true}];
         
         let result = -1;
-        /*
-        for(let i = 0; i < allFunctions.length; i++){
-            result = allFunctions[i](cards, setUps[i]); // for some reason this is not working, claims functions are not defined
-            if(result != -1){
-                return result;
-            }
-        }
-        */
-
-
 
         // NOTE: up until this point I have not found a way to combine all these functions into an array that i can iterate
         // through, the server crashes (claiming it cannot find my functions and thus I reverted the code back to the messy)
-        // lines of 'if statments' below, do not remove the commented out code above as I might come back to this problem at a
-        // later date and try to fix it.
+        // lines of 'if statments' below
 
         result = this.handStraightFlushValue(cards, setUps[0]);
         if(result !== -1){
@@ -119,7 +98,6 @@ module.exports =  {
         if(result !== -1){
             return result;
         }
-        console.log('poker hand rank calculator error');
         return result;
     },
 
@@ -348,14 +326,14 @@ module.exports =  {
         }
     },
 
-    removeAllMatchingKeys: function(array, key){
+    removeAllMatchingKeys: function(array, key){ // remove all elements from array that match the key
         let newArray = array.filter(function(x){
             return x !== key;
         });
         return newArray;
     },
 
-    removeSomeMatchingKeys: function(array, key, count){
+    removeSomeMatchingKeys: function(array, key, count){ // remove a number of matching keys based on the count
         for(var i = array.length - 1; i >= 0; i--) {
             if(array[i] === key) {
                 array.splice(i, 1);

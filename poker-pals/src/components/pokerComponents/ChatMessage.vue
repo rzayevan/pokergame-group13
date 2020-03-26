@@ -4,13 +4,13 @@
             <div class="spacer">space</div>
             <div class="name">{{ name }}:</div>
             <div class="message">{{ message }}</div>
-            <div class="mute" v-if="optionsVisible">
-                <div class="innerMute">
+            <div class="mute borderRadius" v-if="optionsVisible">
+                <div class="innerMute borderRadius">
                     <img src="../../images/mute.png"/>
                 </div>
             </div>
-            <div class="report" v-if="optionsVisible" v-on:click="openReport()">
-                <div class="innerReport">
+            <div class="report borderRadius" v-if="optionsVisible" v-on:click="openReport()">
+                <div class="innerReport borderRadius">
                     <img src="../../images/report.png"/>
                 </div>
             </div>
@@ -78,8 +78,6 @@
         height: 2vw;
         background: black;
         margin: -2.5vw 0% 0% 97%;
-        border-top-left-radius: 20% 20%;
-        border-bottom-left-radius: 20% 20%;
         cursor: pointer;
     }
     .innerMute{
@@ -88,8 +86,6 @@
         height: 90%;
         background: white;
         margin: 5% 0% 0% 5%;
-        border-top-left-radius: 20% 20%;
-        border-bottom-left-radius: 20% 20%;
     }
     .innerMute img{
         float: left;
@@ -102,8 +98,6 @@
         height: 2vw;
         background: black;
         margin: -2.5vw 0% 0% 109.25%;
-        border-top-right-radius: 20% 20%;
-        border-bottom-right-radius: 20% 20%;
         cursor: pointer;
     }
     .innerReport{
@@ -112,13 +106,15 @@
         height: 90%;
         background: white;
         margin: 5% 0% 0% 5%;
-        border-top-right-radius: 20% 20%;
-        border-bottom-right-radius: 20% 20%;
     }
     .innerReport img{
         float: left;
         width: 100%;
         height: 100%;
+    }
+    .borderRadius{
+        border-top-right-radius: 20% 20%;
+        border-bottom-right-radius: 20% 20%;
     }
 
 
@@ -134,12 +130,6 @@ export default {
         return {
             optionsVisible: false, // show or hide mute and report options
         }
-    },
-    mounted(){
-        
-    },
-    watch: {
-        
     },
     methods:{
         toggleOptions(){ // show or hide mute and report options

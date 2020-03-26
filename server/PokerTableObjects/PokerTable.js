@@ -3,10 +3,10 @@ let PokerPlayerSeat = require("./PokerPlayerSeat.js");
 // this is a pokerTable class which will handle the current poker table state
 // it contains info on the players, community cards, bets, etc.
 module.exports = class PokerTable {
-    constructor() {
+    constructor(bigBlind) {
         this.tableID = 0; // the id of the table
-        this.bigBlind = 2000; // the big blind of the table
-        this.buyIn = 20000;
+        this.bigBlind = bigBlind; // the big blind of the table
+        this.buyIn = bigBlind * 10;
         this.currentBet = 0; // current bet the table has been raised to, gets reset to zero after each card reveal
         this.seatTurnID = -1; // the seatID of the current turn
         this.dealerSeatID = -1;
@@ -39,7 +39,6 @@ module.exports = class PokerTable {
         ];
         this.currentPlayerSeatCardReveal = -1; // the seat id of the current player showing their cards at the show down
         this.currentRankingHand = -1;
-        //this.pokerHandRankCalculator = new PokerHandRankCalculator();
         this.chipDistributionCalculator = require("./ChipDistributionCalculator.js");
         this.pokerHandRankCalculator = require("./PokerHandRankCalculator.js");
     }
@@ -98,9 +97,7 @@ module.exports = class PokerTable {
     showNextPlayerCards(){
         // we need to find the next player who's hand rank is greater than or equal to the last
         // set their cards to visible
-        console.log('ranks: ' + this.currentRankingHand);
         for(let i = 0; i < 6; i++){
-            console.log(this.tableSeats[this.currentPlayerSeatCardReveal].handRank);
             let player = this.tableSeats[this.currentPlayerSeatCardReveal];
             if(player.inPlay){
                 if(player.handRank >= this.currentRankingHand){
@@ -132,12 +129,10 @@ module.exports = class PokerTable {
     }
 
     getCommunityCards(){
-        console.log('number:' + this.communityCardsShown);
         let comCards = [];
         for(let i = 0; i < this.communityCardsShown; i++){
             comCards.push(this.communityCards[i]);
         }
-        console.log('number again: ' + JSON.stringify(comCards));
         return comCards;
     }
 
@@ -163,12 +158,8 @@ module.exports = class PokerTable {
 
     beginTheGame(){
         this.gameInPlay = true;
-        if(this.showdown){
-            console.log('the deck has changed');
+        if(this.showdown){ // this is to just change the cards of the deck, remove later and use a real card shuffler
             this.deckCards = ['A_H', '2_H', '3_H', '4_H', '5_H', '6_H', '7_H', '8_H', '9_H', '10_H', 'J_H', 'Q_H', 'K_H', 'A_D', '2_D', '3_D', '4_D', '5_D', '6_D', '7_D'];
-        }
-        else{
-            console.log('the deck has not changed');
         }
         this.showdown = false;
         this.currentDeckCard = 0;
@@ -178,7 +169,7 @@ module.exports = class PokerTable {
         this.seatTurnID = this.dealerSeatID;
         this.findNextTurn(); // will move seatTurnID to the next player in game
         this.makeDealer(); // assigns the current seatTurnID dealer status
-        let pos = this.seatTurnID; // save the dealer spot for later
+        let dealerSpot = this.seatTurnID; // save the dealer spot for later
         this.findNextTurn();
         this.makeBlind(this.bigBlind/2); // small blind
         this.findNextTurn();
@@ -189,8 +180,8 @@ module.exports = class PokerTable {
         // starting to the left of the dealer cards get distributed into the hands
         for(let i = 0; i < 2; i++){ // each player is dealt two cards
             for(let j = 0; j < this.getNumberOfPlayersAbleToAct(); j++){ // since everyone playing is able to act at the start, this is appropriate to use
-                pos = this.findNextPlayerToDistributeACard(pos); // starting one seat left of the dealer distribute a card
-                this.tableSeats[pos].cards[i] = this.deckCards[this.currentDeckCard];
+                dealerSpot = this.findNextPlayerToDistributeACard(dealerSpot); // starting one seat left of the dealer distribute a card
+                this.tableSeats[dealerSpot].cards[i] = this.deckCards[this.currentDeckCard];
                 this.currentDeckCard++;
             }
         }
@@ -214,10 +205,10 @@ module.exports = class PokerTable {
         // first check if one or less players is able to make decisions
         if(this.getNumberOfPlayersAbleToAct() < 2  && this.allAblePlayersMadeDecision()){
             // one or less players remaining, we collect the pots and move straight to the show down
-            console.log('premature show down');
             this.beginTheShowDown();
         }
         else{
+            // we have confirmed atleast one player has yet to make a decision and can act so now we find him
             // we go though all the seats until we find a player
             for(let i = 0; i < 6; i++){
                 this.seatTurnID++;
@@ -227,8 +218,7 @@ module.exports = class PokerTable {
                 if(this.tableSeats[this.seatTurnID].isPlayerSeatAbleToAct()){// found the next player
                     return;
                 }
-            }
-            console.log('error');
+            } 
         }
     }
 
@@ -316,7 +306,6 @@ module.exports = class PokerTable {
 
     playerAction(action, raiseToValue){
         let response = this.tableSeats[this.seatTurnID].playerAction(action, this.currentBet, raiseToValue, this.bigBlind);
-        console.log(response.success + ' ' + response.action);
         if(response.success){ // the action was accepted
             if(response.action === 'CHECKING'){
                 this.playerCheckFinish(); // complete the checking code
@@ -338,8 +327,6 @@ module.exports = class PokerTable {
         else{
             return false;
         }
-        
-        //{success: true, action: this.action, raiseToValue: -1};
     }
 
     playerCheckFinish(){
@@ -417,7 +404,6 @@ module.exports = class PokerTable {
                 this.currentBet = 0; // the current bet is reset to zero
                 if(this.getNumberOfPlayersAbleToAct() < 2){
                     this.beginTheShowDown();
-                    console.log('we are ready to begin now');
                     return;
                 }
                 // we reveal the next card(s)
@@ -439,12 +425,9 @@ module.exports = class PokerTable {
     }
 
     playerFoldFinish(){
-        console.log('enter player fold finish');
         // the player folded, they are removed from the game
-        console.log(JSON.stringify(this.cardsShownToAllPlayers));
         this.cardsShownToAllPlayers[this.seatTurnID][0] = 'invisible';
         this.cardsShownToAllPlayers[this.seatTurnID][1] = 'invisible';
-        console.log(JSON.stringify(this.cardsShownToAllPlayers));
         if(this.allAblePlayersMadeDecision()){
             this.currentBet = 0; // the current bet is reset to zero
             // now we must check
@@ -464,26 +447,15 @@ module.exports = class PokerTable {
             }
         }
         else{
-            console.log('find another player');
             this.findNextTurn();
             this.setplayerTurn();
         }
     }
 
     allAblePlayersMadeDecision(){ // check if all players able to act at the table have made a decision
-        console.log(
-          this.tableSeats[0].isPlayerSeatAbleToAct() + ' ' + this.tableSeats[0].madeDecision + '\n'
-        + this.tableSeats[1].isPlayerSeatAbleToAct() + ' ' + this.tableSeats[1].madeDecision + '\n'
-        + this.tableSeats[2].isPlayerSeatAbleToAct() + ' ' + this.tableSeats[2].madeDecision + '\n'
-        + this.tableSeats[3].isPlayerSeatAbleToAct() + ' ' + this.tableSeats[3].madeDecision + '\n'
-        + this.tableSeats[4].isPlayerSeatAbleToAct() + ' ' + this.tableSeats[4].madeDecision + '\n'
-        + this.tableSeats[5].isPlayerSeatAbleToAct() + ' ' + this.tableSeats[5].madeDecision + '\n'
-        );
-
         for(let i = 0; i < 6; i++){
             if(this.tableSeats[i].isPlayerSeatAbleToAct()){
                 if(!this.tableSeats[i].madeDecision){
-                    console.log('returning false');
                     return false; // a player is able to act but has not made a decision
                 }
             }
@@ -491,20 +463,20 @@ module.exports = class PokerTable {
         return true; // everyone that can act has made a decision
     }
 
-    revealMoreCommunityCards(){
+    revealMoreCommunityCards(){ // we reveal community cards in the order 3 then 1 then 1, so how many we reveal now depends on how many we revealed so far
         if(this.communityCardsShown === 0){
             // show three (flop)
-            this.communityCardsShown = 3;
+            this.communityCardsShown = 3; // flop cards
             return true;
         }
         else if(this.communityCardsShown === 3){
             // show one (turn)
-            this.communityCardsShown = 4;
+            this.communityCardsShown = 4; // turn card
             return true;
         }
         else if(this.communityCardsShown === 4){
             // show one (river)
-            this.communityCardsShown = 5;
+            this.communityCardsShown = 5; // river card
             return true;
         }
         else{
@@ -532,20 +504,14 @@ module.exports = class PokerTable {
                 this.cardsShownToAllPlayers[i] = ['card_back', 'card_back'];
             }
         }
-        console.log('the turn: ' + this.tableSeats[2].turn);
         // calculate all player card ranks
         for(let i = 0; i < 6; i++){
             if(this.tableSeats[i].inPlay){
                 this.tableSeats[i].handRank = this.pokerHandRankCalculator.calculate(this.communityCards, this.tableSeats[i].cards);
-                console.log(i + ' ' + this.tableSeats[i].handRank);
             }
         }
         this.currentPlayerSeatCardReveal = this.dealerSeatID; // the dealer is the first to reveal their cards
         this.showdown = true;
-        
-        // then we show player cards using time out functions, based on whether that player has better cards
-        // then calculate chip distributions, update player seats
-        // wait five seconds again and begin a new game
     }
 
     calculateAndDistributeChips(){
@@ -559,7 +525,6 @@ module.exports = class PokerTable {
             this.tableSeats[i].chips += players[i].returnPot;
         }
         this.potTotal = 0;
-        console.log("the results now: " + JSON.stringify(players));
     }
 
     bootPlayers(){
