@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
         joinTable(io, socket, msg);
     });
 
-    // each player will send a message upon a game play button click, this will check whether or not it is the correct player's turn and if the move is valid
+    // each player will send a message upon a game play button click, this will check whether or not it is the player's turn and if the move is valid
     socket.on('turnDecision', function(msg){
         turnDecision(io, socket, msg);
     });
@@ -73,7 +73,7 @@ tables.push(new PokerTable(2000)); // initially we will have one table, with a b
 
 
 // these next three functions are for signing up a client to the poker table, need to use the real login and tables page to do this
-function login(socket, msg){
+function login(socket, msg){ // user sends a log in request and the server checks if account exists
     let profile = profiles.find(profile => profile.userID === msg);
     if(profile === undefined){// the user does not exist
         return;
@@ -82,7 +82,7 @@ function login(socket, msg){
         socket.emit('tableState', JSON.stringify(tables[0].getTableState()));
     }
 }
-function canUserJoinTable(tableToJoin, profile){
+function canUserJoinTable(tableToJoin, profile){ // check if the user is permitted to join the table
     if(tableToJoin === undefined || tableToJoin.isTableFull() || tableToJoin.isPlayerAtTable(profile) || profile.chips < tableToJoin.buyIn){
         return false; // the user cannot join this table
     }
@@ -90,7 +90,7 @@ function canUserJoinTable(tableToJoin, profile){
         return true;
     }
 }
-function joinTable(io, socket, msg){
+function joinTable(io, socket, msg){ // request sent from client that they want to join the table
     let profile = profiles.find(profile => profile.userID === msg.userID); // get their profile
     let tableToJoin = tables.find(table => table.tableID === msg.tableID); // get the table they wish to join
     if(canUserJoinTable(tableToJoin, profile)){// the user can join the table
@@ -111,7 +111,7 @@ function beginTheGame(io, table){ // function will begin the game with a time ou
     setTimeout(function() { // in five seconds the game will begin
         table.beginTheGame(); // the game is set up
         io.emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the new table state
-        for(let i = 0; i < 6; i++){
+        for(let i = 0; i < table.numberOfTableSeats; i++){
             let seat = table.tableSeats[i];
             if(seat.socketID !== -1){
                 io.to(`${seat.socketID}`).emit('beginTheGame', JSON.stringify(seat.cards));
@@ -138,9 +138,9 @@ function turnDecision(io, socket, msg){ // each player when clicking the poker.v
     }
 }
 function beginShowingTheRemainingCommunityCards(io, table){ // the remaining community cards are revealed, one at a time (used if a premature show down is called)
-    let count = 5 - table.communityCardsShown;
-    function showCommunityCard() {
-        if(count <= 0){
+    let count = table.communityCards.length - table.communityCardsShown;
+    function showCommunityCard() { // each time this runs a signle community card revealed
+        if(count <= 0){ // we are done showing community cards now show player cards
             clearInterval(timeout);
             // now begin showing player cards
             showRemainingPlayerCards(io, table);
@@ -154,23 +154,23 @@ function beginShowingTheRemainingCommunityCards(io, table){ // the remaining com
     let timeout = setInterval(showCommunityCard, 2000);
 }
 function showRemainingPlayerCards(io, table){ // the players still in play will show their cards (backside)
-    setTimeout(function() {
+    setTimeout(function() { // all players in play will show their cards face down
         io.emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
         beginFlippingOverEachPlayersCards(io, table);
     }, 2000);
 }
 function beginFlippingOverEachPlayersCards(io, table){ // one at a time each player will flip their cards over
     let count = table.getNumberOfPlayersStillInPlay();
-    function flipNextPlayerCards(){
+    function flipNextPlayerCards(){ // each player one at a time will either show or 'throw away' their cards depending on if they have a higher hand
         count--;
         if(count < 1){
             clearInterval(timeout);
-            setTimeout(function() {
+            setTimeout(function() { // all players have show or thrown their cards, now show the winner(s)
                 let winners = table.getWinnerSocketIDs();
                 for(let i = 0; i < winners.length; i++){
                     io.to(`${winners[i]}`).emit('winner');
-                    calculateAndDistributeChips(io, table);
                 }
+                calculateAndDistributeChips(io, table); // calculate the chip distribution
             }, 1000);
         }
         table.showNextPlayerCards();
@@ -182,7 +182,7 @@ function calculateAndDistributeChips(io, table){ // after a winner is found the 
     setTimeout(function() {
         table.calculateAndDistributeChips();
         io.emit('tableState', JSON.stringify(table.getTableState()));
-        bootPlayers(io, table);
+        bootPlayers(io, table); // remove any players that lost all their chips
     }, 1000);
 }
 function bootPlayers(io, table){ // any players that lost all their chips are removed from the table

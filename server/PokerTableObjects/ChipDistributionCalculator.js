@@ -1,7 +1,8 @@
 module.exports = {
     calculate: function(players){
         // a sample set of players with their bets and card rankings
-        let slots = this.pushPlayersIntoSlotsByRank(players);
+        let numberOfTableSeats = 6;
+        let slots = this.pushPlayersIntoSlotsByRank(players, numberOfTableSeats);
         // the chip distribution is determined by a set of rules
         // the first rule is the pot which is represented by six individual chip slots (one for each seat)
         // the players are sorted into winning ranks, and the first group of winners each show their wagers (group because 2+ people can tie for rank),
@@ -33,10 +34,10 @@ module.exports = {
         }
         players.sort(function(a, b){return a.id - b.id}); // resort players by id now
     },
-    pushPlayersIntoSlotsByRank: function(players){
+    pushPlayersIntoSlotsByRank: function(players, numberOfTableSeats){
         // sort the players into their winning ranks, a slot can have more than one player
         let slots = [];
-        for(let i = 0; i < 6; i++){
+        for(let i = 0; i < numberOfTableSeats; i++){
             slots.push([]);
         }
         players.sort(function(a, b){return b.rank - a.rank});

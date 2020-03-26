@@ -2,8 +2,8 @@ let Card = require("./Card.js"); // later will remove the need for the card clas
 
 module.exports =  {
     calculate: function(communityCards, playerCards){
-        let cards = new Array(7);
-        for(let i = 0; i < 5; i++){ // convert the five community cards into objects the calculator can use
+        let cards = new Array(communityCards.length + playerCards.length);
+        for(let i = 0; i < communityCards.length; i++){ // convert the five community cards into objects the calculator can use
             let split = communityCards[i].split("_");
             let number;
             // the poker cards use the notation 'number_suit' in string format, the number portion needs to be converted
@@ -26,7 +26,7 @@ module.exports =  {
             let suit = split[1];
             cards[i] = new Card(number, suit);
         }
-        for(let i = 0; i < 2; i++){ // convert the two player cards into objects the calcultor can use
+        for(let i = 0; i < playerCards.length; i++){ // convert the two player cards into objects the calcultor can use
             let split = playerCards[i].split("_");
             let number;
             // the poker cards use the notation 'number_suit' in string format, the number portion needs to be converted
