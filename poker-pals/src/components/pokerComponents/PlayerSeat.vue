@@ -7,10 +7,10 @@
                 </div>
                 <Clock v-bind:timer="timer"/> <!--the clock timer-->
                 <div class="identification">
-                    <div class="idImage">
-                        <img v-bind:src="tagImage"/>
+                    <div class="accountImage">
+                        <img v-bind:src="accountImage"/>
                     </div>
-                    <div class="idName">{{ tagName }}</div>
+                    <div class="accountName">{{ accountName }}</div>
                 </div>
                 <div class="chipCount">
                     <div class="chipImage">
@@ -149,20 +149,20 @@
         background: transparent;
         margin: 22% 0% 0% 0%;
     }
-    .idImage{
+    .accountImage{
         position: absolute;
         width: 20%;
         height: 90%;
         background: transparent;
         margin: 1% 0% 0% 3%;
     }
-    .idImage img{
+    .accountImage img{
         position: absolute;
         width: 100%;
         height: 100%;
         margin: 0% 0% 0% -50%;
     }
-    .idName{
+    .accountName{
         position: absolute;
         width: 77%;
         height: 50%;
@@ -292,8 +292,8 @@ export default {
         Clock,
     },
     props: [
-        'occupied', 'classes', 'dealerStatus', '_id', 'cards', 'cardReveal', 'betValue', 'tagName',
-        'tagImage', 'chipTotal', 'action', 'youTag', 'timer', 'active'
+        'occupied', 'classes', 'dealerStatus', '_id', 'cards', 'cardReveal', 'betValue', 'accountName',
+        'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'active'
     ],
     data() {
         return { // various items to set based on the props

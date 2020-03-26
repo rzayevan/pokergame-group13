@@ -307,6 +307,25 @@ module.exports = class PokerTable {
     playerAction(action, raiseToValue){
         let response = this.tableSeats[this.seatTurnID].playerAction(action, this.currentBet, raiseToValue, this.bigBlind);
         if(response.success){ // the action was accepted
+            switch(response.action){
+                case 'CHECKING':
+                    this.playerCheckFinish();
+                    break;
+                case 'CALLING':
+                    this.playerCallFinish();
+                    break;
+                case 'RAISING':
+                    this.playerRaiseFinish(response.raiseToValue);
+                    break;
+                case 'ALL IN':
+                    this.playerAllInFinish(response.raiseToValue);
+                    break;
+                default: // FOLDED
+                    this.playerFoldFinish();
+                    break;
+            }
+            return true;
+            /*
             if(response.action === 'CHECKING'){
                 this.playerCheckFinish(); // complete the checking code
             }
@@ -323,6 +342,7 @@ module.exports = class PokerTable {
                 this.playerFoldFinish();
             }
             return true;
+            */
         }
         else{
             return false;
@@ -464,23 +484,18 @@ module.exports = class PokerTable {
     }
 
     revealMoreCommunityCards(){ // we reveal community cards in the order 3 then 1 then 1, so how many we reveal now depends on how many we revealed so far
-        if(this.communityCardsShown === 0){
-            // show three (flop)
-            this.communityCardsShown = 3; // flop cards
-            return true;
-        }
-        else if(this.communityCardsShown === 3){
-            // show one (turn)
-            this.communityCardsShown = 4; // turn card
-            return true;
-        }
-        else if(this.communityCardsShown === 4){
-            // show one (river)
-            this.communityCardsShown = 5; // river card
-            return true;
-        }
-        else{
-            return false; // time for the show down
+        switch(this.communityCardsShown){
+            case 0:
+                this.communityCardsShown = 3; // flop cards
+                return true;
+            case 3:
+                this.communityCardsShown = 4; // turn card
+                return true;
+            case 4:
+                this.communityCardsShown = 5; // river card
+                return true;
+            default:
+                return false; // time for the show down      
         }
     }
 

@@ -45,8 +45,8 @@
                             v-bind:cards="player.cards" 
                             v-bind:cardReveal="cardReveal"
                             v-bind:betValue="player.bet"
-                            v-bind:tagName="player.tagName"
-                            v-bind:tagImage="player.tagImage"
+                            v-bind:accountName="player.accountName"
+                            v-bind:accountImage="player.accountImage"
                             v-bind:chipTotal="player.chipTotal"
                             v-bind:action="player.action"
                             v-bind:youTag="player.youTag"
@@ -54,7 +54,7 @@
                         />
                     </div>
                 </div>
-                <div class="blindsBox">Blinds: 1,000/2,000</div> <!--shows the blinds of this particular table, TODO later bind it to a variable-->
+                <div class="blindsBox">Blinds: {{ bigBlind/2 }}/{{ bigBlind }}</div> <!--shows the blinds of this particular table, TODO later bind it to a variable-->
             </div>
             <div class="display">
                 <div class="cheatSheetToggle" v-on:click="toggleCheatSheet()"> <!--a toggle to show or hide the cheat sheet-->
@@ -71,24 +71,7 @@
                         <img v-bind:src="myCards[1].src"/>
                     </div>
                 </div>
-                <div class="playerInputs"> <!--container holding all the players button options-->
-                    <button class="inputButton1 centerText" id="buttonFold" v-on:click="makeDecision('FOLD')">FOLD</button>
-                    <button class="inputButton1 centerText" id="buttonCheck" v-on:click="makeDecision('CHECK')">CHECK</button>
-                    <button class="inputButton1 centerText" id="buttonCall" v-on:click="makeDecision('CALL')">CALL</button>
-                    <div class="raiseToggle"> <!--the container holding the raise input, it contains two buttons, a slider, and a value display-->
-                        <div class="raiseButtonOuter" id="buttonMinus" v-on:click="decrementRaise()">
-                            <div class="raiseButton centerText">-</div>
-                        </div>
-                        <div class="raiseValue" id="raiseValue">2000</div>
-                        <input class="raiseScroll" id="slider" type="range" min="2000" max="100000" value="2000">
-                        <div class="raiseButtonOuter" id="buttonPlus" v-on:click="incrementRaise()">
-                            <div class="raiseButton centerText">+</div>
-                        </div>
-                    </div>
-                    <button class="inputButton1 centerText" id="buttonRaise" v-on:click="makeDecision('RAISE')">RAISE</button>
-                    <button class="inputButton2 centerText" id="buttonCheckFold" v-on:click="toggleCheckFoldButton()">CHECK/FOLD</button>
-                    <button class="inputButton1 centerText" id="buttonAllIn" v-on:click="makeDecision('ALL IN')">ALL IN</button>
-                </div>
+                <PlayerInputs v-bind:bigBlind="bigBlind"/>
             </div>
         </div>
         <Chat v-bind:full="chatFull"/> <!--the chat container holding all items related to messaging other players-->
@@ -104,19 +87,6 @@
     the solution is to surround elements with an outer div with a back ground and then put another
     div inside with the elements, this simulates a black border*/
     
-    
-    
-    /* Chrome, Safari, Edge, Opera */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-    }
-
-    /* Firefox */
-    input[type=number] {
-    -moz-appearance: textfield;
-    }
     .outerFrame{
         width: 80vw;
         height: 45vw;
@@ -287,108 +257,7 @@
         width: 45%;
         margin: 5.5% 0% 0% 3%;
     }
-    .playerInputs{
-        float: left;
-        width: 32%;
-        height: 79%;
-        background: transparent;
-        margin: 2% 0% 0% 2%;
-    }
-    .inputButton1{
-        float: left;
-        width: 30%;
-        height: 25%;
-        background: white;
-        border: 1px solid black;
-        border-radius: 15%/30%;
-        font-size: 1vw;
-    }
-    .inputButton2{
-        float: left;
-        width: 60%;
-        height: 25%;
-        background: white;
-        border: 1px solid black;
-        border-radius: 8%/30%;
-        font-size: 1vw;
-    }
-    #buttonFold{
-        margin: 0%;
-    }
-    #buttonCheck{
-        margin: 0% 0% 0% 5%;
-    }
-    #buttonCall{
-        margin: 0% 0% 0% 5%;
-    }
-    .raiseToggle{
-        float: left;
-        width: 65%;
-        height: 25%;
-        margin: 6.75% 0% 0% 0%;
-    }
-    .raiseButtonOuter{
-        float: left;
-        width: 20%;
-        height: 100%;
-        background: black;
-        cursor: pointer;
-    }
-    .raiseButtonOuter:active{
-        transform: translateX(4%);
-    }
-    .raiseButton{
-        width: 95%;
-        height: 95%;
-        background: white;
-        font-weight: 700;
-        font-size: 1vw;
-        margin: 2.5% 0% 0% 2.5%;
-    }
-    #buttonMinus{
-        margin: 0%;
-    }
-    .raiseValue{
-        position: absolute;
-        width: 12.25%;
-        height: 3%;
-        margin: 0% 0% 0% 4.25%;
-        font-weight: 700;
-        font-size: 1vw;
-    }
-    .raiseScroll{
-        float: left;
-        width: 60%;
-        height: 40%;
-        margin: 13% 0% 0% 0%;
-        background: transparent;
-    }
-    .raiseScroll::-moz-range-thumb{
-        width: 25%;
-        height: 100%;
-        background: #eeeeee;
-        cursor: pointer;
-    }
-    #buttonPlus{
-        margin: 0%;
-    }
-    #buttonRaise{
-        margin: 6.75% 0% 0% 5%;
-    }
-    #buttonCheckFold{
-        width: 65%;
-        margin: 6.75% 0% 0% 0%;
-    }
-    #buttonAllIn{
-        margin: 6.75% 0% 0% 5%;
-        white-space: nowrap;
-    }
-    .centerText{
-        display : flex;
-        align-items : center;
-        justify-content: center;
-    }
-
+    
     img{
         width: 100%;
         height: 100%;
@@ -401,6 +270,7 @@ import PlayerSeat from './pokerComponents/PlayerSeat.vue';
 import UserNavbar from './UserNavbar.vue';
 import Chat from './pokerComponents/Chat.vue';
 import ReportPocket from './pokerComponents/ReportPocket.vue';
+import PlayerInputs from './pokerComponents/PlayerInputs.vue';
 
 
 import io from "socket.io-client";
@@ -412,6 +282,7 @@ export default {
         UserNavbar,
         Chat,
         ReportPocket,
+        PlayerInputs,
     },
     created() {
         this.socket = io("http://localhost:3000");
@@ -424,6 +295,8 @@ export default {
             seatID: '',
 
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
+            raiseToValue: 2000, // TODO: set this based on table stakes
+            
             // right now the chat calls back to the poker page to send a report, might want to have the chat run with its own socket
             report_OffenderName: '', 
             report_OffenderMessageId: '',
@@ -497,12 +370,12 @@ export default {
             // most of this will come from the server
             myCards: [{src:null}, {src:null}],
             players: [ // the intial state of all player boxes,these get updated throughout the game
-                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat1', id: 1, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat2', id: 2, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat3', id: 3, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', id: 4, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', id: 5, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', id: 6, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, tagName: "", tagImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat1', id: 1, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat2', id: 2, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat3', id: 3, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', id: 4, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', id: 5, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', id: 6, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
             ],
             communityCards: [{src:null},{src:null},{src:null},{src:null},{src:null}], // community cards revealed at any given time
         };
@@ -517,7 +390,7 @@ export default {
                 this.players[i].occupied = !seatStates[i].seatOpen;
                 this.players[i].dealerStatus = seatStates[i].dealer;
                 this.players[i].bet = seatStates[i].bet;
-                this.players[i].tagName = seatStates[i].name;
+                this.players[i].accountName = seatStates[i].name;
                 this.players[i].chipTotal = seatStates[i].chips;
                 this.players[i].action = seatStates[i].action;
                 this.players[i].timer = seatStates[i].turn;
@@ -612,7 +485,7 @@ export default {
                 tableID: this.tableID,
                 seatID: this.seatID,
                 action: action,
-                raiseToValue: this.getRaiseToValue(), // only used if player is raising
+                raiseToValue: this.raiseToValue, // only used if player is raising
             });
             // TODO: later use v-bind and not getElementById
             this.checkFold = false;
@@ -620,15 +493,8 @@ export default {
             b.style.backgroundColor = '#ffffff'; // color theme for button not selected
         },
         // end of socket.emit functions
-        toggleCheckFoldButton(){ // toggle the check/fold button, this will allow the client to automatically send an action without user input
-            this.checkFold = !this.checkFold;
-            let b = document.getElementById("buttonCheckFold");
-            if(this.checkFold){
-                b.style.backgroundColor = '#aaaaaa'; // color theme for button selected
-            }
-            else{
-                b.style.backgroundColor = '#ffffff'; // color theme for button not selected
-            }
+        toggleCheckFoldButton(checkFold){ // toggle the check/fold button, this will allow the client to automatically send an action without user input
+            this.checkFold = checkFold;
         },
         exitTable(){ // allows a player to leave the table, player will forfeit any chips in the pot
             // TODO: when all pages are linked this function will be implemented
@@ -642,32 +508,8 @@ export default {
             }
             this.cheatSheetOpen = !this.cheatSheetOpen;
         },
-        incrementRaise(){
-            // cap this value if it goes over what the player has left
-            let slider = document.getElementById("slider");
-            let output = document.getElementById("raiseValue");
-            let value = parseInt(slider.value);
-            // add up to the big blind to even out the number
-            slider.value = (value + (this.bigBlind - (value % this.bigBlind))).toString();
-            output.innerHTML = slider.value;
-        },
-        decrementRaise(){
-            // cap this value if it goes over what the player has left
-            let slider = document.getElementById("slider");
-            let output = document.getElementById("raiseValue");
-            let value = parseInt(slider.value);
-            // subtract up to the big blind
-            let remove = value % this.bigBlind;
-            if(remove === 0){
-                remove = this.bigBlind;
-            }
-            slider.value = (value - remove).toString();
-            output.innerHTML = slider.value;
-        },
-        getRaiseToValue(){
-            let slider = document.getElementById("slider");
-            let value = parseInt(slider.value);
-            return value;
+        setRaiseToValue(value){
+            this.raiseToValue = value;
         },
         setPlayerCardsVisibility(visible){
             this.cardReveal = visible;

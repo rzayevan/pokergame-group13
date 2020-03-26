@@ -64,6 +64,7 @@ module.exports = class PokerPlayerSeat {
     // this function will receive the action and raise value (only used during a raise)
     // it will assess whether or not the move is valid and return a yes or no reponse
     playerAction(action, currentBet, raiseToValue, bigBlind){// action the player wants to make, current bet of the table, the value the player wishes to raise to
+        /*
         if(action === "CALL"){
             return this.playerCallAction(currentBet); // check if call action is allowed by the player if so then act on it
         }
@@ -86,6 +87,26 @@ module.exports = class PokerPlayerSeat {
         }
         else if(action === "ALL IN"){
             return this.playerAllInAction(currentBet);
+        }
+        */
+        switch(action){
+            case 'CALL':
+                return this.playerCallAction(currentBet); // check if call action is allowed by the player if so then act on it
+            case 'CHECK':
+                return this.playerCheckAction(currentBet); // check if check acion is allowed by the player if so then act on it
+            case 'FOLD':
+                return this.playerFoldAction(); // after fold check for number of players left, if only one then the game ends without a show down and the last player collect the whole pot
+            case 'CHECK/FOLD': // we first see if a check is possible, if so then check, else then fold
+                if(this.bet === currentBet){
+                    return this.playerCheckAction(currentBet);
+                }
+                else{
+                    return this.playerFoldAction();
+                }
+            case 'RAISE':
+                return this.playerRaiseAction(currentBet, raiseToValue, bigBlind);
+            default: // all in
+                return this.playerAllInAction(currentBet);
         }
     }
 
