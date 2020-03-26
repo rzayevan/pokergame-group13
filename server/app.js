@@ -139,7 +139,7 @@ function turnDecision(io, socket, msg){ // each player when clicking the poker.v
 }
 function beginShowingTheRemainingCommunityCards(io, table){ // the remaining community cards are revealed, one at a time (used if a premature show down is called)
     let count = table.communityCards.length - table.communityCardsShown;
-    function showCommunityCard() { // each time this runs a signle community card revealed
+    function showCommunityCard() { // each time this runs a single community card revealed
         if(count <= 0){ // we are done showing community cards now show player cards
             clearInterval(timeout);
             // now begin showing player cards
