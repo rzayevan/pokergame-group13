@@ -47,7 +47,7 @@ module.exports =  {
                     number = parseInt(split[0]); // all other numbers are worth themselves ex: 2 => 2
             }
             let suit = split[1];
-            cards[i+5] = new Card(number, suit);
+            cards[i+communityCards.length] = new Card(number, suit);
         }
         // we will iterate through the functions until one returns a positive value
 
@@ -119,17 +119,18 @@ module.exports =  {
 
     handQuadsValue: function(cards, setup){
         let numbers = this.getTheNumbersArrayA14(cards); // we want all aces=14 (1 higher than king=13)
+        let quad = 4;
         numbers.sort(function(a, b){return a - b}); // sort the numbers in ascending order
         let twoToAceCount = this.getTwoToAceCount(numbers); // sort the numbers into matching number groups
-        let cardNumber = this.findHighestGroup(twoToAceCount, 4);
+        let cardNumber = this.findHighestGroup(twoToAceCount, quad);
         if(cardNumber === -1){
             return -1;
         }
         let quadResult = 0;
-        for(let k = 4; k > 0; k--){
+        for(let k = quad; k > 0; k--){
             quadResult += cardNumber * this.integerPow(16, k); // the hexidecimal result of the quads
         }
-        this.removeSomeMatchingKeys(numbers, cardNumber, 4); // need a highcard, remove the quad set and search the remainer
+        this.removeSomeMatchingKeys(numbers, cardNumber, quad); // need a highcard, remove the quad set and search the remainer
         let remainingCards = this.getRemainingCards(numbers); // convert numbers into card objects
         let highCardResult = this.handHighCardValue(remainingCards, {number: 1, condition: false});
         let result = 0x800000 + quadResult + highCardResult; // combine results into final hexidecimal
@@ -154,23 +155,27 @@ module.exports =  {
 
     handFlushValue: function(cards, setup){
         // we sort the cards by suit
+        let oldAce = 1;
+        let newAce = 14;
         let suits = [];
         suits.push([]); suits.push([]); suits.push([]); suits.push([]);
         for(let i = 0; i < cards.length; i++){
             let number = cards[i].number;
-            if(number === 1){
-                number = 14;
+            if(number === oldAce){
+                number = newAce;
             }
             suits[Card.getSuitNumber(cards[i].suit) - 1].push(number);
         }
         let result = 0x600000;
-        for(let i = 0; i < 4; i++){
-            if(suits[i].length >= 5){ // found a flush
+        let neededHandSize = 5; // a flush consists of 5 cards
+        let numberOfSuits = 4;
+        for(let i = 0; i < numberOfSuits; i++){
+            if(suits[i].length >= neededHandSize){ // found a flush
                 suits[i].sort(function(a, b){return a - b});
                 if(setup.condition){ // return the cards, else go further and result calculated result
                     return suits[i];
                 }
-                for(let k = 0; k < 5; k++){
+                for(let k = 0; k < neededHandSize; k++){
                     result += suits[i][(suits[i].length - 1) - k] * this.integerPow(16, 4-k);
                 }
                 return result;
@@ -186,31 +191,35 @@ module.exports =  {
         let numbers = this.getTheNumbersArrayA14(cards);
         numbers.sort(function(a, b){return a - b});
         numbers = this.removeDuplicates(numbers);
+        let neededHandSize = 5;
+        let specialCaseTopCard = 5; // for the special case the five in a straight is the top card
+        let ace = 14;
+        let aceStraightMark = 4; // aces right now are set to 14 so if we have 4 cards in a straight (2,3,4,5) we make a special check condition (treat 14 as 1)
         // we start from the end and work our way down and include a special case for the ace also equal to 1
         let count = 1; // we will always have a straight of at least 1
-        for(let i = numbers.length - 1; i >= 4; i--){
+        for(let i = numbers.length - 1; i >= aceStraightMark; i--){
             // then we go further down, checking each card until either a straight or break is found
             for(let j = i - 1; j >= 0; j--){
                 if(numbers[j] === numbers[i] - count){ // check if sequence still holds
                     count++;
-                    if(count === 5){
+                    if(count === neededHandSize){
                         result = 0x000000;
                         // we have a straight
                         if(setup.condition){ // we send back a straight status, or another function called this function and will set their own status
                             result = 0x500000;
                         }
-                        for(let k = 0; k < 5; k++){
+                        for(let k = 0; k < neededHandSize; k++){
                             result += numbers[i-k] * this.integerPow(16, 4-k); // add the straight value in hexidecimal
                         }
                         return result;
                     }
-                    else if(count === 4 && numbers[i] === 5 && numbers[numbers.length - 1] === 14){
+                    else if(count === aceStraightMark && numbers[i] === specialCaseTopCard && numbers[numbers.length - 1] === ace){
                         // we have count of four going 2,3,4,5 and an ace, its a straight
-                        result = 0x000001;
+                        result = 0x000001; // automatically add the value of 1 to the hexidecimal
                         if(setup.condition){
                             result = 0x500001;
                         }
-                        for(let k = 0; k < 4; k++){
+                        for(let k = 0; k < aceStraightMark; k++){
                             result += numbers[i-k] * this.integerPow(16, 4-k);
                         }
                         return result;
@@ -235,10 +244,11 @@ module.exports =  {
             return -1;
         }
         let tripletResult = 0;
-        for(let k = 2; k >= 0; k--){
+        let triplet = 3;
+        for(let k = triplet-1; k >= 0; k--){
             tripletResult += cardNumber * this.integerPow(16, setup.number + k); // add the hexidecimal value
         }
-        this.removeSomeMatchingKeys(numbers, cardNumber, 3);
+        this.removeSomeMatchingKeys(numbers, cardNumber, triplet);
         let remainingCards = this.getRemainingCards(numbers);
         
         if(setup.number === 0){ // another function called this and only wants the cards
@@ -261,8 +271,9 @@ module.exports =  {
         if(cardNumber === -1){
             return -1;
         }
-        let firstPairResult = cardNumber * this.integerPow(16, setup.number + 3) + cardNumber * this.integerPow(16, setup.number + 2);
-        this.removeSomeMatchingKeys(numbers, cardNumber, 2);
+        let pair = 2;
+        let firstPairResult = cardNumber * this.integerPow(16, setup.number + pair + 1) + cardNumber * this.integerPow(16, setup.number + pair);
+        this.removeSomeMatchingKeys(numbers, cardNumber, pair);
         let remainingCards = this.getRemainingCards(numbers);
         let secondPairResult = this.handSinglePairValue(remainingCards, setup); // find second pair of remaining cards
         if(secondPairResult === -1){
@@ -274,9 +285,10 @@ module.exports =  {
 
     handSinglePairValue: function(cards, setup){ // find the highest pair
         let numbers = this.getTheNumbersArrayA14(cards);
+        let pair = 2;
         numbers.sort(function(a, b){return a - b}); // now the array is sort low to high
         let twoToAceCount = this.getTwoToAceCount(numbers);
-        let cardNumber = this.findHighestGroup(twoToAceCount, 2);
+        let cardNumber = this.findHighestGroup(twoToAceCount, pair);
         if(cardNumber === -1){
             return -1;
         }
@@ -284,7 +296,7 @@ module.exports =  {
         if(setup.number === 0){
             return pairResult;
         }
-        this.removeSomeMatchingKeys(numbers, cardNumber, 2);
+        this.removeSomeMatchingKeys(numbers, cardNumber, pair);
         let remainingCards = this.getRemainingCards(numbers);
         let highCardResult = this.handHighCardValue(remainingCards, {number: setup.number, condition: false}); // if full house is calling this then highCardSendBack = 0, and 0 is returned
         let result = 0x200000 + pairResult + highCardResult;
@@ -292,14 +304,16 @@ module.exports =  {
     },
 
     handHighCardValue: function(cards, setup){ // find the highcards
+        let oldAce = 1;
+        let newAce = 14;
         if(setup.number > cards.length){
             return -1; // error
         }
         let numbers = new Array(cards.length);
         for(let i = 0; i < numbers.length; i++){
             numbers[i] = cards[i].number;
-            if(numbers[i] === 1){
-                numbers[i] = 14;
+            if(numbers[i] === oldAce){
+                numbers[i] = newAce;
             }
         }
         numbers.sort(function(a, b){return a - b});
@@ -356,11 +370,13 @@ module.exports =  {
     },
 
     getTheNumbersArrayA14: function(cards){
+        let originalAce = 1;
+        let newAce = 14;
         let numbers = new Array(cards.length);
         for(let i = 0; i < numbers.length; i++){
             numbers[i] = cards[i].number;
-            if(numbers[i] === 1){
-                numbers[i] = 14;
+            if(numbers[i] === originalAce){
+                numbers[i] = newAce;
             }
         }
         return numbers;
@@ -375,18 +391,20 @@ module.exports =  {
     },
 
     getTwoToAceCount: function(numbers){
+        let offset = 2; // 2's get put into slot 0 so an offset of 2 is needed
         let twoToAceCount = new Array(13).fill(0);
         for(let i = 0; i < numbers.length; i++){
-            twoToAceCount[numbers[i] - 2]++;
+            twoToAceCount[numbers[i] - offset]++;
         }
         return twoToAceCount;
     },
 
     findHighestGroup: function(twoToAceCount, count){
         let cardNumber = -1;
+        let offset = 2; // 2's get put into slot 0 so an offset of 2 is needed
         for(let i = twoToAceCount.length - 1; i >= 0; i--){
             if(twoToAceCount[i] >= count){
-                cardNumber = i + 2;
+                cardNumber = i + offset;
                 i = 0;
             }
         }

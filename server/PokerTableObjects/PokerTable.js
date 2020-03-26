@@ -183,7 +183,8 @@ module.exports = class PokerTable {
         this.setplayerTurn(); // set the player to be able to make a decision
         // now distribute the cards
         // starting to the left of the dealer cards get distributed into the hands
-        for(let i = 0; i < 2; i++){ // each player is dealt two cards
+        let numberOfCardsDealtToEachPlayer = 2;
+        for(let i = 0; i < numberOfCardsDealtToEachPlayer; i++){ // each player is dealt two cards
             for(let j = 0; j < this.getNumberOfPlayersAbleToAct(); j++){ // since everyone playing is able to act at the start, this is appropriate to use
                 dealerSpot = this.findNextPlayerToDistributeACard(dealerSpot); // starting one seat left of the dealer distribute a card
                 this.tableSeats[dealerSpot].cards[i] = this.deckCards[this.currentDeckCard];
@@ -339,7 +340,7 @@ module.exports = class PokerTable {
     playerCheckFinish(){
         if(this.allAblePlayersMadeDecision()){
             this.currentBet = 0; // the current bet is reset to zero
-            if(this.getNumberOfPlayersAbleToAct() < 2){
+            if(this.getNumberOfPlayersAbleToAct() < this.minimumNumberOfPlayersNeededToContinue){
                 beginTheShowDown();
                 return;
             }
@@ -362,7 +363,7 @@ module.exports = class PokerTable {
     playerCallFinish(){
         if(this.allAblePlayersMadeDecision()){
             this.currentBet = 0;
-            if(this.getNumberOfPlayersAbleToAct() < 2){
+            if(this.getNumberOfPlayersAbleToAct() < this.minimumNumberOfPlayersNeededToContinue){
                 this.beginTheShowDown();
                 return;
             }
@@ -409,7 +410,7 @@ module.exports = class PokerTable {
             // now check if we are ready for the next card reveal
             if(this.allAblePlayersMadeDecision()){
                 this.currentBet = 0; // the current bet is reset to zero
-                if(this.getNumberOfPlayersAbleToAct() < 2){
+                if(this.getNumberOfPlayersAbleToAct() < this.minimumNumberOfPlayersNeededToContinue){
                     this.beginTheShowDown();
                     return;
                 }
@@ -438,7 +439,7 @@ module.exports = class PokerTable {
         if(this.allAblePlayersMadeDecision()){
             this.currentBet = 0; // the current bet is reset to zero
             // now we must check
-            if(this.getNumberOfPlayersAbleToAct() < 2){
+            if(this.getNumberOfPlayersAbleToAct() < this.minimumNumberOfPlayersNeededToContinue){
                 this.beginTheShowDown();
                 return;
             }
