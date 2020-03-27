@@ -1,6 +1,6 @@
 let PokerTable = require("./PokerTableObjects/PokerTable.js");
 let pokerHandRankCalculator = require("./PokerTableObjects/test.js");/////////////////////////// added for testing
-console.log(pokerHandRankCalculator.calculate(['A_S', '2_S', '3_S', '4_S', '5_S'], ['6_S', '7_S'])); // value returned is supposed to be: 9921859
+//console.log(pokerHandRankCalculator.calculate(['A_S', '2_S', '3_S', '4_S', '5_S'], ['6_S', '7_S'])); // value returned is supposed to be: 9921859
 let express = require('express');
 let app = express();
 let http = require('http').Server(app);
