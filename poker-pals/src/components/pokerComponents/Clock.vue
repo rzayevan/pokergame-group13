@@ -1,5 +1,5 @@
 <template>
-    <div class="clock" :style="{ opacity: clockOpacity }"> <!--when visible an animation starts representing the time the player has left to act-->
+    <div class="clock" :style="{visibility: timer ? 'visible' : 'hidden'}"> <!--when visible an animation starts representing the time the player has left to act-->
         <img src="../../images/clock.png"/>
         <div class="clock_pointer">
             <transition name="rotate"> <!--animation for clock needle-->
@@ -34,7 +34,6 @@
         width: 100%;
         height: 100%;
     }
-
     .rotate-enter-active{
         animation: rotate 5s;
         animation-timing-function: linear;
@@ -47,7 +46,6 @@
             transform: rotate(360deg);
         }
     }
-
 </style>
 
 <script>
@@ -56,15 +54,5 @@ export default {
     props: [
         'timer',
     ],
-    data() {
-        return { // clock will show whether or not it is your turn
-            clockOpacity: this.timer ? 1.0 : 0.0,
-        };
-    },
-    watch: {
-        timer: function(){
-            this.clockOpacity = this.timer ? 1.0 : 0.0; // on timer===true the animation starts
-        },
-    }
 }
 </script>

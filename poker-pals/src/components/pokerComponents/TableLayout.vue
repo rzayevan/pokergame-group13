@@ -192,19 +192,5 @@ export default {
     props: [
         'potTotal', 'communityCards', 'players', 'cardReveal', 'bigBlind',
     ],
-    data() {
-        return {
-            
-        }
-    },
-    mounted(){
-        
-    },
-    watch: {
-        
-    },
-    methods:{
-        
-    }
 };
 </script>

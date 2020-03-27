@@ -11,7 +11,7 @@
             />
             <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
         </div>
-        <Chat v-bind:full="chatFull"/> <!--the chat container holding all items related to messaging other players-->
+        <Chat v-bind:full="chatFull" v-bind:tableName="tableName" v-bind:userID="userID"/> <!--the chat container holding all items related to messaging other players-->
         <ReportPocket v-if="!chatFull"
             v-bind:report_OffenderName="report_OffenderName" 
             v-bind:report_OffenderMessageId="report_OffenderMessageId"
@@ -70,7 +70,7 @@ export default {
             userID: '',
             tableID: 0,
             seatID: '',
-
+            tableName: '',
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
             raiseToValue: 2000, // TODO: set this based on table stakes
             
@@ -78,6 +78,7 @@ export default {
             report_OffenderName: '', 
             report_OffenderMessageId: '',
             // the image resource files for the card images
+            /*
             cardFiles: [ // each image resource is loaded into an array and elements can request them by either index or name
                 {src: require(`../images/cards/card_back.png`), name: 'card_back'},
                 {src: require(`../images/cards/empty.png`), name: 'card_empty'},
@@ -137,7 +138,10 @@ export default {
                 {src: require(`../images/cards/J_D.png`), name: 'J_D'},
                 {src: require(`../images/cards/Q_D.png`), name: 'Q_D'},
                 {src: require(`../images/cards/K_D.png`), name: 'K_D'},
-            ],
+            ],*/
+            cardFiles: require("./pokerComponents/CardFiles").cardFiles,
+
+
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
             bigBlind: 2000,
@@ -190,6 +194,10 @@ export default {
             this.seatID = msg;
             this.players[this.seatID].youTag = true;
         });
+
+        this.socket.on('tableName', msg => { // each player upon joining a table will receive the id of the seat they are to sit at
+            this.tableName = msg;
+        });
         
         this.socket.on('beginTheGame', msgJSON => { // each player receives their two personal cards upon the game starting
             let msg = JSON.parse(msgJSON);
@@ -217,7 +225,7 @@ export default {
             for(let i = 0; i < this.players.length; i++){
                 this.players[i].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
             }
-            for(let i = 0; i < 5; i++){
+            for(let i = 0; i < this.communityCards.length; i++){
                 this.communityCards[i].src = this.cardFiles[1].src;
             }
             this.setPlayerCardsVisibility(false); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)

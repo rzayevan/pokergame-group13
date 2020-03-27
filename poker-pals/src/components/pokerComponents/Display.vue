@@ -3,7 +3,7 @@
         <div class="cheatSheetToggle" v-on:click="toggleCheatSheet()"> <!--a toggle to show or hide the cheat sheet-->
             <img src="../../images/cheat_sheet_icon.png"/>
         </div>
-        <div class="cheatSheet" id="cheatSheet">
+        <div class="cheatSheet" :style="{visibility: cheatSheetOpen ? 'visible' : 'hidden'}">
             <img src="../../images/cheatSheet.png"/>
         </div>
         <div class="playerCards"> <!--container holding the players personal cards-->
@@ -85,12 +85,6 @@ export default {
     },
     methods:{
         toggleCheatSheet(){
-            if(this.cheatSheetOpen){
-                document.getElementById('cheatSheet').style.opacity = 0.0;
-            }
-            else{
-                document.getElementById('cheatSheet').style.opacity = 1.0;
-            }
             this.cheatSheetOpen = !this.cheatSheetOpen;
         },
         makeDecision(action){

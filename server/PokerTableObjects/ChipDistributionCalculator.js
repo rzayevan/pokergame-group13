@@ -1,7 +1,7 @@
 module.exports = {
     calculate: function(players){
         // a sample set of players with their bets and card rankings
-        let numberOfTableSeats = 6;
+        let numberOfTableSeats = require("./PokerUtilities.js").numberOfTableSeats;
         let slots = this.pushPlayersIntoSlotsByRank(players, numberOfTableSeats);
         // the chip distribution is determined by a set of rules
         // the first rule is the pot which is represented by six individual chip slots (one for each seat)

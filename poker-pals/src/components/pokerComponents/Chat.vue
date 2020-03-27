@@ -1,7 +1,7 @@
 <template>
     <div class="chatBox" v-bind:class="{ chatBoxFull: full, chatBoxHalf: !full }"> <!--the chat container holding all the chat elements together-->
             <div class="title" v-bind:class="{ titleFull: full, titleHalf: !full }">
-                <div class="title_text centerText">Big Fish</div>
+                <div class="title_text centerText">{{ tableName }}</div>
             </div>
             <div class="messagesBoxBorder" v-bind:class="{ messagesBoxBorderFull: full, messagesBoxBorderHalf: !full }"> <!--contains all the chat messages in the form of a list-->
                 <div class="messagesBox" v-bind:class="{ messagesBoxFull: full, messagesBoxHalf: !full }">
@@ -16,7 +16,7 @@
                     
 
                     <div v-for="item in items" :key="item.message"> <!--display each message according to whom is the sender-->
-                        <ChatMessage v-bind:you="item.id === '1' ? true : false" v-bind:name="item.name" v-bind:message="item.message" v-bind:messageId="item.id"/>
+                        <ChatMessage v-bind:you="item.id === userID ? true : false" v-bind:name="item.name" v-bind:message="item.message" v-bind:messageId="item.id"/>
                         <div class="chatSpace">space</div>
                     </div>
                 </div>
@@ -145,20 +145,20 @@ export default {
         ChatMessage,
     },
     props: [
-        'full',
+        'full', 'tableName', 'userID'
     ],
     data() {
         return {
             items: [ // right now chat does not receive messages, either it will use props or have its own socket functions
                 // sample messages stored in chat
-                { id: '1', name: 'bob', message: 'Foo kjh g n hy kb jk gbn g n g n ihg n g h b jh gi h gv tgb g' },
-                { id: '2', name: 'john', message: 'Barh g n hy kb jk gbn g n g n ihg n g h b jh' },
-                { id: '1', name: 'happy', message: 'no' },
-                { id: '2', name: 'happy', message: 'hellofgd ggf df gd gh rf tr r gh g fd gh t t t   gg er g  gt g rt g gtg g trd g g g dr gt gdr g f t hg fdt ghtrf gh f h yh' },
-                { id: '2', name: 'happy', message: 'hello  t t   gg er g  gt g rt g gtg g trd g g g dr gt gdr g f t hg fdt ghtf f g fd g fg h ' },
-                { id: '2', name: 'happy', message: 'hello rf gh fd hg g t g g g  f hhg f hdfh' },
-                { id: '1', name: 'happy', message: 'hello r g r gt g t   f' },
-                { id: '2', name: 'happy', message: 'hello' },
+                { id: 1000, name: 'Mark123', message: 'Foo kjh g n hy kb jk gbn g n g n ihg n g h b jh gi h gv tgb g' },
+                { id: 2000, name: 'John456', message: 'Barh g n hy kb jk gbn g n g n ihg n g h b jh' },
+                { id: 3000, name: 'Luke854', message: 'no' },
+                { id: 3000, name: 'Luke854', message: 'hellofgd ggf df gd gh rf tr r gh g fd gh t t t   gg er g  gt g rt g gtg g trd g g g dr gt gdr g f t hg fdt ghtrf gh f h yh' },
+                { id: 3000, name: 'Luke854', message: 'hello  t t   gg er g  gt g rt g gtg g trd g g g dr gt gdr g f t hg fdt ghtf f g fd g fg h ' },
+                { id: 3000, name: 'Luke854', message: 'hello rf gh fd hg g t g g g  f hhg f hdfh' },
+                { id: 3000, name: 'Luke854', message: 'hello r g r gt g t   f' },
+                { id: 3000, name: 'Luke854', message: 'hello' },
             ],
         }
     },

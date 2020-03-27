@@ -1,6 +1,6 @@
 <template>
     <div class="playerSeat"> <!--a player seat for the table UI, it changes very often depending on the table state-->
-        <div v-if="occupied" class="border1" :style="{ background: playerTurnBackground }">
+        <div v-if="occupied" class="border1" :style="{background: timer ? 'black' : 'transparent'}">
             <div class="box">
                 <div class="action">
                     <div class="actionText">{{ action }}</div>
@@ -21,20 +21,20 @@
             </div>
         </div>
         <div v-if="occupied" v-bind:class= classes.betBox>
-            <div class="betImage" :style="{ opacity: betValueStatus.opacity }">
+            <div class="betImage" :style="{visibility: betValue === 0 ? 'hidden' : 'visible'}">
                 <img src="../../images/chip.png"/>
             </div>
             <div class="betValue">
-                <div class="betValueText" :style="{ opacity: betValueStatus.opacity }">{{ betValueStatus.betValue }}</div>
+                <div class="betValueText" :style="{visibility: betValue === 0 ? 'hidden' : 'visible'}">{{ betValue }}</div>
             </div>
-            <div class="dealerIcon" :style="{ opacity: dealerChipOpacity }">
+            <div class="dealerIcon" :style="{visibility: dealerStatus ? 'visible' : 'hidden'}">
                 <img src="../../images/dealer_icon.png" />
             </div>
         </div>
-        <div v-if="occupied" v-bind:class= classes.youTag :style="{ opacity: youTagOpacity }">
+        <div v-if="occupied" v-bind:class= classes.youTag :style="{visibility: youTag ? 'visible' : 'hidden'}">
             <div class="youTagText">YOU</div>
         </div>
-        <div v-if="occupied" v-bind:class= classes.playerCards :style="{ opacity: cardRevealOpacity }">
+        <div v-if="occupied" v-bind:class= classes.playerCards :style="{visibility: cardReveal ? 'visible' : 'hidden'}">
             <div class="playerCard">
                 <img v-bind:src="cards.card1.src"/>
             </div>
@@ -295,31 +295,5 @@ export default {
         'occupied', 'classes', 'dealerStatus', '_id', 'cards', 'cardReveal', 'betValue', 'accountName',
         'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'active'
     ],
-    data() {
-        return { // various items to set based on the props
-            dealerChipOpacity: this.dealerStatus ? 1.0 : 0.0, // show who is the current dealer
-            cardRevealOpacity: this.cardReveal ? 1.0 : 0.0, // upon the show down the player cards are revealed
-            betValueStatus: {opacity: this.betValue === 0 ? 0.0 : 1.0, betValue: this.betValue}, // display bet when made
-            youTagOpacity: this.youTag ? 1.0 : 0.0, // tag indicating which seat belows to you
-            playerTurnBackground: this.timer ? 'black' : 'transparent', // on player turn the black outline will be present
-        };
-    },
-    watch: { // watch for these values to change
-        dealerStatus: function(){
-            this.dealerChipOpacity = this.dealerStatus ? 1.0 : 0.0;
-        },
-        cardReveal: function(){
-            this.cardRevealOpacity = this.cardReveal ? 1.0 : 0.0;
-        },
-        betValue: function(){
-            this.betValueStatus = {opacity: this.betValue === 0 ? 0.0 : 1.0, betValue: this.betValue};
-        },
-        youTag: function(){
-            this.youTagOpacity = this.youTag ? 1.0 : 0.0;
-        },
-        timer: function(){
-            this.playerTurnBackground = this.timer ? 'black' : 'transparent';
-        },
-    }
 }
 </script>

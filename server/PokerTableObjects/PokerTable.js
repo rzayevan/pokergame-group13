@@ -3,8 +3,9 @@ let PokerPlayerSeat = require("./PokerPlayerSeat.js");
 // this is a pokerTable class which will handle the current poker table state
 // it contains info on the players, community cards, bets, etc.
 module.exports = class PokerTable {
-    constructor(bigBlind) {
-        this.numberOfTableSeats = 6;
+    constructor(bigBlind, tableName) {
+        this.tableName = tableName;
+        this.numberOfTableSeats = require("./PokerUtilities.js").numberOfTableSeats;
         this.minimumNumberOfPlayersNeededToContinue = 2;
         this.flopNumber = 3;
         this.turnNumber = 4;
@@ -145,7 +146,7 @@ module.exports = class PokerTable {
         profile.chips -= this.buyIn;
         let emptySeat = this.tableSeats.find(tableSeat => tableSeat.seatOpen === true);
         emptySeat.addPlayerToTable(profile, socketID, this.buyIn, this.gameInPlay);
-        return emptySeat.seatID;
+        return {seatID: emptySeat.seatID, tableName: this.tableName};
     }
 
     canAGameBegin(){
@@ -264,24 +265,10 @@ module.exports = class PokerTable {
     }
 
     setCommunityCards(){
-        // burn a card
-        this.currentDeckCard++;
-        // flop cards
-        this.communityCards[0] = this.deckCards[this.currentDeckCard];
-        this.currentDeckCard++;
-        this.communityCards[1] = this.deckCards[this.currentDeckCard];
-        this.currentDeckCard++;
-        this.communityCards[2] = this.deckCards[this.currentDeckCard];
-        this.currentDeckCard++;
-        // burn a card
-        this.currentDeckCard++;
-        // turn card
-        this.communityCards[3] = this.deckCards[this.currentDeckCard];
-        this.currentDeckCard++;
-        // burn a card
-        this.currentDeckCard++; 
-        // river card
-        this.communityCards[4] = this.deckCards[this.currentDeckCard];
+        for(let i = 0; i < this.communityCards.length; i++){
+            this.communityCards[i] = this.deckCards[this.currentDeckCard];
+            this.currentDeckCard++;
+        }
     }
 
     isItTheirTurn(userID, seatID, socketID){

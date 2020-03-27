@@ -3,8 +3,8 @@
         <div class="raiseButtonOuter" id="buttonMinus" v-on:click="decrementRaise()">
             <div class="raiseButton centerText">-</div>
         </div>
-        <div class="raiseValue" id="raiseValue">2000</div>
-        <input class="raiseScroll" id="slider" type="range" min="2000" max="100000" value="2000"> <!--TODO: set these using props-->
+        <div class="raiseValue" id="raiseValue"> {{ bigBlind }}</div>
+        <input class="raiseScroll" id="slider" type="range" v-bind:min="bigBlind" v-bind:max="max" v-bind:value="bigBlind"> <!--TODO: set these using props-->
         <div class="raiseButtonOuter" id="buttonPlus" v-on:click="incrementRaise()">
             <div class="raiseButton centerText">+</div>
         </div>
@@ -96,8 +96,13 @@ export default {
     props: [
         'bigBlind',
     ],
+    data() {
+        return {
+            max: this.bigBlind * 20,
+        }
+    },
     methods:{
-        incrementRaise(){
+        incrementRaise(){ // need to get the value of the slider itself, getElementById seems to be the only thing that works
             // cap this value if it goes over what the player has left
             let slider = document.getElementById("slider");
             let output = document.getElementById("raiseValue");

@@ -69,7 +69,7 @@ let profiles = [
 ];
 // the entire list of tables, might need a better way to store them?
 let tables = [];
-tables.push(new PokerTable(2000)); // initially we will have one table, with a big blind of 2000, when socket rooms are implemented then multiple tables will be added
+tables.push(new PokerTable(2000, 'Big Fish')); // initially we will have one table, with a big blind of 2000, when socket rooms are implemented then multiple tables will be added
 
 
 // these next three functions are for signing up a client to the poker table, need to use the real login and tables page to do this
@@ -94,16 +94,16 @@ function joinTable(io, socket, msg){ // request sent from client that they want 
     let profile = profiles.find(profile => profile.userID === msg.userID); // get their profile
     let tableToJoin = tables.find(table => table.tableID === msg.tableID); // get the table they wish to join
     if(canUserJoinTable(tableToJoin, profile)){// the user can join the table
-        let seatID = tableToJoin.addPlayerToTable(profile, socket.id); // the table will fill a seat based on the profile and send back the seat id
+        let result = tableToJoin.addPlayerToTable(profile, socket.id); // the table will fill a seat based on the profile and send back the seat id
+        let seatID = result.seatID;
+        let tableName = result.tableName;
         socket.emit('yourSeatID', seatID); // send him back his tableSeatID
+        socket.emit('tableName', tableName); // send him back the table name
         io.emit('tableState', JSON.stringify(tableToJoin.getTableState())); // send to everyone the updated table state
         if(tableToJoin.canAGameBegin() && !tableToJoin.tableActive){ // check if we can begin a game
             tableToJoin.tableActive = true; // the table is now active
             beginTheGame(io, tableToJoin);
         }
-    }
-    else{
-        return; // the user can not join the table
     }
 }
 // the functions for communication between the server and the poker.vue page

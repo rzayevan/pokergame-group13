@@ -1,6 +1,12 @@
 let Card = require("./Card.js"); // later will remove the need for the card class
 
 module.exports =  {
+    aceHigh: 14,
+    aceLow: 1,
+    neededHandSize: 5,
+    specialCaseTopCard: 5, // for the special case the five in a straight is the top card
+    aceStraightMark: 4, // aces right now are set to 14 so if we have 4 cards in a straight (2,3,4,5) we make a special check condition (treat 14 as 1)
+    numberOfSuits: 4,  
     calculate: function(communityCards, playerCards){
         let cards = new Array(communityCards.length + playerCards.length);
         for(let i = 0; i < communityCards.length; i++){ // convert the five community cards into objects the calculator can use
@@ -149,33 +155,30 @@ module.exports =  {
         if(singlePairResult === -1){
             return -1;
         }
-        let result = 0x700000 + tripletResult * this.integerPow(16, 2) + singlePairResult; // combine results into hexidecimal format
+        let exponent = 2; // triplet result needs to be shifted by 2
+        let result = 0x700000 + tripletResult * this.integerPow(16, exponent) + singlePairResult; // combine results into hexidecimal format
         return result;
     },
 
     handFlushValue: function(cards, setup){
         // we sort the cards by suit
-        let oldAce = 1;
-        let newAce = 14;
         let suits = [];
         suits.push([]); suits.push([]); suits.push([]); suits.push([]);
         for(let i = 0; i < cards.length; i++){
             let number = cards[i].number;
-            if(number === oldAce){
-                number = newAce;
+            if(number === this.aceLow){
+                number = this.aceHigh;
             }
             suits[Card.getSuitNumber(cards[i].suit) - 1].push(number);
         }
         let result = 0x600000;
-        let neededHandSize = 5; // a flush consists of 5 cards
-        let numberOfSuits = 4;
-        for(let i = 0; i < numberOfSuits; i++){
-            if(suits[i].length >= neededHandSize){ // found a flush
+        for(let i = 0; i < this.numberOfSuits; i++){
+            if(suits[i].length >= this.neededHandSize){ // found a flush
                 suits[i].sort(function(a, b){return a - b});
                 if(setup.condition){ // return the cards, else go further and result calculated result
                     return suits[i];
                 }
-                for(let k = 0; k < neededHandSize; k++){
+                for(let k = 0; k < this.neededHandSize; k++){
                     result += suits[i][(suits[i].length - 1) - k] * this.integerPow(16, 4-k);
                 }
                 return result;
@@ -191,35 +194,31 @@ module.exports =  {
         let numbers = this.getTheNumbersArrayA14(cards);
         numbers.sort(function(a, b){return a - b});
         numbers = this.removeDuplicates(numbers);
-        let neededHandSize = 5;
-        let specialCaseTopCard = 5; // for the special case the five in a straight is the top card
-        let ace = 14;
-        let aceStraightMark = 4; // aces right now are set to 14 so if we have 4 cards in a straight (2,3,4,5) we make a special check condition (treat 14 as 1)
         // we start from the end and work our way down and include a special case for the ace also equal to 1
         let count = 1; // we will always have a straight of at least 1
-        for(let i = numbers.length - 1; i >= aceStraightMark; i--){
+        for(let i = numbers.length - 1; i >= this.aceStraightMark; i--){
             // then we go further down, checking each card until either a straight or break is found
             for(let j = i - 1; j >= 0; j--){
                 if(numbers[j] === numbers[i] - count){ // check if sequence still holds
                     count++;
-                    if(count === neededHandSize){
+                    if(count === this.neededHandSize){
                         result = 0x000000;
                         // we have a straight
                         if(setup.condition){ // we send back a straight status, or another function called this function and will set their own status
                             result = 0x500000;
                         }
-                        for(let k = 0; k < neededHandSize; k++){
+                        for(let k = 0; k < this.neededHandSize; k++){
                             result += numbers[i-k] * this.integerPow(16, 4-k); // add the straight value in hexidecimal
                         }
                         return result;
                     }
-                    else if(count === aceStraightMark && numbers[i] === specialCaseTopCard && numbers[numbers.length - 1] === ace){
+                    else if(count === this.aceStraightMark && numbers[i] === this.specialCaseTopCard && numbers[numbers.length - 1] === this.aceHigh){
                         // we have count of four going 2,3,4,5 and an ace, its a straight
                         result = 0x000001; // automatically add the value of 1 to the hexidecimal
                         if(setup.condition){
                             result = 0x500001;
                         }
-                        for(let k = 0; k < aceStraightMark; k++){
+                        for(let k = 0; k < this.aceStraightMark; k++){
                             result += numbers[i-k] * this.integerPow(16, 4-k);
                         }
                         return result;
@@ -304,16 +303,14 @@ module.exports =  {
     },
 
     handHighCardValue: function(cards, setup){ // find the highcards
-        let oldAce = 1;
-        let newAce = 14;
         if(setup.number > cards.length){
             return -1; // error
         }
         let numbers = new Array(cards.length);
         for(let i = 0; i < numbers.length; i++){
             numbers[i] = cards[i].number;
-            if(numbers[i] === oldAce){
-                numbers[i] = newAce;
+            if(numbers[i] === this.aceLow){
+                numbers[i] = this.aceHigh;
             }
         }
         numbers.sort(function(a, b){return a - b});
@@ -370,13 +367,11 @@ module.exports =  {
     },
 
     getTheNumbersArrayA14: function(cards){
-        let originalAce = 1;
-        let newAce = 14;
         let numbers = new Array(cards.length);
         for(let i = 0; i < numbers.length; i++){
             numbers[i] = cards[i].number;
-            if(numbers[i] === originalAce){
-                numbers[i] = newAce;
+            if(numbers[i] === this.aceLow){
+                numbers[i] = this.aceHigh;
             }
         }
         return numbers;

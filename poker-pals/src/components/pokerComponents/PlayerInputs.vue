@@ -5,7 +5,7 @@
         <button class="inputButton1 centerText" id="buttonCall" v-on:click="$parent.makeDecision('CALL')">CALL</button>
         <RaiseToggle v-bind:bigBlind="bigBlind"/>
         <button class="inputButton1 centerText" id="buttonRaise" v-on:click="$parent.makeDecision('RAISE')">RAISE</button>
-        <button class="inputButton2 centerText" id="buttonCheckFold" v-on:click="toggleCheckFoldButton()">CHECK/FOLD</button>
+        <button class="inputButton2 centerText" id="buttonCheckFold" v-on:click="toggleCheckFoldButton()" :style="{backgroundColor: checkFold ? '#aaaaaa' : '#ffffff'}">CHECK/FOLD</button>
         <button class="inputButton1 centerText" id="buttonAllIn" v-on:click="$parent.makeDecision('ALL IN')">ALL IN</button>
     </div>
 </template>
@@ -89,13 +89,6 @@ export default {
     methods:{
         toggleCheckFoldButton(){ // toggle the check/fold button, this will allow the client to automatically send an action without user input
             this.checkFold = !this.checkFold;
-            let b = document.getElementById("buttonCheckFold");
-            if(this.checkFold){
-                b.style.backgroundColor = '#aaaaaa'; // color theme for button selected
-            }
-            else{
-                b.style.backgroundColor = '#ffffff'; // color theme for button not selected
-            }
             this.$parent.toggleCheckFoldButton(this.checkFold);
         },
         setRaiseToValue(value){
