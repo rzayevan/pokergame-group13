@@ -130,7 +130,7 @@ function turnDecision(io, socket, msg){ // each player when clicking the poker.v
             io.emit('tableState', JSON.stringify(table.getTableState()));
         }
         else{
-            console.log('bad move'); // later send message back to client that their move was invalid
+            io.emit('badMove');
         }
         if(table.showdown){// after each move we need to check if the table is ready for a showdown
            beginShowingTheRemainingCommunityCards(io, table);

@@ -220,6 +220,10 @@ export default {
             // TODO: winner animation goes here
         });
 
+        this.socket.on('badMove', () => { // later add some animation to indicate that they won
+            alert('bad move');
+        });
+
         this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
             // each player will reset the ui for a new game
             for(let i = 0; i < this.players.length; i++){
