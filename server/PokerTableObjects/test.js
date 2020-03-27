@@ -63,10 +63,32 @@ module.exports =  {
         let setUps = [{},{},{},{condition: false}, {condition: true}, {number: 2}, {number: 1}, {number: 3}, {number: 5, condition: true}];
         
         let result = -1;
+
+        let functions = [
+            this.handStraightFlushValue,
+            this.handQuadsValue,
+            this.handFullHouseValue,
+            this.handFlushValue,
+            this.handStraightValue,
+            this.handThreeOfAKindValue,
+            this.handTwoPairValue,
+            this.handSinglePairValue,
+            this.handHighCardValue,
+        ];
+    
+        for(let i = 0; i < functions.length; i++){
+            result = functions[i](cards, setUps[i]);
+            if(result !== -1){
+                return result;
+            }
+        }
+
+
+
         // NOTE: up until this point I have not found a way to combine all these functions into an array that i can iterate
         // through, the server crashes (claiming it cannot find my functions and thus I reverted the code back to the messy)
         // lines of 'if statments' below
-        
+        /*
         result = this.handStraightFlushValue(cards, setUps[0]);
         if(result !== -1){
             return result;
@@ -103,12 +125,13 @@ module.exports =  {
         if(result !== -1){
             return result;
         }
-        return result;
+        return result;*/
     },
 
     handStraightFlushValue: function(cards, setup){
         // first assess whether the hand qualifies as a flush, return the numbers that match the flush suit
         let numbers = this.handFlushValue(cards, {condition: true});
+        console.log(JSON.stringify(numbers));
         if(numbers === -1){
             return -1;
         }
@@ -160,6 +183,7 @@ module.exports =  {
     },
 
     handFlushValue: function(cards, setup){
+        console.log(JSON.stringify(cards) + ' ' + this.aceHigh);
         // we sort the cards by suit
         let suits = [];
         suits.push([]); suits.push([]); suits.push([]); suits.push([]);

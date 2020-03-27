@@ -1,5 +1,6 @@
 let PokerTable = require("./PokerTableObjects/PokerTable.js");
-
+let pokerHandRankCalculator = require("./PokerTableObjects/test.js");/////////////////////////// added for testing
+console.log(pokerHandRankCalculator.calculate(['A_S', '2_S', '3_S', '4_S', '5_S'], ['6_S', '7_S'])); // value returned is supposed to be: 9921859
 let express = require('express');
 let app = express();
 let http = require('http').Server(app);
@@ -130,7 +131,7 @@ function turnDecision(io, socket, msg){ // each player when clicking the poker.v
             io.emit('tableState', JSON.stringify(table.getTableState()));
         }
         else{
-            io.emit('badMove');
+            socket.emit('badMove');
         }
         if(table.showdown){// after each move we need to check if the table is ready for a showdown
            beginShowingTheRemainingCommunityCards(io, table);
