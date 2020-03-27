@@ -46,7 +46,10 @@ module.exports = class PokerTable {
         this.currentPlayerSeatCardReveal = -1; // the seat id of the current player showing their cards at the show down
         this.currentRankingHand = -1;
         this.chipDistributionCalculator = require("./ChipDistributionCalculator.js");
+        
+        // decide which of the two to use
         this.pokerHandRankCalculator = require("./PokerHandRankCalculator.js");
+        //this.pokerHandRankCalculator = require("./test.js");
     }
 
     getNumberOfPlayersStillInPlay(){
