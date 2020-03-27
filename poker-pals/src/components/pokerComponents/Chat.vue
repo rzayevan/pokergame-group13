@@ -1,10 +1,10 @@
 <template>
-    <div class="chatBox" :style="{ height: heightPercentages.chatBox }"> <!--the chat container holding all the chat elements together-->
-            <div class="title" :style="{ height: heightPercentages.title }">
+    <div class="chatBox" v-bind:class="{ chatBoxFull: full, chatBoxHalf: !full }"> <!--the chat container holding all the chat elements together-->
+            <div class="title" v-bind:class="{ titleFull: full, titleHalf: !full }">
                 <div class="title_text centerText">Big Fish</div>
             </div>
-            <div class="messagesBoxBorder" :style="{ height: heightPercentages.messagesBoxBorder }"> <!--contains all the chat messages in the form of a list-->
-                <div class="messagesBox" :style="{ height: heightPercentages.messagesBox }">
+            <div class="messagesBoxBorder" v-bind:class="{ messagesBoxBorderFull: full, messagesBoxBorderHalf: !full }"> <!--contains all the chat messages in the form of a list-->
+                <div class="messagesBox" v-bind:class="{ messagesBoxFull: full, messagesBoxHalf: !full }">
                     <!--these buttons are not permanent, only for testing functionality-->
                     <button class="testButton" v-on:click="$parent.logIn(1000)">log in as userID:1000</button>
                     <button class="testButton" v-on:click="$parent.logIn(2000)">log in as userID:2000</button>
@@ -21,7 +21,7 @@
                     </div>
                 </div>
             </div>
-            <div class="inputBoxBorder" :style="{ height: heightPercentages.inputBoxBorder }"> <!--the input of the chat, allows for sending messages-->
+            <div class="inputBoxBorder" v-bind:class="{ inputBoxBorderFull: full, inputBoxBorderHalf: !full }"> <!--the input of the chat, allows for sending messages-->
                 <div class="inputBox">
                     <input type="text" class="input" placeholder="Type a message">
                     <button class="submitButton centerText">SEND</button>
@@ -40,16 +40,26 @@
     .chatBox{
         float: left;
         width: 30%;
-        height: 46.5%;
         background: cyan;
+    }
+    .chatBoxHalf{
+        height: 46.5%;
+    }
+    .chatBoxFull{
+        height: 93%;
     }
     .title{
         float: left;
         width: 100%;
-        height: 12%;
         background: #eeeeee;
         background: black;
         margin: 0%;
+    }
+    .titleHalf{
+        height: 12%;
+    }
+    .titleFull{
+        height: 6%;
     }
     .title_text{
         width: 99%;
@@ -60,21 +70,36 @@
     }
     .messagesBoxBorder{
         width: 100%;
-        height: 85%;
         background: black;
+    }
+    .messagesBoxBorderHalf{
+        height: 85%;
+    }
+    .messagesBoxBorderFull{
+        height: 92.5%;
     }
     .messagesBox{
         float: left;
         width: 99%;
-        height: 85%;
         background: #eeeeee;
         margin: 0% 0% 0% 0.5%;
         overflow-y: auto;
     }
+    .messagesBoxHalf{
+        height: 85%;
+    }
+    .messagesBoxFull{
+        height: 93.2%;
+    }
     .inputBoxBorder{
         width: 100%;
-        height: 15%;
         background: black;
+    }
+    .inputBoxBorderHalf{
+        height: 15%;
+    }
+    .inputBoxBorderFull{
+        height: 7.5%;
     }
     .inputBox{
         float: left;
@@ -124,8 +149,6 @@ export default {
     ],
     data() {
         return {
-            // the css values to use based on the cat being either full or half
-            heightPercentages: {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'},
             items: [ // right now chat does not receive messages, either it will use props or have its own socket functions
                 // sample messages stored in chat
                 { id: '1', name: 'bob', message: 'Foo kjh g n hy kb jk gbn g n g n ihg n g h b jh gi h gv tgb g' },
@@ -137,26 +160,6 @@ export default {
                 { id: '1', name: 'happy', message: 'hello r g r gt g t   f' },
                 { id: '2', name: 'happy', message: 'hello' },
             ],
-        }
-    },
-    mounted(){
-        // set the chat box css, used to toggle its dimensions based on whether the report box is opened
-        if(this.full){
-            this.heightPercentages = {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'};
-        }
-        else{
-            this.heightPercentages = {chatBox: '46.5%', title: '12%', messagesBoxBorder: '85%', messagesBox: '85%', inputBoxBorder: '15%'};
-        }
-    },
-    watch: {
-        // change the chat box css
-        full: function(){
-            if(this.full){
-                this.heightPercentages = {chatBox: '93%', title: '6%', messagesBoxBorder: '92.5%', messagesBox: '93.2%', inputBoxBorder: '7.5%'};
-            }
-            else{
-                this.heightPercentages = {chatBox: '46.5%', title: '12%', messagesBoxBorder: '85%', messagesBox: '85%', inputBoxBorder: '15%'};
-            }
         }
     },
     methods:{
