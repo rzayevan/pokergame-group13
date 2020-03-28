@@ -4,7 +4,7 @@
             <div class="raiseButton centerText">-</div>
         </div>
         <div class="raiseValue">{{ raiseValue }}</div>
-        <input class="raiseScroll" id="slider" type="range" v-bind:min="bigBlind" v-bind:max="bigBlind*20" v-bind:value="raiseValue"> <!--TODO: set these using props-->
+        <input class="raiseScroll" id="slider" type="range" v-bind:min="bigBlind" v-bind:max="bigBlind*maxRaiseFactor" v-bind:value="raiseValue"> <!--TODO: set these using props-->
         <div class="raiseButtonOuter" id="buttonPlus" v-on:click="incrementRaise()">
             <div class="raiseButton centerText">+</div>
         </div>
@@ -99,6 +99,7 @@ export default {
     data() {
         return {
             raiseValue: this.bigBlind,
+            maxRaiseFactor: 20,
         }
     },
     watch: { // TODO: when page navigation is implemented this wont be needed as big blind will already be set upon the page being created
