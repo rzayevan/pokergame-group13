@@ -12,7 +12,12 @@
                     <button class="testButton" v-on:click="$parent.logIn(4000)">log in as userID:4000</button>
                     <button class="testButton" v-on:click="$parent.logIn(5000)">log in as userID:5000</button>
                     <button class="testButton" v-on:click="$parent.logIn(6000)">log in as userID:6000</button>
-                    <button class="testButton" v-on:click="$parent.joinTable()">join table 0</button>
+                    <button class="testButton" v-on:click="$parent.joinTable(0)">join table 0</button>
+                    <button class="testButton" v-on:click="$parent.joinTable(1)">join table 1</button>
+                    <button class="testButton" v-on:click="$parent.joinTable(2)">join table 2</button>
+                    <button class="testButton" v-on:click="$parent.joinTable(3)">join table 3</button>
+                    <button class="testButton" v-on:click="$parent.joinTable(4)">join table 4</button>
+                    <button class="testButton" v-on:click="$parent.joinTable(5)">join table 5</button>
                     
 
                     <div v-for="item in items" :key="item.message"> <!--display each message according to whom is the sender-->

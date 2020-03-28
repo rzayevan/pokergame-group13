@@ -68,11 +68,11 @@ export default {
         return {
             socket: {},
             userID: '',
-            tableID: 0,
+            tableID: -1,
             seatID: '',
             tableName: '',
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
-            raiseToValue: 2000, // TODO: set this based on table stakes
+            raiseToValue: 0, // TODO: set this based on table stakes
             
             // right now the chat calls back to the poker page to send a report, might want to have the chat run with its own socket
             report_OffenderName: '', 
@@ -83,7 +83,7 @@ export default {
 
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
-            bigBlind: 2000,
+            bigBlind: 0,
             cardReveal: false, // set to false until the show down, the players will show their cards
             potTotal: 0,
             // information to set up each player seat including css values (depending on seat position some css will change)
@@ -129,13 +129,12 @@ export default {
             }
         });
         
-        this.socket.on('yourSeatID', msg => { // each player upon joining a table will receive the id of the seat they are to sit at
-            this.seatID = msg;
+        this.socket.on('joinTable', msg => { // each player upon joining a table will receive the id of the seat they are to sit at
+            this.seatID = msg.seatID;
+            this.tableName = msg.tableName;
+            this.tableID = msg.tableID;
+            this.bigBlind = msg.bigBlind;
             this.players[this.seatID].youTag = true;
-        });
-
-        this.socket.on('tableName', msg => { // each player upon joining a table will receive the id of the seat they are to sit at
-            this.tableName = msg;
         });
         
         this.socket.on('beginTheGame', msgJSON => { // each player receives their two personal cards upon the game starting
@@ -174,14 +173,6 @@ export default {
             this.setPlayerCardsVisibility(false); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)
         });
         // end of socket.on functions
-        // set up the slider for raises
-        let slider = document.getElementById("slider");
-        let output = document.getElementById("raiseValue");
-        output.innerHTML = slider.value;
-
-        slider.oninput = function() {
-            output.innerHTML = this.value;
-        }
         // asign the standard card_back image to each of player cards inititally
         // later the server will send the true cards at the show down
         this.myCards = [{src: this.cardFiles[1].src}, {src: this.cardFiles[1].src}];
@@ -201,10 +192,10 @@ export default {
             this.userID = userID;
             this.socket.emit("logIn", this.userID);
         },
-        joinTable() { // for now use this function to join into the game
-            this.socket.emit("joinTable", { // we send our assigned user id
+        joinTable(tableID) { // for now use this function to join into the game
+            this.socket.emit("joinTableRequest", { // we send our assigned user id
                 userID: this.userID,
-                tableID: this.tableID, // the table the player wants to join
+                tableID: tableID, // the table the player wants to join
             });
         },
         makeDecision(action){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
@@ -217,8 +208,8 @@ export default {
             });
             // TODO: later use v-bind and not getElementById
             this.checkFold = false;
-            let b = document.getElementById("buttonCheckFold");
-            b.style.backgroundColor = '#ffffff'; // color theme for button not selected
+            //let b = document.getElementById("buttonCheckFold");
+            //b.style.backgroundColor = '#ffffff'; // color theme for button not selected
         },
         // end of socket.emit functions
         toggleCheckFoldButton(checkFold){ // toggle the check/fold button, this will allow the client to automatically send an action without user input

@@ -3,14 +3,14 @@ let PokerPlayerSeat = require("./PokerPlayerSeat.js");
 // this is a pokerTable class which will handle the current poker table state
 // it contains info on the players, community cards, bets, etc.
 module.exports = class PokerTable {
-    constructor(bigBlind, tableName) {
+    constructor(bigBlind, tableName, tableID) {
+        this.tableID = tableID;
         this.tableName = tableName;
         this.numberOfTableSeats = require("./PokerUtilities.js").numberOfTableSeats;
         this.minimumNumberOfPlayersNeededToContinue = 2;
         this.flopNumber = 3;
         this.turnNumber = 4;
         this.riverNumber = 5;
-        this.tableID = 0; // the id of the table
         this.bigBlind = bigBlind; // the big blind of the table
         this.buyIn = bigBlind * 10;
         this.currentBet = 0; // current bet the table has been raised to, gets reset to zero after each card reveal
@@ -149,7 +149,7 @@ module.exports = class PokerTable {
         profile.chips -= this.buyIn;
         let emptySeat = this.tableSeats.find(tableSeat => tableSeat.seatOpen === true);
         emptySeat.addPlayerToTable(profile, socketID, this.buyIn, this.gameInPlay);
-        return {seatID: emptySeat.seatID, tableName: this.tableName};
+        return {seatID: emptySeat.seatID, tableName: this.tableName, tableID: this.tableID, bigBlind: this.bigBlind};
     }
 
     canAGameBegin(){
@@ -444,9 +444,14 @@ module.exports = class PokerTable {
                 return;
             }
         }
-        else{
+        else{ 
             this.findNextTurn();
             this.setplayerTurn();
+            // we need to check if only one person remains in the game if so, they don't get a decision we automatically go to the showdown
+            // TODO: later we automatically end the game without show down and give him all the chips (no calculation required)
+            if(this.getNumberOfPlayersStillInPlay() === 1){
+                this.beginTheShowDown();
+            }
         }
     }
 

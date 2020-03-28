@@ -44,7 +44,7 @@ io.on('connection', (socket) => {
     socket.on("logIn", function(msg){
         login(socket, msg);
     });
-    socket.on('joinTable', function(msg){ // a user wishes to join a table
+    socket.on('joinTableRequest', function(msg){ // a user wishes to join a table
         joinTable(io, socket, msg);
     });
 
@@ -62,13 +62,19 @@ let profiles = [
     {userID: 1000, name: 'Mark123', chips: 20000, icon: 'player_icon_1'},
     {userID: 2000, name: 'John456', chips: 40000, icon: 'player_icon_1'},
     {userID: 3000, name: 'Luke854', chips: 60000, icon: 'player_icon_1'},
-    {userID: 4000, name: 'Jane027', chips: 80000, icon: 'player_icon_1'},
-    {userID: 5000, name: 'Stan693', chips: 10000, icon: 'player_icon_1'},
+    {userID: 4000, name: 'Jane027', chips: 180000, icon: 'player_icon_1'},
+    {userID: 5000, name: 'Stan693', chips: 100000, icon: 'player_icon_1'},
     {userID: 6000, name: 'Mack273', chips: 20, icon: 'player_icon_1'},
 ];
 // the entire list of tables, might need a better way to store them?
 let tables = [];
-tables.push(new PokerTable(2000, 'Big Fish')); // initially we will have one table, with a big blind of 2000, when socket rooms are implemented then multiple tables will be added
+// add new table with big blind, table name, table id
+tables.push(new PokerTable(200, 'Little Fish 1', 0));
+tables.push(new PokerTable(200, 'Little Fish 2', 1));
+tables.push(new PokerTable(2000, 'Big Fish 1', 2));
+tables.push(new PokerTable(2000, 'Big Fish 2', 3));
+tables.push(new PokerTable(10000, 'Champion 1', 4));
+tables.push(new PokerTable(10000, 'Champion 2', 5));
 
 
 // these next three functions are for signing up a client to the poker table, need to use the real login and tables page to do this
@@ -78,7 +84,7 @@ function login(socket, msg){ // user sends a log in request and the server check
         return;
     }
     else{// send the current table state
-        socket.emit('tableState', JSON.stringify(tables[0].getTableState()));
+        //socket.emit('tableState', JSON.stringify(tables[0].getTableState()));
     }
 }
 function canUserJoinTable(tableToJoin, profile){ // check if the user is permitted to join the table
@@ -93,12 +99,16 @@ function joinTable(io, socket, msg){ // request sent from client that they want 
     let profile = profiles.find(profile => profile.userID === msg.userID); // get their profile
     let tableToJoin = tables.find(table => table.tableID === msg.tableID); // get the table they wish to join
     if(canUserJoinTable(tableToJoin, profile)){// the user can join the table
+        console.log('success');
         let result = tableToJoin.addPlayerToTable(profile, socket.id); // the table will fill a seat based on the profile and send back the seat id
-        let seatID = result.seatID;
-        let tableName = result.tableName;
-        socket.emit('yourSeatID', seatID); // send him back his tableSeatID
-        socket.emit('tableName', tableName); // send him back the table name
-        io.emit('tableState', JSON.stringify(tableToJoin.getTableState())); // send to everyone the updated table state
+        socket.join(result.tableName); // now this client will receive messages from the tableName room
+        socket.emit('joinTable', {
+            seatID: result.seatID,
+            tableName: result.tableName,
+            tableID: result.tableID,
+            bigBlind: result.bigBlind,
+        });
+        io.to(result.tableName).emit('tableState', JSON.stringify(tableToJoin.getTableState())); // send to everyone the updated table state in this room
         if(tableToJoin.canAGameBegin() && !tableToJoin.tableActive){ // check if we can begin a game
             tableToJoin.tableActive = true; // the table is now active
             beginTheGame(io, tableToJoin);
@@ -109,7 +119,7 @@ function joinTable(io, socket, msg){ // request sent from client that they want 
 function beginTheGame(io, table){ // function will begin the game with a time out of 5 seconds
     setTimeout(function() { // in five seconds the game will begin
         table.beginTheGame(); // the game is set up
-        io.emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the new table state
+        io.to(table.tableName).emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the new table state
         for(let i = 0; i < table.numberOfTableSeats; i++){
             let seat = table.tableSeats[i];
             if(seat.socketID !== -1){
@@ -126,7 +136,7 @@ function turnDecision(io, socket, msg){ // each player when clicking the poker.v
         // ask if they can make that move, if not then do nothing, later also disable buttons based on lack of options
         let response = table.playerAction(msg.action, msg.raiseToValue); // will assess the action and return a response
         if(response){
-            io.emit('tableState', JSON.stringify(table.getTableState()));
+            io.to(table.tableName).emit('tableState', JSON.stringify(table.getTableState()));
         }
         else{
             socket.emit('badMove');
@@ -148,13 +158,13 @@ function beginShowingTheRemainingCommunityCards(io, table){ // the remaining com
             table.showOneMoreCommunityCard();
         }
         count--;
-        io.emit('tableState', JSON.stringify(table.getTableState()));
+        io.to(table.tableName).emit('tableState', JSON.stringify(table.getTableState()));
     }
     let timeout = setInterval(showCommunityCard, 2000);
 }
 function showRemainingPlayerCards(io, table){ // the players still in play will show their cards (backside)
     setTimeout(function() { // all players in play will show their cards face down
-        io.emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
+        io.to(table.tableName).emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
         beginFlippingOverEachPlayersCards(io, table);
     }, 2000);
 }
@@ -173,14 +183,14 @@ function beginFlippingOverEachPlayersCards(io, table){ // one at a time each pla
             }, 1000);
         }
         table.showNextPlayerCards();
-        io.emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
+        io.to(table.tableName).emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
     }
     let timeout = setInterval(flipNextPlayerCards, 2000);
 }
 function calculateAndDistributeChips(io, table){ // after a winner is found the chips are redistributed
     setTimeout(function() {
         table.calculateAndDistributeChips();
-        io.emit('tableState', JSON.stringify(table.getTableState()));
+        io.to(table.tableName).emit('tableState', JSON.stringify(table.getTableState()));
         bootPlayers(io, table); // remove any players that lost all their chips
     }, 1000);
 }
@@ -188,8 +198,8 @@ function bootPlayers(io, table){ // any players that lost all their chips are re
     setTimeout(function() {
         table.bootPlayers(); // will remove all players that have no more chips
         table.reset(); // reset the table for a new game
-        io.emit('tableState', JSON.stringify(table.getTableState()));
-        io.emit('reset');
+        io.to(table.tableName).emit('tableState', JSON.stringify(table.getTableState()));
+        io.to(table.tableName).emit('reset');
         if(table.canAGameBegin()){
             beginTheGame(io, table);
         }
