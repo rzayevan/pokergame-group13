@@ -190,7 +190,6 @@ export default {
         // TODO: later remove and use the login and tables page
         logIn(userID){ // a temporary socket function to let a player join a table, later use real athentication
             this.userID = userID;
-            this.socket.emit("logIn", this.userID);
         },
         joinTable(tableID) { // for now use this function to join into the game
             this.socket.emit("joinTableRequest", { // we send our assigned user id
@@ -206,10 +205,7 @@ export default {
                 action: action,
                 raiseToValue: this.raiseToValue, // only used if player is raising
             });
-            // TODO: later use v-bind and not getElementById
             this.checkFold = false;
-            //let b = document.getElementById("buttonCheckFold");
-            //b.style.backgroundColor = '#ffffff'; // color theme for button not selected
         },
         // end of socket.emit functions
         toggleCheckFoldButton(checkFold){ // toggle the check/fold button, this will allow the client to automatically send an action without user input

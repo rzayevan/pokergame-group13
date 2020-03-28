@@ -77,16 +77,7 @@ tables.push(new PokerTable(10000, 'Champion 1', 4));
 tables.push(new PokerTable(10000, 'Champion 2', 5));
 
 
-// these next three functions are for signing up a client to the poker table, need to use the real login and tables page to do this
-function login(socket, msg){ // user sends a log in request and the server checks if account exists
-    let profile = profiles.find(profile => profile.userID === msg);
-    if(profile === undefined){// the user does not exist
-        return;
-    }
-    else{// send the current table state
-        //socket.emit('tableState', JSON.stringify(tables[0].getTableState()));
-    }
-}
+// these next two functions are for signing up a client to the poker table, need to use the real login and tables page to do this
 function canUserJoinTable(tableToJoin, profile){ // check if the user is permitted to join the table
     if(tableToJoin === undefined || tableToJoin.isTableFull() || tableToJoin.isPlayerAtTable(profile) || profile.chips < tableToJoin.buyIn){
         return false; // the user cannot join this table
