@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <router-view></router-view>
-     <!-- <Reports :data="gridData" :columns="gridColumns" /> -->
   </div>
 </template>
 

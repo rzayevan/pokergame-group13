@@ -197,8 +197,6 @@ exports.AddReportToFile = function(report) {
 
     // Add the report to the cache
     cachedReports.push(report);
-
-
 }
 
 
@@ -250,7 +248,6 @@ exports.UpdateReport = async function(report) {
             // Log the error if the text file is not successfully updated
             console.log(err);
     });
-    console.log("finished update report")
 }
 
 /**
