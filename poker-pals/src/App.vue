@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view></router-view>
-     <Reports :data="gridData" :columns="gridColumns" />
+     <!-- <Reports :data="gridData" :columns="gridColumns" /> -->
   </div>
 </template>
 
@@ -10,9 +10,8 @@
 // import Login from './components/Login.vue';
 // import Poker from './components/Poker.vue';
 // import Profile from './components/Profile.vue';
-import Reports from './components/Reports.vue';
+// import Reports from './components/Reports.vue';
 //import Tables from './components/Tables.vue';
-import io from "socket.io-client";
 
 export default {
   name: 'App',
@@ -20,34 +19,8 @@ export default {
     // Login,
     // Poker,
     // Profile,
-     Reports,
+    // Reports,
     //Tables
-    //ReportGrid
-  },
-  data() {
-    // Retrieve reports from text file
-    this.getReports();
-    return {    
-      // Initial data that is sent to the Reports component
-      gridData: [],
-      gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
-    }
-  },
-  beforeCreate() {
-    this.socket = io("http://localhost:3000");
-    this.socket.on("connected", data => {
-        console.log("client received a message: " + data);
-    });
-
-    this.socket.on('receive reports', data => {
-      this.gridData = data.reports;
-      this.columns = data.gridColumns;
-    });
-  },
-  methods: {
-    getReports: function() {
-      this.socket.emit('request reports');
-    }
   }
 }
 

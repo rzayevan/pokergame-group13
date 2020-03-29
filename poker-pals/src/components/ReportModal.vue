@@ -52,17 +52,18 @@ export default {
 
     },
     methods: {
+      // Hide modal
       cancel: function() {
         this.$bvModal.hide("report-modal");
       },
+      // Dismiss the report and close the modal
       dismiss: function() {
         this.$bvModal.hide("report-modal");
-
         this.socket.emit("review report", { id: this.reportData.id, newStatus: "dismissed" });
       },
+      // Ban the offending user and close the modal
       ban: function() {
         this.$bvModal.hide("report-modal");
-
         this.socket.emit("review report", { id: this.reportData.id, newStatus: "banned" });
       }
     },
@@ -70,7 +71,6 @@ export default {
 </script>
 
 <style scoped>
-
   body {
     height: 100%;
   }
