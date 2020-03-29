@@ -72,7 +72,7 @@ module.exports = class PokerTable {
     }
 
     isPlayerAtTable(profile){
-        if(this.tableSeats.find(seat => seat.userID === profile.userID) === undefined){
+        if(this.tableSeats.find(seat => seat.userID === profile.id) === undefined){
             return false;
         }
         else{
@@ -146,7 +146,6 @@ module.exports = class PokerTable {
     }
 
     addPlayerToTable(profile, socketID){
-        profile.chips -= this.buyIn;
         let emptySeat = this.tableSeats.find(tableSeat => tableSeat.seatOpen === true);
         emptySeat.addPlayerToTable(profile, socketID, this.buyIn, this.gameInPlay);
         return {seatID: emptySeat.seatID, tableName: this.tableName, tableID: this.tableID, bigBlind: this.bigBlind};
@@ -531,6 +530,21 @@ module.exports = class PokerTable {
                 this.tableSeats[i].resetSeat();
             }
         }
+    }
+
+    bootPlayer(userID){
+        let seat = this.tableSeats.find(seat => seat.userID === userID);
+        let chips = seat.chips;
+        this.potTotal += seat.bet; // what ever they left in the bet is now part of the pot
+        seat.resetSeat();
+        if(userID === this.seatTurnID){ // it was their turn, find the next one
+            this.findNextTurn();
+            this.setplayerTurn();
+        }
+        if(this.getNumberOfPlayersStillInPlay() === 1){ // at this point the last player does not get a turn, they just win
+            this.beginTheShowDown();
+        }
+        return chips;
     }
 
     reset(){

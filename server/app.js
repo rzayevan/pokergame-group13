@@ -53,19 +53,14 @@ io.on('connection', (socket) => {
         turnDecision(io, socket, msg);
     });
 
+    socket.on('exitTableRequest', function(msg){
+        exitTableRequest(io, socket, msg);
+    });
+
 });
 
 
-// a list of sample profiles already put into the system, these are not the real profiles (just hard coded ones)
-// need to update to use the real profiles stored in the server
-let profiles = [
-    {userID: 1000, name: 'Mark123', chips: 20000, icon: 'player_icon_1'},
-    {userID: 2000, name: 'John456', chips: 40000, icon: 'player_icon_1'},
-    {userID: 3000, name: 'Luke854', chips: 60000, icon: 'player_icon_1'},
-    {userID: 4000, name: 'Jane027', chips: 180000, icon: 'player_icon_1'},
-    {userID: 5000, name: 'Stan693', chips: 100000, icon: 'player_icon_1'},
-    {userID: 6000, name: 'Mack273', chips: 20, icon: 'player_icon_1'},
-];
+
 // the entire list of tables, might need a better way to store them?
 let tables = [];
 // add new table with big blind, table name, table id
@@ -87,10 +82,12 @@ function canUserJoinTable(tableToJoin, profile){ // check if the user is permitt
     }
 }
 function joinTable(io, socket, msg){ // request sent from client that they want to join the table
-    let profile = profiles.find(profile => profile.userID === msg.userID); // get their profile
+    let profile = DataAccessLayer.ReadUsersFile().find(profile => profile.id === msg.userID);
+    //let profile = profiles.find(profile => profile.userID === msg.userID); // get their profile
     let tableToJoin = tables.find(table => table.tableID === msg.tableID); // get the table they wish to join
     if(canUserJoinTable(tableToJoin, profile)){// the user can join the table
-        console.log('success');
+        profile.chips -= tableToJoin.buyIn; // user pays the buy in
+        DataAccessLayer.UpdateUser(profile);
         let result = tableToJoin.addPlayerToTable(profile, socket.id); // the table will fill a seat based on the profile and send back the seat id
         socket.join(result.tableName); // now this client will receive messages from the tableName room
         socket.emit('joinTable', {
@@ -104,6 +101,18 @@ function joinTable(io, socket, msg){ // request sent from client that they want 
             tableToJoin.tableActive = true; // the table is now active
             beginTheGame(io, tableToJoin);
         }
+    }
+}
+function exitTableRequest(io, socket, msg){
+    let table = tables.find(table => table.tableID === msg.tableID);
+    let user = DataAccessLayer.ReadUsersFile().find(user => user.id === msg.userID);
+    user.chips += table.bootPlayer(user.id); // boot the player and return any chips they had (not including pot)
+    DataAccessLayer.UpdateUser(user);
+    socket.leave(table.tableName);
+    socket.emit('leaveTable');
+    io.to(table.tableName).emit('tableState', JSON.stringify(table.getTableState()));
+    if(table.showdown){// after each move we need to check if the table is ready for a showdown
+        beginShowingTheRemainingCommunityCards(io, table);
     }
 }
 // the functions for communication between the server and the poker.vue page
@@ -121,7 +130,7 @@ function beginTheGame(io, table){ // function will begin the game with a time ou
     }, 5000);
 }
 function turnDecision(io, socket, msg){ // each player when clicking the poker.vue buttons will trigger this function, it will assess whether or not the move was valid
-    let table = tables[msg.tableID];
+    let table = tables.find(table => table.tableID === msg.tableID);
     if(table.isItTheirTurn(msg.userID, msg.seatID, socket.id)){
         // there is a limited number of actions a player can take based on their current state
         // ask if they can make that move, if not then do nothing, later also disable buttons based on lack of options

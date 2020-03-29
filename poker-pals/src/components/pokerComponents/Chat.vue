@@ -6,9 +6,9 @@
             <div class="messagesBoxBorder" v-bind:class="{ messagesBoxBorderFull: full, messagesBoxBorderHalf: !full }"> <!--contains all the chat messages in the form of a list-->
                 <div class="messagesBox" v-bind:class="{ messagesBoxFull: full, messagesBoxHalf: !full }">
                     <!--these buttons are not permanent, only for testing functionality-->
-                    <button class="testButton" v-on:click="$parent.logIn(1000)">log in as userID:1000</button>
-                    <button class="testButton" v-on:click="$parent.logIn(2000)">log in as userID:2000</button>
-                    <button class="testButton" v-on:click="$parent.logIn(3000)">log in as userID:3000</button>
+                    <button class="testButton" v-on:click="$parent.logIn('948bf810-71e2-11ea-a8e0-73473bc162b1')">log in as dev</button>
+                    <button class="testButton" v-on:click="$parent.logIn('9e9a98d0-71e6-11ea-b474-933b66303ca9')">log in as john</button>
+                    <button class="testButton" v-on:click="$parent.logIn('8fd55dc0-71f6-11ea-a4ad-f1607ee8ca58')">log in as mack</button>
                     <button class="testButton" v-on:click="$parent.logIn(4000)">log in as userID:4000</button>
                     <button class="testButton" v-on:click="$parent.logIn(5000)">log in as userID:5000</button>
                     <button class="testButton" v-on:click="$parent.logIn(6000)">log in as userID:6000</button>

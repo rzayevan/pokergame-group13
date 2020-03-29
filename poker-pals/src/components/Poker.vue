@@ -78,7 +78,7 @@ export default {
             report_OffenderName: '', 
             report_OffenderMessageId: '',
             // the image resource files for the card images
-            cardFiles: require("./pokerComponents/CardFiles").cardFiles,
+            imageFiles: require("./pokerComponents/ImageFiles").imageFiles,
 
 
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
@@ -90,12 +90,12 @@ export default {
             // most of this will come from the server
             myCards: [{src:null}, {src:null}],
             players: [ // the intial state of all player boxes,these get updated throughout the game
-                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat1', id: 1, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat2', id: 2, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat3', id: 3, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', id: 4, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', id: 5, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
-                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', id: 6, dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: require(`../images/player_icon_1.png`), chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat1', dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: {src: null}, chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat2', dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: {src: null}, chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxA', youTag: 'youTagA', playerCards: 'playerCardsA'}, divID: 'playerSeat3', dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: {src: null}, chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat4', dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: {src: null}, chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat5', dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: {src: null}, chipTotal: "", action: "WAITING", youTag: false, timer: false},
+                {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: {src: null}, chipTotal: "", action: "WAITING", youTag: false, timer: false},
             ],
             communityCards: [{src:null},{src:null},{src:null},{src:null},{src:null}], // community cards revealed at any given time
         };
@@ -114,9 +114,10 @@ export default {
                 this.players[i].chipTotal = seatStates[i].chips;
                 this.players[i].action = seatStates[i].action;
                 this.players[i].timer = seatStates[i].turn;
+                this.players[i].accountImage.src = this.imageFiles.find(file => file.name === seatStates[i].icon).src;
             }
             for(let i = 0; i < receivedCommunityCards.length; i++){
-                this.communityCards[i].src = this.cardFiles.find(file => file.name === receivedCommunityCards[i]).src;
+                this.communityCards[i].src = this.imageFiles.find(file => file.name === receivedCommunityCards[i]).src;
             }
             this.potTotal = msg.potTotal;
 
@@ -136,19 +137,40 @@ export default {
             this.bigBlind = msg.bigBlind;
             this.players[this.seatID].youTag = true;
         });
+
+        this.socket.on('leaveTable', () => { // each player upon joining a table will receive the id of the seat they are to sit at
+            this.seatID = -1;
+            this.tableName = '';
+            this.tableID = -1;
+            this.bigBlind = 0;
+            for(let i = 0; i < 6; i++){
+                let player = this.players[i];
+                player.occupied = false;
+                player.dealerStatus = false;
+                player.cards = {card1: {src: null}, card2: {src: null}};
+                player.bet = 0;
+                player.accountName = "";
+                player.accountImage.src = this.imageFiles.find(file => file.name === 'invisible').src;
+                player.chipTotal = "";
+                player.action = "WAITING";
+                player.youTag = false;
+                player.timer = false;
+            }
+            this.$router.push({ name: "Tables" });
+        });
         
         this.socket.on('beginTheGame', msgJSON => { // each player receives their two personal cards upon the game starting
             let msg = JSON.parse(msgJSON);
-            this.myCards[0].src = this.cardFiles.find(file => file.name === msg[0]).src;
-            this.myCards[1].src = this.cardFiles.find(file => file.name === msg[1]).src;
+            this.myCards[0].src = this.imageFiles.find(file => file.name === msg[0]).src;
+            this.myCards[1].src = this.imageFiles.find(file => file.name === msg[1]).src;
         });
         
         this.socket.on('showdown', msgJSON => { // the showdown has begun, now all player cards are being shown
             let msg = JSON.parse(msgJSON);
             for(let i = 0; i < this.players.length; i++){
                 this.players[i].cards = {
-                    card1: {src: this.cardFiles.find(file => file.name === msg[i][0]).src}, 
-                    card2: {src: this.cardFiles.find(file => file.name === msg[i][1]).src}
+                    card1: {src: this.imageFiles.find(file => file.name === msg[i][0]).src}, 
+                    card2: {src: this.imageFiles.find(file => file.name === msg[i][1]).src}
                 };
             }
             this.setPlayerCardsVisibility(true); // TODO: move this to a separate socket call, it only needs to execute once
@@ -165,23 +187,23 @@ export default {
         this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
             // each player will reset the ui for a new game
             for(let i = 0; i < this.players.length; i++){
-                this.players[i].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+                this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'card_back').src}, card2: {src: this.imageFiles.find(file => file.name === 'card_back').src}};
             }
             for(let i = 0; i < this.communityCards.length; i++){
-                this.communityCards[i].src = this.cardFiles[1].src;
+                this.communityCards[i].src = this.imageFiles.find(file => file.name === 'card_empty').src
             }
             this.setPlayerCardsVisibility(false); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)
         });
         // end of socket.on functions
         // asign the standard card_back image to each of player cards inititally
         // later the server will send the true cards at the show down
-        this.myCards = [{src: this.cardFiles[1].src}, {src: this.cardFiles[1].src}];
-        
+        this.myCards = [{src: this.imageFiles.find(file => file.name === 'card_empty').src}, {src: this.imageFiles.find(file => file.name === 'card_empty').src}];
         for(let i = 0; i < this.players.length; i++){
-            this.players[i].cards = {card1: {src: this.cardFiles[0].src}, card2: {src: this.cardFiles[0].src}};
+            this.players[i].accountImage.src = this.imageFiles.find(file => file.name === 'invisible').src;
+            this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'card_back').src}, card2: {src: this.imageFiles.find(file => file.name === 'card_back').src}};
         }
         for(let i = 0; i < this.communityCards.length; i++){
-            this.communityCards[i].src = this.cardFiles[1].src;
+            this.communityCards[i].src = this.imageFiles.find(file => file.name === 'card_empty').src;
         }
     },
     methods:{
@@ -213,6 +235,11 @@ export default {
         },
         exitTable(){ // allows a player to leave the table, player will forfeit any chips in the pot
             // TODO: when all pages are linked this function will be implemented
+            this.socket.emit("exitTableRequest", {
+                userID: this.userID,
+                tableID: this.tableID,
+                seatID: this.seatID,
+            });
         },
         setRaiseToValue(value){
             this.raiseToValue = value;

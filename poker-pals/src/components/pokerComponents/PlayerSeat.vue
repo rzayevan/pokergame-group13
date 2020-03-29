@@ -8,7 +8,7 @@
                 <Clock v-bind:timer="timer"/> <!--the clock timer-->
                 <div class="identification">
                     <div class="accountImage">
-                        <img v-bind:src="accountImage"/>
+                        <img v-bind:src="accountImage.src"/>
                     </div>
                     <div class="accountName">{{ accountName }}</div>
                 </div>
@@ -292,7 +292,7 @@ export default {
         Clock,
     },
     props: [
-        'occupied', 'classes', 'dealerStatus', '_id', 'cards', 'cardReveal', 'betValue', 'accountName',
+        'occupied', 'classes', 'dealerStatus', 'cards', 'cardReveal', 'betValue', 'accountName',
         'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'active'
     ],
 }
