@@ -199,7 +199,6 @@ exports.AddReportToFile = function(report) {
     cachedReports.push(report);
 }
 
-
 /**
  * Updates the cache and local text file to update to represent all changes made to the Report object passed in
  * @param {Report} report The Report object that has had values updated, cache and local file will update based on id
