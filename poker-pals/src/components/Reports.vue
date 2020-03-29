@@ -128,9 +128,6 @@
   },
   beforeCreate(){
     this.socket = io("http://localhost:3000");
-    this.socket.on("connected", data => {
-        console.log("client received a message: " + data);
-    });
 
     // Request reports from the server
     this.socket.emit('request reports');

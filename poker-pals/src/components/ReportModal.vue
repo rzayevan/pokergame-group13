@@ -46,10 +46,6 @@ export default {
     props: ['reportData'],
     mounted() {
       this.socket = io("http://localhost:3000");
-      this.socket.on("connected", data => {
-        console.log("client received a message: " + data);
-      });
-
     },
     methods: {
       // Hide modal
