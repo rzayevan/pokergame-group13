@@ -27,6 +27,8 @@ exports.GetCachedUsers = function() {
  * Returns the array of user objects that are stored in the local text file
  */
 exports.ReadUsersFile = function() {
+    // Reset Cached Users
+    cachedUsers = [];
     // Create a new LineReader object
     let liner = new lineReader('data/Users.txt');
     // Declare an empty variable line
@@ -126,6 +128,8 @@ exports.UpdateUser = function(user) {
  * Returns the array of user objects that are stored in the local text file
  */
 exports.ReadReportsFile = function() {
+    // Reset CachedReports
+    cachedReports = [];
     // Create a new LineReader object
     let liner = new lineReader('data/Reports.txt');
     // Declare an empty variable line
@@ -171,7 +175,6 @@ exports.ReadReportsFile = function() {
         // Add the Report object to the cachedReports array
         cachedReports.push(report);
     }
-    // return cachedReports
     return cachedReports;
 }
 
@@ -194,13 +197,16 @@ exports.AddReportToFile = function(report) {
 
     // Add the report to the cache
     cachedReports.push(report);
+
+
 }
+
 
 /**
  * Updates the cache and local text file to update to represent all changes made to the Report object passed in
  * @param {Report} report The Report object that has had values updated, cache and local file will update based on id
  */
-exports.UpdateReport = function(report) {
+exports.UpdateReport = async function(report) {
     // Find the index in the cache for the original User object
     let index = cachedReports.findIndex(x => x.id === report.id);
     // Get a pointer to the original User object
@@ -244,6 +250,7 @@ exports.UpdateReport = function(report) {
             // Log the error if the text file is not successfully updated
             console.log(err);
     });
+    console.log("finished update report")
 }
 
 /**
@@ -260,5 +267,4 @@ GetChatLogString = function(chatMessages) {
         chatLogString += chatMessageString;
     }
     return chatLogString;
-    //    });    
 }

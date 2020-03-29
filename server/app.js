@@ -40,15 +40,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('request reports', function() {
-        console.log("request reports");
         retrieveReports(this, false);
     });
 
     socket.on('review report', function(updateData) {
-        console.log("review report");
         ReportUtils.reviewReport(updateData);
         retrieveReports(this, true);
-
     });
 
     retrieveReports = function(socket, isUpdate) {

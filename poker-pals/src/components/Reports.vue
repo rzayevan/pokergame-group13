@@ -1,12 +1,12 @@
 <template>
   <div class="wrapper">
       <ReportModal
-      :reportData=reportData
-    />
+        :reportData=reportData
+      />
   <form id="search">
-    Search <input name="query" v-model="searchQuery">
+    Search <input class="form-control" name="query" v-model="searchQuery">
   </form>
-  <div id="grid-template">
+  <div id="reports-grid">
     <div class="table-header-wrapper">
       <table class="table-header">
         <thead>
@@ -38,7 +38,7 @@
   import io from "socket.io-client";
 
   export default {
-  name: "grid",
+  name: "report-grid",
   props: {
     data: Array,
     columns: Array,
@@ -47,6 +47,7 @@
       ReportModal,
   },
   data(){
+    // Empty report data. Updated when a row is clicked  
     return {
       searchQuery: '',
       sortKey: '',
@@ -58,17 +59,18 @@
         offense: "", 
         reportedBy: "",
         description: "",
-        chatLogs: []
+        chatLogs: [],
+        isReviewed: false
       }
     }
   },
   computed: {
+    // Sorts and filters report data, based on search terms or ordering direction
     filteredData: function () {
       let sortKey = this.sortKey;
       let filterKey = this.searchQuery && this.searchQuery.toLowerCase();
       let order = this.sortOrders[sortKey] || 1;
       let data = this.data;
-     // let data = this.temp;
       let columns = this.columns;
 
       if (filterKey) {
@@ -94,7 +96,7 @@
       this.sortKey = key;
       this.sortOrders[key] = this.sortOrders[key] * -1;
     },
-    // Opens the modal
+    // Opens the reports modal
     showModal: function() {
         this.$bvModal.show("report-modal");
     },
@@ -108,12 +110,13 @@
       this.reportData.reportedBy = entry["Reported By"];
       this.reportData.description = entry["Description"];
       this.reportData.chatLogs = entry["chatLogs"];
+      this.reportData.isReviewed = entry["isReviewed"];
 
       // Opens the modal
       this.showModal();
     },
+    // Determines the class of a table row, depending on whether or not the corresponding report has been reviewed
     getEntryClass: function(entry) {
-     // console.log(entry);
       return {
         isReviewed: entry.isReviewed
       }
@@ -125,7 +128,6 @@
       sortOrders[key] = 1;
     })
     this.sortOrders = sortOrders;
-
 
     this.socket = io("http://localhost:3000");
     this.socket.on("connected", data => {
@@ -144,6 +146,17 @@ body{
   font-family: Helvetica Neue, Arial, sans-serif;
   font-size: 14px;
   color: #555;
+}
+
+#search {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-control {
+  width: 80%;
+  margin-left: 5%;
 }
 
 table {
@@ -207,7 +220,7 @@ tr:hover {
   border-top: 4px solid white;
 }
 
-#grid-template {
+#reports-grid {
   display: flex;
   display: -webkit-flex;
   flex-direction: column;

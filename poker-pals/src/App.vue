@@ -10,9 +10,9 @@
 // import Login from './components/Login.vue';
 // import Poker from './components/Poker.vue';
 // import Profile from './components/Profile.vue';
- import Reports from './components/Reports.vue';
+import Reports from './components/Reports.vue';
 //import Tables from './components/Tables.vue';
-  import io from "socket.io-client";
+import io from "socket.io-client";
 
 export default {
   name: 'App',
@@ -25,28 +25,21 @@ export default {
     //ReportGrid
   },
   data() {
-    console.log("data");
-
+    // Retrieve reports from text file
     this.getReports();
-
     return {    
-
-     // Temporary hardcoded data for use on the Report screen.  Will be replaced when backend functionality is implemented.
-
       // Initial data that is sent to the Reports component
       gridData: [],
       gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
     }
   },
   beforeCreate() {
-    console.log("beforeCreate");
-      this.socket = io("http://localhost:3000");
+    this.socket = io("http://localhost:3000");
     this.socket.on("connected", data => {
         console.log("client received a message: " + data);
     });
 
-       this.socket.on('receive reports', data => {
-      console.log("receive reports");
+    this.socket.on('receive reports', data => {
       this.gridData = data.reports;
       this.columns = data.gridColumns;
     });
@@ -54,9 +47,6 @@ export default {
   methods: {
     getReports: function() {
       this.socket.emit('request reports');
-
-
-     // return result;
     }
   }
 }

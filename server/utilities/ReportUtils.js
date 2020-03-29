@@ -4,12 +4,8 @@ const UserUtils = require('./UserUtils.js');
 exports.getReports = function() {
     let formattedReports = [];
 
-    let reports = DataAccessLayer.ReadReportsFile();
-    console.log(reports.length);
+    let reports = DataAccessLayer.getCachedReports();
     reports.forEach(report => {
-       // console.log(count++);
-       //console.log(report)
-
         let formattedReport = {
             id: report.id,
             "Offending User": (typeof UserUtils.getUser(report.offendingUserId)) !== "undefined" ? UserUtils.getUser(report.offendingUserId).username : "Unknown",
@@ -28,19 +24,11 @@ exports.getReports = function() {
     return formattedReports;
 }
 
-exports.reviewReport = function(updateData) {
-   // console.log("report utils review report");
-    
+exports.reviewReport = async function(updateData) {    
     var report = getReport(updateData.id);
-    //console.log(report);
-
     report.status = updateData.newStatus;
-    //report.status = "notreviewed";
 
-
-    DataAccessLayer.UpdateReport(report);
-
-  //  console.log(report);
+    await DataAccessLayer.UpdateReport(report);
 }
 
 formatDate = function(date) {
@@ -64,7 +52,7 @@ isReviewed = function(status) {
 }
 
 getReport = function(id) {
-    let reports = DataAccessLayer.ReadReportsFile();
+    let reports = DataAccessLayer.getCachedReports();
 
     var matchingReport = reports.find(report => {
         return report.id === id;

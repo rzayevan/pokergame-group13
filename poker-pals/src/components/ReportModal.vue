@@ -1,6 +1,7 @@
 <template>
   <div class="modal-container">
     <b-modal centered size="xl" id="report-modal">
+      <!-- Modal header template -->
       <template v-slot:modal-header>
         <div>
           <h5 reportData="reportData">Report: {{ reportData.offendingUser }} &ndash; {{ reportData.offense }} </h5>
@@ -9,32 +10,28 @@
         <b-button class="close" @click="cancel()">
           &times;
         </b-button>
-
       </template>
 
+      <!-- Modal body template -->
       <template v-slot:default class="modal-body">
         <p reportData="reportData">Submitted by {{ reportData.reportedBy }}</p>
-
         <p><strong>Description</strong></p>
         <p reportData="reportData">{{ reportData.description }}</p>
         <p><strong>Chat Logs</strong></p>
         <ul class="chat-display">
           <li reportData="reportData" class="row" v-for="chat in reportData.chatLogs" :key="chat.message">
-            <p>{{ chat.username + ": "}}</p>
-            <p class="space"></p>
+            <p class="chat-username">{{ chat.username + ": "}}</p>
             <p>{{ chat.message }}</p>
           </li>
         </ul>
       </template>
       
-
-
+      <!-- Modal footer template -->
       <template v-slot:modal-footer>
-
-        <b-button variant="primary" @click="dismiss()">
+        <b-button reportData="reportData" variant="primary" @click="dismiss()" :disabled="reportData.isReviewed">
           Dismiss
         </b-button>
-        <b-button variant="danger" @click="ban()">
+        <b-button reportData="reportData" variant="danger" @click="ban()" :disabled="reportData.isReviewed">
           Ban
         </b-button>
       </template>
@@ -106,15 +103,17 @@ export default {
     background: white;
   }
 
-  .space {
-    width: 0.3em;
+  .chat-username {
+    margin-right: 0.3em;
   }
 
   .chat-display {
     border-width: 1px;
     border-color: grey;
     border-style: solid;
+    border-radius: 5px;
     padding: 10px;
+
   }
 
   li {
