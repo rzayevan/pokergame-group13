@@ -68,9 +68,9 @@ export default {
         return {
             socket: {},
             userID: '',
-            tableID: -1,
+            roomID: -1,
             seatID: '',
-            tableName: '',
+            tableName: '', // NOTE: CANNOT USE THIS FOR MESSAGES NOW, USE ROOM ID
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
             raiseToValue: 0, // TODO: set this based on table stakes
             
@@ -121,7 +121,7 @@ export default {
             }
             this.potTotal = msg.potTotal;
 
-            // on each tablestate update this code will run to see if: the player is seated, it is the players turn, the check/fold is toggled
+            // on each tablestate update, this code will run to see if: the player is seated, it is the players turn, the check/fold is toggled
             // if all these conditions are meet then the code will send a check/fold decision without the player's input
             // the server will either check or fold for the player automatically
             if(this.seatID !== '' && this.players[this.seatID].timer === true && this.checkFold){
@@ -130,18 +130,18 @@ export default {
             }
         });
         
-        this.socket.on('joinTable', msg => { // each player upon joining a table will receive the id of the seat they are to sit at
+        this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
             this.seatID = msg.seatID;
             this.tableName = msg.tableName;
-            this.tableID = msg.tableID;
+            this.roomID = msg.roomID;
             this.bigBlind = msg.bigBlind;
             this.players[this.seatID].youTag = true;
         });
 
-        this.socket.on('leaveTable', () => { // each player upon joining a table will receive the id of the seat they are to sit at
+        this.socket.on('leaveRoom', () => { // each player upon joining a table will receive the id of the seat they are to sit at
             this.seatID = -1;
             this.tableName = '';
-            this.tableID = -1;
+            this.roomID = -1;
             this.bigBlind = 0;
             for(let i = 0; i < 6; i++){
                 let player = this.players[i];
@@ -213,16 +213,16 @@ export default {
         logIn(userID){ // a temporary socket function to let a player join a table, later use real athentication
             this.userID = userID;
         },
-        joinTable(tableID) { // for now use this function to join into the game
-            this.socket.emit("joinTableRequest", { // we send our assigned user id
+        joinRoom(roomID) { // for now use this function to join into the game
+            this.socket.emit("joinRoomRequest", { // we send our assigned user id
                 userID: this.userID,
-                tableID: tableID, // the table the player wants to join
+                roomID: roomID, // the room the player wants to join
             });
         },
         makeDecision(action){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
             this.socket.emit("turnDecision", {
                 userID: this.userID,
-                tableID: this.tableID,
+                roomID: this.roomID,
                 seatID: this.seatID,
                 action: action,
                 raiseToValue: this.raiseToValue, // only used if player is raising
@@ -235,9 +235,9 @@ export default {
         },
         exitTable(){ // allows a player to leave the table, player will forfeit any chips in the pot
             // TODO: when all pages are linked this function will be implemented
-            this.socket.emit("exitTableRequest", {
+            this.socket.emit("exitRoomRequest", {
                 userID: this.userID,
-                tableID: this.tableID,
+                roomID: this.roomID,
                 seatID: this.seatID,
             });
         },

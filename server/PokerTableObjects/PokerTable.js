@@ -3,16 +3,15 @@ let PokerPlayerSeat = require("./PokerPlayerSeat.js");
 // this is a pokerTable class which will handle the current poker table state
 // it contains info on the players, community cards, bets, etc.
 module.exports = class PokerTable {
-    constructor(bigBlind, tableName, tableID) {
-        this.tableID = tableID;
-        this.tableName = tableName;
+    constructor(pokerTableStats){
+        this.tableName = pokerTableStats.name;
         this.numberOfTableSeats = require("./PokerUtilities.js").numberOfTableSeats;
         this.minimumNumberOfPlayersNeededToContinue = 2;
         this.flopNumber = 3;
         this.turnNumber = 4;
         this.riverNumber = 5;
-        this.bigBlind = bigBlind; // the big blind of the table
-        this.buyIn = bigBlind * 10;
+        this.bigBlind = pokerTableStats.bigBlind; // the big blind of the table
+        this.buyIn = pokerTableStats.buyIn;
         this.currentBet = 0; // current bet the table has been raised to, gets reset to zero after each card reveal
         this.seatTurnID = -1; // the seatID of the current turn
         this.dealerSeatID = -1;
@@ -148,7 +147,7 @@ module.exports = class PokerTable {
     addPlayerToTable(profile, socketID){
         let emptySeat = this.tableSeats.find(tableSeat => tableSeat.seatOpen === true);
         emptySeat.addPlayerToTable(profile, socketID, this.buyIn, this.gameInPlay);
-        return {seatID: emptySeat.seatID, tableName: this.tableName, tableID: this.tableID, bigBlind: this.bigBlind};
+        return {seatID: emptySeat.seatID, tableName: this.tableName, bigBlind: this.bigBlind};
     }
 
     canAGameBegin(){
@@ -556,6 +555,8 @@ module.exports = class PokerTable {
             ['invisible', 'invisible'],
             ['invisible', 'invisible'],
         ];
+        this.communityCards = ['', '', '', '', ''];
+        this.communityCardsShown = 0;
         this.currentRankingHand = -1;
         for(let i = 0; i < this.numberOfTableSeats; i++){
             if(!this.tableSeats[i].seatOpen){

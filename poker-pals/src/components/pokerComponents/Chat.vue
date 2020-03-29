@@ -9,15 +9,12 @@
                     <button class="testButton" v-on:click="$parent.logIn('948bf810-71e2-11ea-a8e0-73473bc162b1')">log in as dev</button>
                     <button class="testButton" v-on:click="$parent.logIn('9e9a98d0-71e6-11ea-b474-933b66303ca9')">log in as john</button>
                     <button class="testButton" v-on:click="$parent.logIn('8fd55dc0-71f6-11ea-a4ad-f1607ee8ca58')">log in as mack</button>
-                    <button class="testButton" v-on:click="$parent.logIn(4000)">log in as userID:4000</button>
-                    <button class="testButton" v-on:click="$parent.logIn(5000)">log in as userID:5000</button>
-                    <button class="testButton" v-on:click="$parent.logIn(6000)">log in as userID:6000</button>
-                    <button class="testButton" v-on:click="$parent.joinTable(0)">join table 0</button>
-                    <button class="testButton" v-on:click="$parent.joinTable(1)">join table 1</button>
-                    <button class="testButton" v-on:click="$parent.joinTable(2)">join table 2</button>
-                    <button class="testButton" v-on:click="$parent.joinTable(3)">join table 3</button>
-                    <button class="testButton" v-on:click="$parent.joinTable(4)">join table 4</button>
-                    <button class="testButton" v-on:click="$parent.joinTable(5)">join table 5</button>
+                    <button class="testButton" v-on:click="$parent.joinRoom(0)">join room 0</button>
+                    <button class="testButton" v-on:click="$parent.joinRoom(1)">join room 1</button>
+                    <button class="testButton" v-on:click="$parent.joinRoom(2)">join room 2</button>
+                    <button class="testButton" v-on:click="$parent.joinRoom(3)">join room 3</button>
+                    <button class="testButton" v-on:click="$parent.joinRoom(4)">join room 4</button>
+                    <button class="testButton" v-on:click="$parent.joinRoom(5)">join room 5</button>
                     
 
                     <div v-for="item in items" :key="item.message"> <!--display each message according to whom is the sender-->
