@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <router-view></router-view>
+
+    <HelloWorld/>
   </div>
 </template>
 
@@ -11,6 +13,7 @@
 // import Profile from './components/Profile.vue';
 // import Reports from './components/Reports.vue';
 //import Tables from './components/Tables.vue';
+import HelloWorld from './components/HelloWorld.vue';
 
 export default {
   name: 'App',
@@ -19,7 +22,8 @@ export default {
     // Poker,
     // Profile,
     // Reports,
-    //Tables
+    //Tables,
+    HelloWorld
   }
 }
 

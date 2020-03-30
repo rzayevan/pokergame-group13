@@ -1,34 +1,70 @@
 <template>
-  <div class="table">
-    <div class="table-description">
-        <div class = "table-stakes">
-            <p> 20,000 </p> 
-            <p> 1000/2000 </p>
+  <div class = "table-list">
+    <ul>
+    <li v-for="(table, x) in tables" :key="table.id">
+      <div class="table"  id = "table-click" v-on:click="joinRoom(table.id, x)">
+        <div class="table-description">
+            <div class = "table-stakes">
+                <p>{{table.buyin}}</p> 
+                <p> {{table.blinds}} </p>
+            </div> 
+            <div class = "chips-pic">
+              <img alt="Vue logo" src="../assets/chip.png">
+            </div> 
         </div> 
-        <div class = "chips-pic">
-          <img alt="Vue logo" src="../assets/chip.png">
-        </div> 
-    </div> 
-    <div class="table-details">
-        <div class = "table-name">
-            <p> Table 1</p>
+        <div class="table-details">
+            <div class = "table-name">
+                <p> {{table.name}}</p>
+            </div>
+            <div class = "seats" id = "seatsId">
+                <p> {{table.sockets.length}}/6</p>
+            </div>
         </div>
-        <div class = "seats">
-            <p> 6/6 </p>
-        </div>
-    </div>
+      </div>
+    </li>
+    </ul>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'Tables',
+  props: ['tables'], 
 
+  data() {
+    return {
+      hover: true,
+    };
+  },
+  methods: {
+    joinRoom: function (table, tableNum) {
+      alert("Joined Table " + (tableNum+1));
+      this.$parent.socket.emit("join-room",table);
+      this.$parent.socket.emit("update-tables");
+      console.log(this.tables);
+      console.log(this.tables[tableNum].sockets.length);
+    }
+  }
 }
+
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.active {
+  background: red;
+}
+
+ul {
+  overflow-x:hidden;
+}
+
+li {
+  display: inline-block; 
+}
 
 .table {
     background: #348c44;
