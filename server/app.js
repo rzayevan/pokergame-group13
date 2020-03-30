@@ -7,6 +7,7 @@ let User = require("./model/User.js");
 
 const DataAccessLayer = require('./controllers/DataAccessLayer.js');
 const UserUtils = require('./utilities/UserUtils.js');
+const ReportUtils = require('./utilities/ReportUtils.js');
 
 http.listen(3000, () => {
     let users = DataAccessLayer.ReadUsersFile();
@@ -39,6 +40,29 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('request reports', function() {
+        retrieveReports(this, false);
+    });
+
+    socket.on('review report', function(updateData) {
+        ReportUtils.reviewReport(updateData);
+        retrieveReports(this, true);
+    });
+
+    retrieveReports = function(socket, isUpdate) {
+        let reportData = {
+            reports: ReportUtils.getReports(),
+            gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
+        };
+
+        if (isUpdate) {
+            socket.broadcast.emit("receive reports", reportData);
+        }
+        else {
+            socket.emit("receive reports", reportData);
+        }
+    }
+
     // start of added code to talk with poker.vue
     // these next two functions are temporary, need to login and join table via login page and tables page
     socket.on("logIn", function(msg){
@@ -52,7 +76,6 @@ io.on('connection', (socket) => {
     socket.on('turnDecision', function(msg){
         turnDecision(io, socket, msg);
     });
-
 });
 
 
