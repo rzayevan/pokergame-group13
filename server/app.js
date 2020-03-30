@@ -41,9 +41,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', function () {
-
         console.log('disconnected');
-  
     });
 
     socket.on('request reports', function() {
@@ -84,23 +82,6 @@ io.on('connection', (socket) => {
         exitRoomRequest(io, socket, msg);
     });
 });
-
-
-// a list of sample profiles already put into the system, these are not the real profiles (just hard coded ones)
-// need to update to use the real profiles stored in the server
-let profiles = [
-    {userID: 1000, name: 'Mark123', chips: 20000, icon: 'player_icon_1'},
-    {userID: 2000, name: 'John456', chips: 40000, icon: 'player_icon_1'},
-    {userID: 3000, name: 'Luke854', chips: 60000, icon: 'player_icon_1'},
-    {userID: 4000, name: 'Jane027', chips: 80000, icon: 'player_icon_1'},
-    {userID: 5000, name: 'Stan693', chips: 10000, icon: 'player_icon_1'},
-    {userID: 6000, name: 'Mack273', chips: 20, icon: 'player_icon_1'},
-];
-// the entire list of tables, might need a better way to store them?
-let tables = [];
-tables.push(new PokerTable(2000, 'Big Fish')); // initially we will have one table, with a big blind of 2000, when socket rooms are implemented then multiple tables will be added
-
-
 
 const { v1: uuid } = require('uuid');
 pokerTableStats = require("./PokerTableObjects/PokerUtilities.js").pokerTableStats;
