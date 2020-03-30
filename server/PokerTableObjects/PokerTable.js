@@ -523,22 +523,26 @@ module.exports = class PokerTable {
         this.potTotal = 0;
     }
 
-    bootPlayers(){
+    bootPlayers(io, room){
         for(let i = 0; i < this.numberOfTableSeats; i++){
             if(this.tableSeats[i].chips === 0){
+                io.sockets.connected[this.tableSeats[i].socketID].leave(room.id);
                 this.tableSeats[i].resetSeat();
             }
         }
     }
 
-    bootPlayer(userID){
+    bootPlayer(userID, io, room){
         let seat = this.tableSeats.find(seat => seat.userID === userID);
         let chips = seat.chips;
+        let id = seat.userID;
         this.potTotal += seat.bet; // what ever they left in the bet is now part of the pot
+        io.sockets.connected[seat.socketID].leave(room.id);
         seat.resetSeat();
-        if(userID === this.seatTurnID){ // it was their turn, find the next one
+        if(userID === id){ // it was their turn, find the next one
             this.findNextTurn();
             this.setplayerTurn();
+            console.log('found');
         }
         if(this.getNumberOfPlayersStillInPlay() === 1){ // at this point the last player does not get a turn, they just win
             this.beginTheShowDown();

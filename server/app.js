@@ -39,6 +39,12 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('disconnect', function () {
+
+        console.log('disconnected');
+  
+    });
+
     // start of added code to talk with poker.vue
     // these next two functions are temporary, need to login and join table via login page and tables page
     socket.on('joinRoomRequest', function(msg){ // a user wishes to join a room/table
@@ -105,7 +111,7 @@ function exitRoomRequest(io, socket, msg){
     let room = rooms.find(room => room.id === msg.roomID);
     let table = room.table;
     let user = DataAccessLayer.ReadUsersFile().find(user => user.id === msg.userID);
-    user.chips += table.bootPlayer(user.id); // boot the player and return any chips they had (not including pot)
+    user.chips += table.bootPlayer(user.id, io, room); // boot the player and return any chips they had (not including pot)
     DataAccessLayer.UpdateUser(user);
     socket.leave(room.id);
     socket.emit('leaveRoom');
@@ -202,7 +208,7 @@ function calculateAndDistributeChips(io, room){ // after a winner is found the c
 function bootPlayers(io, room){ // any players that lost all their chips are removed from the table
     setTimeout(function() {
         let table = room.table;
-        table.bootPlayers(); // will remove all players that have no more chips
+        table.bootPlayers(io, room); // will remove all players that have no more chips
         table.reset(); // reset the table for a new game
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
         io.to(room.id).emit('reset');
