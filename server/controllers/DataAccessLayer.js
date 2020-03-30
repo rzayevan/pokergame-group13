@@ -43,15 +43,16 @@ exports.ReadUsersFile = function() {
         let user = new User();
 
         user.id = splitLine[0];
-        user.username = splitLine[1];
-        user.password = splitLine[2];
-        user.email = splitLine[3];
-        user.chips = parseInt(splitLine[4]);
-        user.handsWon = parseInt(splitLine[5]);
-        user.handsPlayed = parseInt(splitLine[6]);
+        user.isAdmin = (splitLine[1] === 'true');
+        user.username = splitLine[2];
+        user.password = splitLine[3];
+        user.email = splitLine[4];
+        user.chips = parseInt(splitLine[5]);
+        user.handsWon = parseInt(splitLine[6]);
+        user.handsPlayed = parseInt(splitLine[7]);
         user.handsLost = user.handsPlayed - user.handsWon;
-        user.lastUpdatedDate = new Date(splitLine[7]);
-        user.createdDate = new Date(splitLine[8]);
+        user.lastUpdatedDate = new Date(splitLine[8]);
+        user.createdDate = new Date(splitLine[9]);
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -65,7 +66,8 @@ exports.ReadUsersFile = function() {
  */
 exports.AddUserToFile = function(user) {
     // Create a string to store in the text file as a user
-    let userString = user.id + "," + user.username + "," + user.password + "," + 
+    let userString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
+                     user.username + "," + user.password + "," + 
                      user.email + "," + user.chips + "," + 
                      user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," 
                      + user.createdDate.toISOString() + ",\n";
@@ -92,7 +94,8 @@ exports.UpdateUser = function(user) {
     let newLastUpdatedDate = new Date();
 
     // Create a new string to update the file to
-    let newUserString = user.id + "," + user.username + "," + user.password + "," + 
+    let newUserString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
+                        user.username + "," + user.password + "," + 
                         user.email + "," + user.chips + "," + 
                         user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," 
                         + user.createdDate.toISOString() + ",";

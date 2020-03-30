@@ -5,6 +5,8 @@ class User {
     constructor() {
          // The uuid of the user
          this.id;
+         // A boolean stating whether the user is an Admin or not
+         this.isAdmin;
          // The username of the user
          this.username;
          // The password of the user
@@ -26,9 +28,11 @@ class User {
     }
 
     // Populates the fields of a newly created User object
-    CreateNewUser(username, password, email) {
+    CreateNewUser(username, password, email, isAdmin = false) {
         // The uuid of the user
         this.id = uuid();
+        // A boolean stating whether the user is an Admin or not
+        this.isAdmin = isAdmin;
         // The username of the user
         this.username = username;
         // The password of the user
@@ -56,6 +60,8 @@ class User {
     CopyUser(userToCopy) {
          // The id of the user
          this.id = userToCopy.id;
+         // A boolean stating whether the user is an Admin or not
+         this.isAdmin = userToCopy.isAdmin;
          // The username of the user
          this.username = userToCopy.username;
          // The password of the user
