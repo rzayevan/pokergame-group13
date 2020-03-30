@@ -178,7 +178,6 @@ exports.ReadReportsFile = function() {
         // Add the Report object to the cachedReports array
         cachedReports.push(report);
     }
-    // return cachedReports
     return cachedReports;
 }
 
@@ -207,7 +206,7 @@ exports.AddReportToFile = function(report) {
  * Updates the cache and local text file to update to represent all changes made to the Report object passed in
  * @param {Report} report The Report object that has had values updated, cache and local file will update based on id
  */
-exports.UpdateReport = function(report) {
+exports.UpdateReport = async function(report) {
     // Find the index in the cache for the original User object
     let index = cachedReports.findIndex(x => x.id === report.id);
     // Get a pointer to the original User object
