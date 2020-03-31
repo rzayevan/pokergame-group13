@@ -26,6 +26,20 @@ const ACE_STRAIGHT_MARK = 4;
  * The number of suits
  */
 const NUMBER_OF_SUITS = 4;
+/**
+ * An array of poker table stats
+ */
+const POKER_TABLE_STATS = [
+    {name: 'Greenhorn', bigBlind: 2,      buyIn: 20}, // stolen from a poker website
+    {name: 'Beginner',  bigBlind: 10,     buyIn: 100},
+    {name: 'Gambler',   bigBlind: 50,     buyIn: 500},
+    {name: 'Pro',       bigBlind: 200,    buyIn: 2000},
+    {name: 'BigFish',   bigBlind: 1000,   buyIn: 10000},
+    {name: 'Master',    bigBlind: 5000,   buyIn: 50000},
+    {name: 'Champion',  bigBlind: 20000,  buyIn: 200000},
+    {name: 'Guru',      bigBlind: 100000, buyIn: 1000000},
+    {name: 'Ultimate',  bigBlind: 500000, buyIn: 5000000}
+];
 
 /**
  * Returns the NUM_OF_TABLE_SEATS constant
@@ -74,4 +88,11 @@ exports.GetAceStraightMark = function() {
  */
 exports.GetNumberOfSuits = function() {
     return NUMBER_OF_SUITS;
+}
+
+/**
+ * Returns the POKER_TABLE_STATS constant
+ */
+exports.GetPokerTableStats = function() {
+    return POKER_TABLE_STATS;
 }

@@ -1,11 +1,11 @@
 let PokerPlayerSeat = require("./PokerPlayerSeat.js");
 let PokerUtils = require('../utilities/PokerUtils.js');
 
-/**
- * Constructor for the PokerTable object
- * @param {Obect} pokerTableStats The pokerTableStats object
- */
 class PokerTable {
+    /**
+     * Constructor for the PokerTable object
+     * @param {Obect} pokerTableStats The pokerTableStats object
+     */
     constructor(pokerTableStats){
         this.tableName = pokerTableStats.name;
         this.numberOfTableSeats = PokerUtils.GetNumberOfTableSeats();
