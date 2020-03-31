@@ -1,4 +1,4 @@
-let PokerTable = require("./PokerTableObjects/PokerTable.js");
+let PokerTable = require("./model/PokerTable.js");
 let express = require('express');
 let app = express();
 let http = require('http').Server(app);
