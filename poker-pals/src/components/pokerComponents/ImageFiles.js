@@ -1,8 +1,9 @@
 module.exports =  {
-    cardFiles: [ // each image resource is loaded into an array and elements can request them by either index or name
+    imageFiles: [ // each image resource is loaded into an array and elements can request them by either index or name
         {src: require(`../../images/cards/card_back.png`), name: 'card_back'},
         {src: require(`../../images/cards/empty.png`), name: 'card_empty'},
         {src: require(`../../images/cards/invisible.png`), name: 'invisible'},
+        {src: require(`../../images/player_icon_1.png`), name: 'player_icon_1'},
         {src: require(`../../images/cards/A_S.png`), name: 'A_S'},
         {src: require(`../../images/cards/2_S.png`), name: '2_S'},
         {src: require(`../../images/cards/3_S.png`), name: '3_S'},

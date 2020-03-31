@@ -1,24 +1,20 @@
 let PokerPlayerSeat = require("./PokerPlayerSeat.js");
 let PokerUtils = require('../utilities/PokerUtils.js');
 
-// this is a pokerTable class which will handle the current poker table state
-// it contains info on the players, community cards, bets, etc.
+/**
+ * Constructor for the PokerTable object
+ * @param {Obect} pokerTableStats The pokerTableStats object
+ */
 class PokerTable {
-    /**
-     * Constructor for the PokerTable object
-     * @param {int} bigBlind The bigBlind for the PokerTable object
-     * @param {String} tableName The name of the new PokerTable object
-     */
-    constructor(bigBlind, tableName) {
-        this.tableName = tableName;
+    constructor(pokerTableStats){
+        this.tableName = pokerTableStats.name;
         this.numberOfTableSeats = PokerUtils.GetNumberOfTableSeats();
         this.minimumNumberOfPlayersNeededToContinue = 2;
         this.flopNumber = 3;
         this.turnNumber = 4;
         this.riverNumber = 5;
-        this.tableID = 0; // the id of the table
-        this.bigBlind = bigBlind; // the big blind of the table
-        this.buyIn = bigBlind * 10;
+        this.bigBlind = pokerTableStats.bigBlind; // the big blind of the table
+        this.buyIn = pokerTableStats.buyIn;
         this.currentBet = 0; // current bet the table has been raised to, gets reset to zero after each card reveal
         this.seatTurnID = -1; // the seatID of the current turn
         this.dealerSeatID = -1;
@@ -88,8 +84,8 @@ class PokerTable {
      * @param {Object} profile THe profile object for the given user    
      * TODO: CONVERT TO A USER OBJECT ----------------------------------------------------------------------------------------------------
      */
-    isPlayerAtTable(profile) {
-        if(this.tableSeats.find(seat => seat.userID === profile.userID) === undefined){
+    isPlayerAtTable(profile){
+        if(this.tableSeats.find(seat => seat.userID === profile.id) === undefined){
             return false;
         }
         return true;
@@ -184,10 +180,9 @@ class PokerTable {
      * TODO: CONVERT PROFILE OBJECT TO USER OBJECT ---------------------------------------------------------------------------------------------
      */
     addPlayerToTable(profile, socketID){
-        profile.chips -= this.buyIn;
         let emptySeat = this.tableSeats.find(tableSeat => tableSeat.seatOpen === true);
         emptySeat.addPlayerToTable(profile, socketID, this.buyIn, this.gameInPlay);
-        return {seatID: emptySeat.seatID, tableName: this.tableName};
+        return {seatID: emptySeat.seatID, tableName: this.tableName, bigBlind: this.bigBlind};
     }
 
     /**
@@ -542,10 +537,15 @@ class PokerTable {
                 this.beginTheShowDown();
                 return;
             }
+        } else { 
+            this.findNextTurn();
+            this.setplayerTurn();
+            // we need to check if only one person remains in the game if so, they don't get a decision we automatically go to the showdown
+            // TODO: later we automatically end the game without show down and give him all the chips (no calculation required)
+            if(this.getNumberOfPlayersStillInPlay() === 1){
+                this.beginTheShowDown();
+            }
         }
-
-        this.findNextTurn();
-        this.setPlayerTurn();
     }
 
     /**
@@ -631,20 +631,46 @@ class PokerTable {
     }
 
     /**
-     * Kicks players from the table and resets the seat
+     * Boots players from the room
+     * @param {Object} io The socket of the user
+     * @param {OBject} room The object defining the room
      */
-    bootPlayers() {
-        for(let i = 0; i < this.numberOfTableSeats; i++) {
-            if(this.tableSeats[i].chips === 0) {
+    bootPlayers(io, room){
+        for(let i = 0; i < this.numberOfTableSeats; i++){
+            let seat = this.tableSeats[i];
+            if(!seat.seatOpen && seat.chips === 0){
+                io.sockets.connected[this.tableSeats[i].socketID].leave(room.id);
                 this.tableSeats[i].resetSeat();
             }
         }
     }
 
     /**
-     * Resets the table
+     * Boot a specific player from the table
+     * @param {String} userID The uuid of the user
+     * @param {Object} io The socket of the user
+     * @param {Object} room The room of the table
      */
-    reset() {
+    bootPlayer(userID, io, room){
+        let seat = this.tableSeats.find(seat => seat.userID === userID);
+        let chips = seat.chips;
+        this.potTotal += seat.bet; // what ever they left in the bet is now part of the pot
+        io.sockets.connected[seat.socketID].leave(room.id);
+        seat.resetSeat();
+        if(userID === this.seatTurnID){ // it was their turn, find the next one
+            this.findNextTurn();
+            this.setplayerTurn();
+        }
+        if(this.getNumberOfPlayersStillInPlay() === 1){ // at this point the last player does not get a turn, they just win
+            this.beginTheShowDown();
+        }
+        return chips;
+    }
+
+    /**
+     * Reset the table
+     */
+    reset(){
         this.cardsShownToAllPlayers = [ // sent to all players at the show down and updated with each players real cards on reveal
             ['invisible', 'invisible'],
             ['invisible', 'invisible'],
@@ -653,6 +679,8 @@ class PokerTable {
             ['invisible', 'invisible'],
             ['invisible', 'invisible'],
         ];
+        this.communityCards = ['', '', '', '', ''];
+        this.communityCardsShown = 0;
         this.currentRankingHand = -1;
         for(let i = 0; i < this.numberOfTableSeats; i++) {
             if(!this.tableSeats[i].seatOpen) {

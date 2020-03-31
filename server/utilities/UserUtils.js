@@ -31,3 +31,13 @@ exports.emailExists = function(user) {
 
     return emailExists;
 }
+
+exports.getUser = function(id) {
+    let users = DataAccessLayer.GetCachedUsers();
+
+    var matchingUser = users.find(user => {
+        return user.id === id;
+    });
+
+    return matchingUser;
+}

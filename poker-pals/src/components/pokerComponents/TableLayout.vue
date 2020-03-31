@@ -38,7 +38,6 @@
                     v-bind:occupied="player.occupied"
                     v-bind:classes="player.classes"
                     v-bind:dealerStatus="player.dealerStatus" 
-                    v-bind:_id="player.id" 
                     v-bind:cards="player.cards" 
                     v-bind:cardReveal="cardReveal"
                     v-bind:betValue="player.bet"

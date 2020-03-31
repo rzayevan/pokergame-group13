@@ -24,7 +24,7 @@ class PokerPlayerSeat {
         this.chips = 0; // the chip total of this player
         this.bet = 0; // the current bet this player has made
         this.dealer = false; // indicates whether or not this player is the dealer
-        this.icon = ''; // the icon associated with the player account
+        this.icon = 'invisible'; // the icon associated with the player account
         this.action = ''; // the current action of the player (FOLDED, CHECKING, CALLING, RAISING, THINKING, ALL IN)
         this.turn = false; // indicates whether it is this players turn
         this.turnTimeLeft = 0; // the time the player has left on their turn
@@ -36,7 +36,7 @@ class PokerPlayerSeat {
     resetSeat() {
         this.socketID = -1;
         this.userID = -1;
-        this.pot = 0;
+        this.pot = this.bet; // what ever they left in the bet is now part of the pot
         this.cards = ['', ''];
         this.madeDecision = false;
         this.ableToAct = false;
@@ -47,7 +47,7 @@ class PokerPlayerSeat {
         this.chips = 0;
         this.bet = 0;
         this.dealer = false;
-        this.icon = '';
+        this.icon = 'invisible';
         this.action = 'WAITING';
         this.turn = false;
         this.turnTimeLeft = 0;
@@ -264,14 +264,14 @@ class PokerPlayerSeat {
     addPlayerToTable(profile, socketID, chips, gameStarted) { 
         // use the userID to join the table
         this.socketID = socketID;
-        this.userID = profile.userID;
+        this.userID = profile.id;
         this.ableToAct = true;
         this.inPlay = !gameStarted;
         this.seatOpen = false;
-        this.name = profile.name;
+        this.name = profile.username;
         this.chips = chips;
         this.dealer = false;
-        this.icon = profile.icon;
+        this.icon = /*profile.icon*/'player_icon_1'; // TODO: user.js needs to store user image icon
         this.action = 'WAITING';
         this.turn = false;
     }
