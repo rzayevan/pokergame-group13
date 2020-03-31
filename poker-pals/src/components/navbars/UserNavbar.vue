@@ -13,6 +13,9 @@
                     <b-nav-item to="profile">
                         <img class="img-fluid" v-bind:src="userData.playerIcon" alt="User Profile Image"/>
                     </b-nav-item>
+                    <b-nav-item to="/">
+                        <b-nav-text class="material-icons"> logout </b-nav-text>
+                    </b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
         </b-navbar>
@@ -42,6 +45,10 @@
 
     img {
         height: 40px;
+    }
+
+    .material-icons{
+        color: white;
     }
 
 </style>

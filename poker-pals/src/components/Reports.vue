@@ -1,40 +1,44 @@
 <template>
-  <div class="wrapper">
+  <div id="reports-page">
+    <AdminNavbar class="navbar-section"/>
+    <div class="wrapper">
       <ReportModal
         :reportData=reportData
       />
-  <form id="search">
-    Search <input class="form-control" name="query" v-model="searchQuery">
-  </form>
-  <div id="reports-grid">
-    <div class="table-header-wrapper">
-      <table class="table-header">
-        <thead>
-          <th v-for="column in columns" :key="column.id"
-            @click="sortBy(column)"
-            :class="{ active: sortKey == column.id }"
-          >
-            {{ column }}
-            <span class="arrow" :class="sortOrders[column.id] > 0 ? 'asc' : 'dsc'"></span>
-          </th>
-        </thead>
-      </table>
-    </div>
-    <div class="table-body-wrapper">
-      <table class="table-body">
-        <tbody>
-          <tr v-for="entry in filteredData" :key="entry.id" v-on:click="onClick(entry)" v-bind:class="getEntryClass(entry)">
-            <td v-for="key in columns" :key="key"> {{entry[key]}}</td>
-          </tr>
-        </tbody>
-      </table>
+      <form id="search">
+        Search <input class="form-control" name="query" v-model="searchQuery">
+      </form>
+      <div id="reports-grid">
+        <div class="table-header-wrapper">
+          <table class="table-header">
+            <thead>
+              <th v-for="column in columns" :key="column.id"
+                @click="sortBy(column)"
+                :class="{ active: sortKey == column.id }"
+              >
+                {{ column }}
+                <span class="arrow" :class="sortOrders[column.id] > 0 ? 'asc' : 'dsc'"></span>
+              </th>
+            </thead>
+          </table>
+        </div>
+        <div class="table-body-wrapper">
+          <table class="table-body">
+            <tbody>
+              <tr v-for="entry in filteredData" :key="entry.id" v-on:click="onClick(entry)" v-bind:class="getEntryClass(entry)">
+                <td v-for="key in columns" :key="key"> {{entry[key]}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
   import ReportModal from './ReportModal.vue';
+  import AdminNavbar from "./navbars/AdminNavbar";
   import io from "socket.io-client";
 
   export default {
@@ -45,6 +49,7 @@
   },
   components: {
       ReportModal,
+      AdminNavbar
   },
   data(){
     // Empty report data to pass to ReportModal. Updated when a row is clicked  
