@@ -68,8 +68,9 @@
 </template>
 
 <script>
-  import Navbar from "./navbars/Navbar" 
-  import io from "socket.io-client"
+  import Navbar from "./navbars/Navbar";
+  import io from "socket.io-client";
+  
   export default {
     name: 'Login',
     components: {

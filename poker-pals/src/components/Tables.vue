@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import UserNavbar from "./navbars/UserNavbar"
+import UserNavbar from "./navbars/UserNavbar";
+
 export default {
   name: 'Tables',
   components: {
