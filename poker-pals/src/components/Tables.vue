@@ -1,29 +1,35 @@
 <template>
-  <div class="table">
-    <div class="table-description">
-        <div class = "table-stakes">
-            <p> 20,000 </p> 
-            <p> 1000/2000 </p>
-        </div> 
-        <div class = "chips-pic">
-          <img alt="Vue logo" src="../assets/chip.png">
-        </div> 
-    </div> 
-    <div class="table-details">
-        <div class = "table-name">
-            <p> Table 1</p>
-        </div>
-        <div class = "seats">
-            <p> 6/6 </p>
+    <div id="tables-page">
+        <UserNavbar/>
+        <div class="table">
+            <div class="table-description">
+                <div class = "table-stakes">
+                    <p> 20,000 </p> 
+                    <p> 1000/2000 </p>
+                </div> 
+                <div class = "chips-pic">
+                <img alt="Vue logo" src="../assets/chip.png">
+                </div> 
+            </div> 
+            <div class="table-details">
+                <div class = "table-name">
+                    <p> Table 1</p>
+                </div>
+                <div class = "seats">
+                    <p> 6/6 </p>
+                </div>
+            </div>
         </div>
     </div>
-  </div>
 </template>
 
 <script>
+import UserNavbar from "./navbars/UserNavbar"
 export default {
   name: 'Tables',
-
+  components: {
+      UserNavbar
+  }
 }
 </script>
 
