@@ -15,6 +15,8 @@ http.listen(3000, () => {
     let users = DataAccessLayer.ReadUsersFile();
     let reports = DataAccessLayer.ReadReportsFile();
 
+    // Declare the amount of each room type to create
+    // TODO: Make this dynamic
     let numberOfEachRoom = 2;
     pokerController = new PokerController(numberOfEachRoom);
 

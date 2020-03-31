@@ -21,9 +21,10 @@ class PokerController {
     }
 
     /**
-     * Checks if a User can join the room, ********needs to use the real login and tables page
+     * Checks if a User can join the room
+     * TODO: needs to use the real login and tables page
      * @param {Object} roomToJoin The room object of the room to join
-     * @param {Object} profile The profile of the user attempting to join
+     * @param {User} profile The User object of the user attempting to join
      */
     canUserJoinRoom(roomToJoin, profile) { // check if the user is permitted to join the table
         let table = roomToJoin.table;

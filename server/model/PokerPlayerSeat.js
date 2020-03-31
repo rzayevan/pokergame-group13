@@ -255,8 +255,7 @@ class PokerPlayerSeat {
 
     /**
      * Adds a new player to the table
-     * TODO: CONVERT PROFILE OBJECT TO USER OBJECT
-     * @param {Object} profile A profile object containing user information for the joining user
+     * @param {User} profile A User object containing user information for the joining user
      * @param {String} socketID The id of the users socket
      * @param {int} chips The number of chipd the player is bringing to the table
      * @param {Boolean} gameStarted A boolean stating whether or not the games has already started

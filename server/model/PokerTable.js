@@ -81,7 +81,7 @@ class PokerTable {
 
     /**
      * Returns true if the player is at the current Table, else it returns false
-     * @param {Object} profile THe profile object for the given user    
+     * @param {User} profile The User object for the given user    
      * TODO: CONVERT TO A USER OBJECT ----------------------------------------------------------------------------------------------------
      */
     isPlayerAtTable(profile){
@@ -175,9 +175,8 @@ class PokerTable {
 
     /**
      * Adds the provided User to the table
-     * @param {Object} profile The profile object of the new player
+     * @param {User} profile The User object of the new player
      * @param {String} socketID The socketID of the new player
-     * TODO: CONVERT PROFILE OBJECT TO USER OBJECT ---------------------------------------------------------------------------------------------
      */
     addPlayerToTable(profile, socketID){
         let emptySeat = this.tableSeats.find(tableSeat => tableSeat.seatOpen === true);
