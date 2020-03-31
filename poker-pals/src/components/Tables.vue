@@ -1,6 +1,6 @@
 <template>
     <div id="tables-page">
-        <UserNavbar/>
+        <UserNavbar class="navbar-section"/>
         <div class="table">
             <div class="table-description">
                 <div class = "table-stakes">
@@ -120,6 +120,5 @@ export default {
    position: relative;
     top: 25%; 
 }
-
 
 </style>

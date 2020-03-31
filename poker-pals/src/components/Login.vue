@@ -1,73 +1,80 @@
 <template>
-  <div v-cloak class="container">
-    <div class="row">
-      <div class="col">
-        <h1>Poker Pals</h1>
-        <h3>Play poker with your pals</h3>
-      </div>
-    </div>
-
-    <div class="row align-items-center">
-      <!--  Poker Pals Logo  -->
-      <div class="col-md-6 offset-md-0 col-6 offset-3 ">
-        <img alt="Poker Pals logo" src="../assets/logo.svg">
+  <div id="login-page">
+    <Navbar class="navbar-section"/>
+    <div v-cloak class="container">
+      <div class="row">
+        <div class="col">
+          <h1>Poker Pals</h1>
+          <h3>Play poker with your pals</h3>
+        </div>
       </div>
 
-      <div class="col-md-6">
-        <!-- Login Form -->
-        <form class="text-left" v-on:submit="loginAction" v-if="showLogin">
-          <div class="form-group">
-            <label for="loginEmail">Email</label>
-            <input class="form-control" type="email" id="loginEmail" v-model="loginData.email" required/>
-          </div>
+      <div class="row align-items-center">
+        <!--  Poker Pals Logo  -->
+        <div class="col-md-6 offset-md-0 col-6 offset-3 ">
+          <img alt="Poker Pals logo" src="../assets/logo.svg">
+        </div>
 
-          <div class="form-group">
-            <label for="loginPassword">Password</label>
-            <input class="form-control" type="password" id="loginPassword" v-model="loginData.password" required/>
-          </div>
+        <div class="col-md-6">
+          <!-- Login Form -->
+          <form class="text-left" v-on:submit="loginAction" v-if="showLogin">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input class="form-control" type="email" id="loginEmail" v-model="loginData.email" required/>
+            </div>
 
-          <div class="form-group row justify-content-between" v-if="showLogin">
-            <a class="col-4 button-text" @click="toggleForm()">Create account</a>
-            <input class="col-4 btn" type="submit"  value="Sign In">
-          </div>
-        </form>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input class="form-control" type="password" id="loginPassword" v-model="loginData.password" required/>
+            </div>
 
-        <!-- Register Form -->
-        <form class="text-left" v-on:submit="signUpAction" v-if="!showLogin">
-          <div class="form-group">
-            <label for="signUpEmail">Email</label>
-            <input class="form-control" type="email" id="signUpEmail" v-model="signUpData.email" required/>
-          </div>
+            <div class="form-group row justify-content-between" v-if="showLogin">
+              <a class="col-4 button-text" @click="toggleForm()">Create account</a>
+              <input class="col-4 btn" type="submit"  value="Sign In">
+            </div>
+          </form>
 
-          <div class="form-group">
-            <label  for="signUpUsername">Username</label>
-            <input class="form-control" type="text" id="signUpUsername" v-model="signUpData.username" required>
-          </div>
+          <!-- Register Form -->
+          <form class="text-left" v-on:submit="signUpAction" v-if="!showLogin">
+            <div class="form-group">
+              <label for="signUpEmail">Email</label>
+              <input class="form-control" type="email" id="signUpEmail" v-model="signUpData.email" required/>
+            </div>
 
-          <div class="form-group">
-            <label for="signUpPassword">Password</label>
-            <input class="form-control" type="password" id="signUpPassword" v-model="signUpData.password" required/>
-          </div>
+            <div class="form-group">
+              <label  for="signUpUsername">Username</label>
+              <input class="form-control" type="text" id="signUpUsername" v-model="signUpData.username" required>
+            </div>
 
-          <div class="form-group">
-            <label for="signUpConfirmPassword">Confirm Password</label>
-            <input class="form-control" type="password" id="signUpConfirmPassword" v-model="signUpData.confirm_password" required/>
-          </div>
+            <div class="form-group">
+              <label for="signUpPassword">Password</label>
+              <input class="form-control" type="password" id="signUpPassword" v-model="signUpData.password" required/>
+            </div>
 
-          <div class="form-group row justify-content-between">
-            <a class="col-4 button-text" @click="toggleForm()">Sign in</a>
-            <input class="col-4 btn" type="submit" value="Sign Up">
-          </div>
-        </form>
+            <div class="form-group">
+              <label for="signUpConfirmPassword">Confirm Password</label>
+              <input class="form-control" type="password" id="signUpConfirmPassword" v-model="signUpData.confirm_password" required/>
+            </div>
+
+            <div class="form-group row justify-content-between">
+              <a class="col-4 button-text" @click="toggleForm()">Sign in</a>
+              <input class="col-4 btn" type="submit" value="Sign Up">
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import Navbar from "./navbars/Navbar" 
   import io from "socket.io-client"
   export default {
     name: 'Login',
+    components: {
+      Navbar
+    },
     data: function() {
       return {
         socket: {},
@@ -175,4 +182,6 @@
   .button-text {
     color: #01B0D9;
   }
+
+ 
 </style>
