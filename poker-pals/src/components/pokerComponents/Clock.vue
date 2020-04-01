@@ -35,7 +35,7 @@
         height: 100%;
     }
     .rotate-enter-active{
-        animation: rotate 5s;
+        animation: rotate 10s;
         animation-timing-function: linear;
     }
     @keyframes rotate {

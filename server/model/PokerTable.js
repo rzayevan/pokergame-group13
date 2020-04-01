@@ -8,6 +8,7 @@ class PokerTable {
      * @param {Obect} pokerTableStats The pokerTableStats object
      */
     constructor(pokerTableStats){
+        this.timeout = null;
         this.tableName = pokerTableStats.name;
         this.numberOfTableSeats = PokerUtils.GetNumberOfTableSeats();
         this.minimumNumberOfPlayersNeededToContinue = 2;
@@ -51,6 +52,13 @@ class PokerTable {
         
         // decide which of the two to use
         this.pokerHandRankCalculator = require("../controllers/PokerHandRankCalculator.js");
+    }
+
+    /**
+     * Sets the timeout for the next player
+     */
+    receiveTimeout(timeout){
+        this.timeout = timeout;
     }
 
     /**
@@ -373,6 +381,8 @@ class PokerTable {
     playerAction(action, raiseToValue) {
         let response = this.tableSeats[this.seatTurnID].playerAction(action, this.currentBet, raiseToValue, this.bigBlind);
         if(response.success){ // the action was accepted
+            clearTimeout(this.timeout); // player made an action, stop the timeout
+            this.timeout = null;
             switch(response.action){
                 case 'CHECKING':
                     this.playerCheckFinish();
