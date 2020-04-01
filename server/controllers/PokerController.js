@@ -72,6 +72,7 @@ class PokerController {
      * @param {String} msg The message request
      */
     exitRoomRequest(io, socket, msg) {
+        let self = this;
         let room = this.rooms.find(room => room.id === msg.roomID);
         let table = room.table;
         let user = DataAccessLayer.ReadUsersFile().find(user => user.id === msg.userID);
@@ -81,7 +82,17 @@ class PokerController {
         socket.emit('leaveRoom');
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
         if(table.showdown){// after each move we need to check if the table is ready for a showdown
-            this.beginShowingTheRemainingCommunityCards(io, room);
+            if(table.showDownWithCardReveal){
+                this.beginShowingTheRemainingCommunityCards(io, room);
+            } else { // only one person remains no card reveal required
+                setTimeout(function() { // show the winner
+                    let winners = table.getWinnerSocketIDs();
+                    for(let i = 0; i < winners.length; i++){
+                        io.to(`${winners[i]}`).emit('winner');
+                    }
+                    setTimeout(function() { self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
+                }, 1000);
+            }
         }
     }
 

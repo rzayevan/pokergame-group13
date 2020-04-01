@@ -47,10 +47,8 @@ class PokerTable {
             ['invisible', 'invisible'],
         ];
         this.currentPlayerSeatCardReveal = -1; // the seat id of the current player showing their cards at the show down
-        this.currentRankingHand = -1;
+        this.currentRankingHand = -1; // the current ranking hand of the round
         this.chipDistributionCalculator = require("../controllers/ChipDistributionCalculator.js");
-        
-        // decide which of the two to use
         this.pokerHandRankCalculator = require("../controllers/PokerHandRankCalculator.js");
     }
 
@@ -89,7 +87,6 @@ class PokerTable {
     /**
      * Returns true if the player is at the current Table, else it returns false
      * @param {User} profile The User object for the given user    
-     * TODO: CONVERT TO A USER OBJECT ----------------------------------------------------------------------------------------------------
      */
     isPlayerAtTable(profile){
         if(this.tableSeats.find(seat => seat.userID === profile.id) === undefined){
@@ -126,6 +123,7 @@ class PokerTable {
         for(let i = 0; i < this.numberOfTableSeats; i++){
             if(this.tableSeats[i].handRank === this.currentRankingHand){
                 winners.push(this.tableSeats[i].socketID);
+                this.tableSeats[i].action = 'WINNER';
             }
         }
         return winners;
@@ -615,6 +613,8 @@ class PokerTable {
             }
             this.currentPlayerSeatCardReveal = this.dealerSeatID; // the dealer is the first to reveal their cards
         } else{ // only one player left who hasn't folded, no card reveal
+            this.currentPlayerSeatCardReveal = this.dealerSeatID;
+            this.currentRankingHand = 1;
             for(let i = 0; i < this.numberOfTableSeats; i++) {
                 if(this.tableSeats[i].inPlay) {
                     this.tableSeats[i].handRank = 1; // the best hand rank starts at -1 so give this player something higher
@@ -668,7 +668,8 @@ class PokerTable {
         this.potTotal += seat.bet; // what ever they left in the bet is now part of the pot
         io.sockets.connected[seat.socketID].leave(room.id);
         seat.resetSeat();
-        if(userID === this.seatTurnID){ // it was their turn, find the next one
+        if(userID === this.tableSeats[this.seatTurnID].userID){ // it was their turn, find the next one
+            clearTimeout(this.timeout); // player made an action, stop the timeout
             this.findNextTurn();
             this.setplayerTurn();
         }
