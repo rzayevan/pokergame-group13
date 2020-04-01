@@ -124,7 +124,7 @@ exports.handQuadsValue = function(cards, setup){
     for(let k = quad; k > 0; k--) {
         quadResult += cardNumber * exports.integerPow(16, k); // the hexidecimal result of the quads
     }
-    this.removeSomeMatchingKeys(numbers, cardNumber, quad); // need a highcard, remove the quad set and search the remainer
+    exports.removeSomeMatchingKeys(numbers, cardNumber, quad); // need a highcard, remove the quad set and search the remainer
     let remainingCards = exports.getRemainingCards(numbers); // convert numbers into card objects
     let highCardResult = exports.handHighCardValue(remainingCards, {number: 1, condition: false});
     let result = 0x800000 + quadResult + highCardResult; // combine results into final hexidecimal
@@ -258,7 +258,7 @@ exports.handThreeOfAKindValue = function(cards, setup) {
     for(let k = triplet-1; k >= 0; k--) {
         tripletResult += cardNumber * exports.integerPow(16, setup.number + k); // add the hexidecimal value
     }
-    this.removeSomeMatchingKeys(numbers, cardNumber, triplet);
+    exports.removeSomeMatchingKeys(numbers, cardNumber, triplet);
     let remainingCards = exports.getRemainingCards(numbers);
     
     if(setup.number === 0) { // another function called this and only wants the cards
@@ -288,7 +288,7 @@ exports.handTwoPairValue = function(cards, setup) {
     }
     let pair = 2;
     let firstPairResult = cardNumber * exports.integerPow(16, setup.number + pair + 1) + cardNumber * exports.integerPow(16, setup.number + pair);
-    this.removeSomeMatchingKeys(numbers, cardNumber, pair);
+    exports.removeSomeMatchingKeys(numbers, cardNumber, pair);
     let remainingCards = exports.getRemainingCards(numbers);
     let secondPairResult = exports.handSinglePairValue(remainingCards, setup); // find second pair of remaining cards
     if(secondPairResult === -1) {

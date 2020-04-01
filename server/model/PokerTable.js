@@ -1,5 +1,6 @@
 let PokerPlayerSeat = require("./PokerPlayerSeat.js");
 let PokerUtils = require('../utilities/PokerUtils.js');
+let DeckOfCards = require('./DeckOfCards.js');
 
 class PokerTable {
     /**
@@ -30,14 +31,12 @@ class PokerTable {
         this.communityCards = ['', '', '', '', '']; // the community cards of the current round
         this.potTotal = 0; // total pot of the current round
         this.showdown = false; // whether or not the showdown has begun
+        this.showDownWithCardReveal = true; // whether or not a card reveal will be involved
         this.chatMessages = []; // a list of all chat messages, not sure if its appropriate to keep here
         this.tableActive = false; // whether or not the table is active, true when 2+ players are present
         this.gameInPlay = false;
-        
-        // temporary set of cards not for final design
-        // TODO: UPDATE TO THE PERMANENT SET OF CARDS
-        this.deckCards = ['A_S', '2_S', '3_S', '4_S', '5_S', '6_S', '7_S', '8_S', '9_S', '10_S', 'J_S', 'Q_S', 'K_S', 'A_C', '2_C', '3_C', '4_C', '5_C', '6_C', '7_C'];
-        this.currentDeckCard = 0; // a marker to point to the current card of the deck being handled, not for final design
+
+        this.deckCards = new DeckOfCards();
         this.cardsShownToAllPlayers = [ // sent to all players at the show down and updated with each players real cards on reveal
             ['invisible', 'invisible'],
             ['invisible', 'invisible'],
@@ -205,12 +204,9 @@ class PokerTable {
      */
     beginTheGame(){
         this.gameInPlay = true;
-        // TODO: Add a real card shuffler --------------------------------------------------------------------------------------------
-        if(this.showdown){ // this is to just change the cards of the deck, remove later and use a real card shuffler
-            this.deckCards = ['A_H', '2_H', '3_H', '4_H', '5_H', '6_H', '7_H', '8_H', '9_H', '10_H', 'J_H', 'Q_H', 'K_H', 'A_D', '2_D', '3_D', '4_D', '5_D', '6_D', '7_D'];
-        }
         this.showdown = false;
-        this.currentDeckCard = 0;
+        this.showDownWithCardReveal = true;
+        this.deckCards.shuffleDeck();
         this.communityCardsShown = 0;
         this.currentBet = this.bigBlind; // standard bet starts at the big blind
         // seatTurnID starts at -1 and it moves up to the next player
@@ -230,8 +226,7 @@ class PokerTable {
         for(let i = 0; i < numberOfCardsDealtToEachPlayer; i++){ // each player is dealt two cards
             for(let j = 0; j < this.getNumberOfPlayersAbleToAct(); j++){ // since everyone playing is able to act at the start, this is appropriate to use
                 dealerSpot = this.findNextPlayerToDistributeACard(dealerSpot); // starting one seat left of the dealer distribute a card
-                this.tableSeats[dealerSpot].cards[i] = this.deckCards[this.currentDeckCard];
-                this.currentDeckCard++;
+                this.tableSeats[dealerSpot].cards[i] = this.deckCards.getCard();
             }
         }
         this.setCommunityCards();
@@ -331,8 +326,7 @@ class PokerTable {
      */
     setCommunityCards() {
         for(let i = 0; i < this.communityCards.length; i++){
-            this.communityCards[i] = this.deckCards[this.currentDeckCard];
-            this.currentDeckCard++;
+            this.communityCards[i] = this.deckCards.getCard();
         }
     }
 
@@ -538,7 +532,7 @@ class PokerTable {
             }
         } else { 
             this.findNextTurn();
-            this.setplayerTurn();
+            this.setPlayerTurn();
             // we need to check if only one person remains in the game if so, they don't get a decision we automatically go to the showdown
             // TODO: later we automatically end the game without show down and give him all the chips (no calculation required)
             if(this.getNumberOfPlayersStillInPlay() === 1){
@@ -597,19 +591,27 @@ class PokerTable {
             this.tableSeats[i].bet = 0; // reset bet
             this.tableSeats[i].turn = false;
         }
-
-        for(let i = 0; i < this.numberOfTableSeats; i++) {
-            if(this.tableSeats[i].inPlay) {
-                this.cardsShownToAllPlayers[i] = ['card_back', 'card_back'];
+        if(this.getNumberOfPlayersStillInPlay() >= 2){
+            for(let i = 0; i < this.numberOfTableSeats; i++) {
+                if(this.tableSeats[i].inPlay) {
+                    this.cardsShownToAllPlayers[i] = ['card_back', 'card_back'];
+                }
             }
-        }
-        // calculate all player card ranks
-        for(let i = 0; i < this.numberOfTableSeats; i++) {
-            if(this.tableSeats[i].inPlay) {
-                this.tableSeats[i].handRank = this.pokerHandRankCalculator.calculatePokerHandRank(this.communityCards, this.tableSeats[i].cards);
+            // calculate all player card ranks
+            for(let i = 0; i < this.numberOfTableSeats; i++) {
+                if(this.tableSeats[i].inPlay) {
+                    this.tableSeats[i].handRank = this.pokerHandRankCalculator.calculatePokerHandRank(this.communityCards, this.tableSeats[i].cards);
+                }
             }
+            this.currentPlayerSeatCardReveal = this.dealerSeatID; // the dealer is the first to reveal their cards
+        } else{ // only one player left who hasn't folded, no card reveal
+            for(let i = 0; i < this.numberOfTableSeats; i++) {
+                if(this.tableSeats[i].inPlay) {
+                    this.tableSeats[i].handRank = 1; // the best hand rank starts at -1 so give this player something higher
+                }
+            }
+            this.showDownWithCardReveal = false;
         }
-        this.currentPlayerSeatCardReveal = this.dealerSeatID; // the dealer is the first to reveal their cards
         this.showdown = true;
     }
 

@@ -113,6 +113,7 @@ class PokerController {
     turnDecision(io, socket, msg) {
         let room = this.rooms.find(room => room.id === msg.roomID);
         let table = room.table;
+        let self = this;
         if(table.isItTheirTurn(msg.userID, msg.seatID, socket.id)) {
             // there is a limited number of actions a player can take based on their current state
             // ask if they can make that move, if not then do nothing, later also disable buttons based on lack of options
@@ -122,8 +123,19 @@ class PokerController {
             } else {
                 socket.emit('badMove');
             }
-            if(table.showdown ) {// after each move we need to check if the table is ready for a showdown
-                this.beginShowingTheRemainingCommunityCards(io, room);
+            if(table.showdown) {// after each move we need to check if the table is ready for a showdown
+                if(table.showDownWithCardReveal){
+                    this.beginShowingTheRemainingCommunityCards(io, room);
+                }
+                else{ // only one person remains no card reveal required
+                    setTimeout(function() { // show the winner
+                        let winners = table.getWinnerSocketIDs();
+                        for(let i = 0; i < winners.length; i++){
+                            io.to(`${winners[i]}`).emit('winner');
+                        }
+                        setTimeout(function() { self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
+                    }, 1000);
+                }
             }
         }
     }
