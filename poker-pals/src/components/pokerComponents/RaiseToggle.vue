@@ -3,8 +3,8 @@
         <div class="raiseButtonOuter" id="buttonMinus" v-on:click="decrementRaise()">
             <div class="raiseButton centerText">-</div>
         </div>
-        <div class="raiseValue" id="raiseValue"> {{ bigBlind }}</div>
-        <input class="raiseScroll" id="slider" type="range" v-bind:min="bigBlind" v-bind:max="max" v-bind:value="bigBlind"> <!--TODO: set these using props-->
+        <div class="raiseValue">{{ raiseValue }}</div>
+        <input class="raiseScroll" id="slider" type="range" v-bind:min="bigBlind" v-bind:max="bigBlind*maxRaiseFactor" v-bind:value="raiseValue"> <!--TODO: set these using props-->
         <div class="raiseButtonOuter" id="buttonPlus" v-on:click="incrementRaise()">
             <div class="raiseButton centerText">+</div>
         </div>
@@ -98,24 +98,28 @@ export default {
     ],
     data() {
         return {
-            max: this.bigBlind * 20,
+            raiseValue: this.bigBlind,
+            maxRaiseFactor: 20,
         }
+    },
+    watch: { // TODO: when page navigation is implemented this wont be needed as big blind will already be set upon the page being created
+        bigBlind: function (val) {
+            this.raiseValue = val;
+        },
     },
     methods:{
         incrementRaise(){ // need to get the value of the slider itself, getElementById seems to be the only thing that works
             // cap this value if it goes over what the player has left
             let slider = document.getElementById("slider");
-            let output = document.getElementById("raiseValue");
             let value = parseInt(slider.value);
             // add up to the big blind to even out the number
             slider.value = (value + (this.bigBlind - (value % this.bigBlind))).toString();
-            output.innerHTML = slider.value;
+            this.raiseValue = slider.value;
             this.setRaiseToValue();
         },
         decrementRaise(){
             // cap this value if it goes over what the player has left
             let slider = document.getElementById("slider");
-            let output = document.getElementById("raiseValue");
             let value = parseInt(slider.value);
             // subtract up to the big blind
             let remove = value % this.bigBlind;
@@ -123,7 +127,7 @@ export default {
                 remove = this.bigBlind;
             }
             slider.value = (value - remove).toString();
-            output.innerHTML = slider.value;
+            this.raiseValue = slider.value;
             this.setRaiseToValue();
         },
         setRaiseToValue(){

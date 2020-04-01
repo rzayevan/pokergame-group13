@@ -42,4 +42,9 @@ export default {
     text-align: center;
     color: #2c3e50;
   }
+
+  .navbar-section {
+    margin-bottom: 20px;
+  }
+
 </style>
