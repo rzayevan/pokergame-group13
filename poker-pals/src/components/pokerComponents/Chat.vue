@@ -15,7 +15,7 @@
                     <button class="testButton" v-on:click="$parent.logIn(6000)">log in as userID:6000</button>
                     <button class="testButton" v-on:click="$parent.joinTable()">join table 0</button>
                 </b-row>
-                <b-row id="messages" >
+                <div id="messages" >
                     <ChatMessage v-for="item in items"
                                  :key="item.id"
                                  v-bind:you="item.senderID === userID"
@@ -23,7 +23,7 @@
                                  v-bind:message="item.message"
                                  v-bind:messageId="item.id"
                     />
-                </b-row>
+                </div>
             </b-col>
         </b-row>
         <b-row class="inputBox py-1">
@@ -97,6 +97,8 @@
                     { id: 10, senderID: 3000, name: 'Luke854', message: 'f' },
                     { id: 11, senderID: 3000, name: 'Mark123', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
                     { id: 12, senderID: 3000, name: 'Luke854', message: 'f' },
+                    { id: 13, senderID: 1000, name: 'Luke854', message: 'f' },
+                    { id: 14, senderID: 1000, name: 'Luke854', message: 'f' },
                 ],
             }
         },
