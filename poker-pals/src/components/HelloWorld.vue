@@ -30,7 +30,7 @@
       this.socket.on("connected", data => {
         console.log("client received a message: " + data);
       });
-      //Retrieve the current tables available
+      //Retrieve the current tables available and store into tables array 
       this.socket.on("serve-tables", rooms => {
           this.tables = Object.values(rooms); 
       })

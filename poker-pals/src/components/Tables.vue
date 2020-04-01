@@ -1,17 +1,22 @@
 <template>
+<!-- Table list div --> 
   <div class = "table-list">
     <ul>
+    <!-- Loop through tables and display --> 
     <li v-for="(table, x) in tables" :key="table.id">
+      <!-- Join room on click --> 
       <div class="table"  id = "table-click" v-on:click="joinRoom(table.id, x)">
+        <!-- Display table's buyin and blinds --> 
         <div class="table-description">
             <div class = "table-stakes">
                 <p>{{table.buyin}}</p> 
                 <p> {{table.blinds}} </p>
             </div> 
             <div class = "chips-pic">
-              <img alt="Vue logo" src="../assets/chip.png">
+              <img alt="Vue logo" src="../images/chip.png">
             </div> 
         </div> 
+        <!-- Display table's name and seat availability --> 
         <div class="table-details">
             <div class = "table-name">
                 <p> {{table.name}}</p>
@@ -27,7 +32,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'Tables',
   props: ['tables'], 
@@ -38,17 +42,14 @@ export default {
     };
   },
   methods: {
+    //Function to handle room joining
     joinRoom: function (table, tableNum) {
+      //To do: Replace alert with a navigation to the poker game page (Trello)
       alert("Joined Table " + (tableNum+1));
       this.$parent.socket.emit("join-room",table);
-      this.$parent.socket.emit("update-tables");
-      console.log(this.tables);
-      console.log(this.tables[tableNum].sockets.length);
     }
   }
 }
-
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

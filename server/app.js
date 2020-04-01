@@ -102,17 +102,14 @@ io.on('connection', (socket) => {
         pokerController.exitRoomRequest(io, socket, msg);
     });
 
+    //Adds player to room 
     socket.on('join-room', (roomId, callback) => {
         const room = rooms[roomId];
         joinRoom(socket, room);
     });
-
-    socket.on('update-tables', (roomId, callback) => {
-        console.log("_________________________________");
-        console.log(rooms);
-    });
 });
 
+//Function to handle joining a room
 const joinRoom = (socket, room) => {
     room.sockets.push(socket);
     socket.join(room.id, () => {
