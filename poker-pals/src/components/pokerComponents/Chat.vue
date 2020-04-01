@@ -1,5 +1,5 @@
 <template>
-    <b-container class="container">
+    <div class="container">
         <b-row class="title" align-v="center" no-gutters>
             <h3 class="col-12">{{ tableName }}</h3>
         </b-row>
@@ -32,7 +32,7 @@
             <input type="text" class="input col-8 " placeholder="Type a message">
             <button type="button" class="btn col-4">SEND</button>
         </b-row>
-    </b-container>
+    </div>
 </template>
 
 <style scoped>

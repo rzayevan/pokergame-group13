@@ -11,11 +11,11 @@
             />
             <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
         </div>
-        <div id="chatContainer">
-            <Chat v-bind:full="chatFull"
-                  v-bind:tableName="tableName"
-                  v-bind:userID="userID"/> <!--the chat container holding all items related to messaging other players-->
+
+        <div id="chatContainer"  v-bind:class="{ chatHalf: !chatFull}">
+            <Chat v-bind:tableName="tableName" v-bind:userID="userID"/>
         </div>
+
         <ReportPocket v-if="!chatFull"
               v-bind:report_OffenderName="report_OffenderName"
               v-bind:report_OffenderMessageId="report_OffenderMessageId"
@@ -33,6 +33,10 @@
         float: left;
         width: 30%;
         height: 93%;
+    }
+
+     .chatHalf {
+        height: 46.5% !important;
     }
 
     .outerFrame{
@@ -87,7 +91,6 @@ export default {
             report_OffenderMessageId: '',
             // the image resource files for the card images
             imageFiles: require("./pokerComponents/ImageFiles").imageFiles,
-
 
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
