@@ -1,146 +1,99 @@
 <template>
-    <div class="full" v-on:click="toggleOptions()" @mouseleave="closeOptions()"> <!--the container of the chat message-->
-        <div class="frameA" v-if="!you"> <!--show if this message is not from yourself, includes options to mute or report-->
-            <div class="spacer">space</div>
-            <div class="name">{{ name }}:</div>
-            <div class="message">{{ message }}</div>
-            <div class="mute borderRadius" v-if="optionsVisible">
-                <div class="innerMute borderRadius">
-                    <img src="../../images/mute.png"/>
-                </div>
+    <!-- Display a received message. -->
+    <b-row v-if="!you" no-gutters @mouseenter="toggleOptions" @mouseleave="toggleOptions">
+        <b-col v-if="!you" class="d-inline-flex my-1 ml-1">
+            <div class="message received">
+                <p class="m-1">
+                    <b>{{name}}</b><br>
+                    {{message}}
+                </p>
             </div>
-            <div class="report borderRadius" v-if="optionsVisible" v-on:click="openReport()">
-                <div class="innerReport borderRadius">
-                    <img src="../../images/report.png"/>
-                </div>
+            <div v-show="showOptions" class="material-icons ml-1">
+                <button id="block" class="ml-1 p-1" @click="block">block</button>
+                <button id="report" class="ml-1 p-1" @click="report">report</button>
             </div>
-            <div class="spacer">space</div>
+        </b-col>
+    </b-row>
 
-        </div>
-        <div class="frameB" v-if="you"> <!--show if this mesage is from you, no options available-->
-            <div class="spacer">space</div>
-            <div class="message color">{{ message }}</div>
-            <div class="spacer">space</div>
-        </div>
-    </div>
+    <!--  Display a sent message.  -->
+    <b-row v-else no-gutters>
+        <b-col class="my-1">
+            <div class="message sent">{{ message }}</div>
+        </b-col>
+    </b-row>
 </template>
 
 <style scoped>
-    .full{
-        float: left;
-        width: 100%;
-        height: 10%;
-    }
-    .frameA{
-        float: left;
-        width: auto;
-        min-width: 20%;
-        max-width: 70%;
-        background: white;
-        border-radius: 0.8vw/0.8vw;
-        margin: 0% 0% 0% 5%;
-    }
-    .frameB{
-        float: right;
-        width: auto;
-        min-width: 20%;
-        max-width: 70%;
-        background:#01B0D9;
-        border-radius: 0.8vw/0.8vw;
-        margin: 0% 5% 0% 0%;
-    }
-    .name{
-        width: 50%;
-        height: 50%;
-        text-align: left;
-        margin: 0% 0% 0% 0.5vw;
-        font-size: 1vw;
-    }
     .message{
-        float: left;
-        width: 90%;
+        max-width: 70%;
+        border-radius: 1em;
+        padding: 6px 10px;
+
         text-align: left;
-        margin: 0% 0% 0% 0.5vw;
-        font-size: 1vw;
-    }
-    .spacer{
-        float: left;
-        width: 100%;
-        color: transparent;
-        font-size: 0.25vw;
-    }
-    .color{
-        color: white;
-    }
-    .mute{
-        float: left;
-        width: 2vw;
-        height: 2vw;
-        background: black;
-        margin: -2.5vw 0% 0% 97%;
-        cursor: pointer;
-    }
-    .innerMute{
-        float: left;
-        width: 90%;
-        height: 90%;
-        background: white;
-        margin: 5% 0% 0% 5%;
-    }
-    .innerMute img{
-        float: left;
-        width: 100%;
-        height: 100%;
-    }
-    .report{
-        float: left;
-        width: 2vw;
-        height: 2vw;
-        background: black;
-        margin: -2.5vw 0% 0% 109.25%;
-        cursor: pointer;
-    }
-    .innerReport{
-        float: left;
-        width: 90%;
-        height: 90%;
-        background: white;
-        margin: 5% 0% 0% 5%;
-    }
-    .innerReport img{
-        float: left;
-        width: 100%;
-        height: 100%;
-    }
-    .borderRadius{
-        border-top-right-radius: 20% 20%;
-        border-bottom-right-radius: 20% 20%;
+        font-size: 14px;
     }
 
+    .sent {
+        float: right;
+        color: white;
+        background-color: #01B0D9;
+        border-bottom-right-radius: 0;
+    }
+
+    .received {
+        background-color: #F2F3F5;
+        border-bottom-left-radius: 0;
+    }
+
+    .material-icons {
+        max-width: 10%;
+        text-align: center;
+        align-self: center;
+    }
+
+    .material-icons button {
+        background-color: white;
+        border: none;
+    }
+
+    .material-icons button:hover {
+        color: #bf214b;
+    }
 
 </style>
 
 <script>
-export default {
-    name: "ChatMessage",
-    props: [
-        'you', 'name','message', 'messageId',
-    ],
-    data() {
-        return {
-            optionsVisible: false, // show or hide mute and report options
-        }
-    },
-    methods:{
-        toggleOptions(){ // show or hide mute and report options
-            this.optionsVisible = !this.optionsVisible;
+    export default {
+        name: "ChatMessage",
+        props: [
+            'you', 'name','message', 'messageId',
+        ],
+        data() {
+            return {
+                showOptions: false,
+            }
         },
-        closeOptions(){
-            this.optionsVisible = false;
-        },
-        openReport(){ // call back with data about the report
-            this.$parent.openReport(this.name, this.messageId);
+        methods:{
+            /**
+             *  Toggle the visibility of  block and report options associated with this message.
+             */
+            toggleOptions(){
+                this.showOptions = !this.showOptions;
+            },
+
+            /**
+             *  Mute the user who sent this message.
+             */
+            block() {
+                // TODO: Implement block/mute
+            },
+
+            /**
+             *  Report the user who sent this message.
+             */
+            report() {
+                this.$parent.openReport(this.name, this.messageId);
+            }
         }
     }
-}
 </script>
