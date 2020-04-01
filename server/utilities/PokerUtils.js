@@ -40,7 +40,10 @@ const POKER_TABLE_STATS = [
     {name: 'Guru',      bigBlind: 100000, buyIn: 1000000},
     {name: 'Ultimate',  bigBlind: 500000, buyIn: 5000000}
 ];
-
+/**
+ * time player has to make decision
+ */
+const POKER_TABLE_TIMEOUT = 10000;
 /**
  * Returns the NUM_OF_TABLE_SEATS constant
  */
@@ -95,4 +98,11 @@ exports.GetNumberOfSuits = function() {
  */
 exports.GetPokerTableStats = function() {
     return POKER_TABLE_STATS;
+}
+
+/**
+ * Returns the POKER_TABLE_TIMEOUT constant
+ */
+exports.GetPokerTableTimeout = function() {
+    return POKER_TABLE_TIMEOUT;
 }

@@ -186,6 +186,7 @@ export default {
 
         this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
             // each player will reset the ui for a new game
+            this.myCards = [{src: this.imageFiles.find(file => file.name === 'card_empty').src}, {src: this.imageFiles.find(file => file.name === 'card_empty').src}];
             for(let i = 0; i < this.players.length; i++){
                 this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'card_back').src}, card2: {src: this.imageFiles.find(file => file.name === 'card_back').src}};
             }
@@ -200,7 +201,7 @@ export default {
         this.myCards = [{src: this.imageFiles.find(file => file.name === 'card_empty').src}, {src: this.imageFiles.find(file => file.name === 'card_empty').src}];
         for(let i = 0; i < this.players.length; i++){
             this.players[i].accountImage.src = this.imageFiles.find(file => file.name === 'invisible').src;
-            this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'card_back').src}, card2: {src: this.imageFiles.find(file => file.name === 'card_back').src}};
+            this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'invisible').src}, card2: {src: this.imageFiles.find(file => file.name === 'invisible').src}};
         }
         for(let i = 0; i < this.communityCards.length; i++){
             this.communityCards[i].src = this.imageFiles.find(file => file.name === 'card_empty').src;

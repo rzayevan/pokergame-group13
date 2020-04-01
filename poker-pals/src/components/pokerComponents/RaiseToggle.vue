@@ -4,7 +4,7 @@
             <div class="raiseButton centerText">-</div>
         </div>
         <div class="raiseValue">{{ raiseValue }}</div>
-        <input class="raiseScroll" id="slider" type="range" v-bind:min="bigBlind" v-bind:max="bigBlind*maxRaiseFactor" v-bind:value="raiseValue"> <!--TODO: set these using props-->
+        <input class="raiseScroll" id="slider" type="range" v-bind:min="bigBlind" @change="setRaiseToValue()" v-bind:max="bigBlind*maxRaiseFactor" v-bind:value="raiseValue"> <!--TODO: set these using props-->
         <div class="raiseButtonOuter" id="buttonPlus" v-on:click="incrementRaise()">
             <div class="raiseButton centerText">+</div>
         </div>
@@ -132,8 +132,8 @@ export default {
         },
         setRaiseToValue(){
             let slider = document.getElementById("slider");
-            let value = parseInt(slider.value);
-            this.$parent.setRaiseToValue(value);
+            this.raiseValue = parseInt(slider.value);
+            this.$parent.setRaiseToValue(this.raiseValue);
         },
     }
 };
