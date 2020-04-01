@@ -12,11 +12,13 @@
             <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
         </div>
         <div id="chatContainer">
-            <Chat v-bind:full="chatFull" v-bind:tableName="tableName" v-bind:userID="userID"/> <!--the chat container holding all items related to messaging other players-->
+            <Chat v-bind:full="chatFull"
+                  v-bind:tableName="tableName"
+                  v-bind:userID="userID"/> <!--the chat container holding all items related to messaging other players-->
         </div>
         <ReportPocket v-if="!chatFull"
-            v-bind:report_OffenderName="report_OffenderName"
-            v-bind:report_OffenderMessageId="report_OffenderMessageId"
+              v-bind:report_OffenderName="report_OffenderName"
+              v-bind:report_OffenderMessageId="report_OffenderMessageId"
         /> <!--the report box that shows up upon a player requesting to report another player, takes half of the space alotted to the chat-->
     </div>
 </template>
@@ -51,14 +53,11 @@
 </style>
 
 <script>
-
 import UserNavbar from './navbars/UserNavbar.vue';
 import Chat from './pokerComponents/Chat.vue';
 import ReportPocket from './pokerComponents/ReportPocket.vue';
 import TableLayout from './pokerComponents/TableLayout.vue';
 import Display from './pokerComponents/Display.vue';
-
-
 import io from "socket.io-client";
 
 export default {

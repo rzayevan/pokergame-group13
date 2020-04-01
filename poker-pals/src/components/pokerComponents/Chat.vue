@@ -19,11 +19,11 @@
                 </b-row>
                 <div id="messages" >
                     <ChatMessage v-for="item in items"
-                                 :key="item.id"
-                                 v-bind:you="item.senderID === userID"
-                                 v-bind:name="item.name"
-                                 v-bind:message="item.message"
-                                 v-bind:messageId="item.id"
+                         :key="item.id"
+                         v-bind:you="item.senderID === userID"
+                         v-bind:name="item.name"
+                         v-bind:message="item.message"
+                         v-bind:messageId="item.id"
                     />
                 </div>
             </b-col>
@@ -70,7 +70,6 @@
         background-color: #01B0D9;
         color: white;
     }
-
 </style>
 
 <script>

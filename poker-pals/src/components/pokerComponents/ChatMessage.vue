@@ -80,12 +80,14 @@
             toggleOptions(){
                 this.showOptions = !this.showOptions;
             },
+
             /**
              *  Mute the user who sent this message.
              */
             block() {
                 // TODO: Implement block/mute
             },
+
             /**
              *  Report the user who sent this message.
              */
