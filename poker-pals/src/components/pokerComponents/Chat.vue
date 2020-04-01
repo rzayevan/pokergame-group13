@@ -3,8 +3,9 @@
         <b-row class="title" align-v="center" no-gutters>
             <h3 class="col-12">{{ tableName }}</h3>
         </b-row>
-        <b-row class="chatBox">
+        <b-row id="chatBox">
             <b-col>
+                <!--  TODO: Remove buttons added for testing.  -->
                 <!--these buttons are not permanent, only for testing functionality-->
                 <b-row v-show="false">
                     <button class="testButton" v-on:click="$parent.logIn('948bf810-71e2-11ea-a8e0-73473bc162b1')">log in as dev</button>
@@ -18,8 +19,7 @@
                     <button class="testButton" v-on:click="$parent.joinRoom(5)">join room 5</button>
                 </b-row>
                 <div id="messages" >
-                    <ChatMessage v-for="item in items"
-                         :key="item.id"
+                    <ChatMessage v-for="item in items" :key="item.id"
                          v-bind:you="item.senderID === userID"
                          v-bind:name="item.name"
                          v-bind:message="item.message"
@@ -28,10 +28,10 @@
                 </div>
             </b-col>
         </b-row>
-        <b-row class="inputBox py-1">
-            <input type="text" class="input col-8 " placeholder="Type a message">
-            <button type="button" class="btn col-4">SEND</button>
-        </b-row>
+        <form class="row py-1" v-on:submit="sendMessage">
+            <input type="text" class="input col-8" v-model="message" placeholder="Type a message">
+            <button type="submit" class="btn col-4">SEND</button>
+        </form>
     </div>
 </template>
 
@@ -47,7 +47,7 @@
         background: #F2F3F5;
     }
 
-    .chatBox {
+    #chatBox {
         background-color: white;
         height: 80%;
         overflow-y: auto;
@@ -57,7 +57,7 @@
         overflow-y: auto;
     }
 
-    .inputBox {
+    form {
         background: white;
         height: 10%;
     }
@@ -84,6 +84,7 @@
             return {
                 tableName: 'Big Fish',
                 userID: 1000,
+                message: '',
                 items: [ // right now chat does not receive messages, either it will use props or have its own socket functions
                     // sample messages stored in chat
                     { id: 1, senderID: 1000, name: 'Mark123', message: 'Hi!' },
@@ -104,10 +105,15 @@
             }
         },
         methods:{
-            openReport(name, messageId){ // when a message is clicked on and the report symbol is clicked, a call back is made to open up the report box
+            openReport(name, messageId){
+                // when a message is clicked on and the report symbol is clicked, a call back is made to open up the report box
                 // called by a ChatMessage child
                 // pass the message along to the parent
                 this.$parent.openReport(name, messageId);
+            },
+            sendMessage: function (event) {
+                event.preventDefault(); // prevent page reload
+                // TODO: Send message to server
             }
         }
     };

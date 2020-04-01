@@ -1,6 +1,6 @@
 <template>
     <!-- Display a received message. -->
-    <b-row v-if="!you" no-gutters @mouseenter="toggleOptions()" @mouseleave="toggleOptions()">
+    <b-row v-if="!you" no-gutters @mouseenter="toggleOptions" @mouseleave="toggleOptions">
         <b-col v-if="!you" class="d-inline-flex my-1 ml-1">
             <div class="message received">
                 <p class="m-1">
@@ -9,8 +9,8 @@
                 </p>
             </div>
             <div v-show="showOptions" class="material-icons ml-1">
-                <button id="block" class="ml-1 p-1" @click="block()">block</button>
-                <button id="report" class="ml-1 p-1" @click="report()">report</button>
+                <button id="block" class="ml-1 p-1" @click="block">block</button>
+                <button id="report" class="ml-1 p-1" @click="report">report</button>
             </div>
         </b-col>
     </b-row>
