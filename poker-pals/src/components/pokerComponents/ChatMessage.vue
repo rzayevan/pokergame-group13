@@ -1,27 +1,16 @@
 <template>
     <!-- Display a received message. -->
-    <b-row v-if="!you" no-gutters>
+    <b-row v-if="!you" no-gutters @mouseenter="toggleOptions()" @mouseleave="toggleOptions()">
         <b-col v-if="!you" class="col-10 text-left my-1 ml-1 ">
             <div class=" message received">
                 <p class="text-left m-1 ">
                     <b>{{name}}</b><br>
                     {{message}}
                 </p>
-<!-- TODO: Configure the option buttons and remove commented code. -->
-<!--                <div class="mute borderRadius" v-if="optionsVisible">-->
-<!--                    <div class="innerMute borderRadius">-->
-<!--                        <img src="../../images/mute.png"/>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="report borderRadius" v-if="optionsVisible" v-on:click="openReport()">-->
-<!--                    <div class="innerReport borderRadius"> dw-->
-<!--                        <img src="../../images/report.png"/>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
-            <div class="material-icons ml-1">
-                <button id="block" class="p-1">block</button>
-                <button id="report" class="p-1">report</button>
+            <div v-show="showOptions" class="material-icons ml-1">
+                <button id="block" class="p-1" @click="block()">block</button>
+                <button id="report" class="p-1" @click="report()">report</button>
             </div>
         </b-col>
     </b-row>
@@ -81,17 +70,26 @@
         ],
         data() {
             return {
-                optionsVisible: false, // show or hide mute and report options
+                showOptions: false,
             }
         },
         methods:{
-            toggleOptions(){ // show or hide mute and report options
-                this.optionsVisible = !this.optionsVisible;
+            /**
+             *  Toggle the visibility of  block and report options associated with this message.
+             */
+            toggleOptions(){
+                this.showOptions = !this.showOptions;
             },
-            closeOptions(){
-                this.optionsVisible = false;
+            /**
+             *  Mute the user who sent this message.
+             */
+            block() {
+                // TODO: Implement block/mute
             },
-            openReport(){ // call back with data about the report
+            /**
+             *  Report the user who sent this message.
+             */
+            report() {
                 this.$parent.openReport(this.name, this.messageId);
             }
         }
