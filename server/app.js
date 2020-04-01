@@ -54,6 +54,11 @@ io.on('connection', (socket) => {
         console.log('disconnected');
     });
 
+    socket.on('submit report', function(reportData) {
+        console.log("in app")
+        ReportUtils.submitReport(reportData);
+    })
+
     socket.on('request reports', function() {
         reportController.retrieveReports(this, false);
     });

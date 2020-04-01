@@ -252,6 +252,14 @@ export default {
             // later add to reportPocket an indication the message was sent
             alert(JSON.stringify(selected) + " " + JSON.stringify(message) + " " + JSON.stringify(report_OffenderName) + " " + JSON.stringify(report_OffenderMessageId));
             this.chatFull = true;
+
+            let reportData = {
+                reportType: selected,
+                reportComment: message,
+                offenderUsername: report_OffenderName
+            };
+
+            this.socket.emit("submit report", reportData);
         },
         cancelReport(){
             this.chatFull = true;
