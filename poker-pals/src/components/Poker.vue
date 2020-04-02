@@ -2,7 +2,7 @@
     <div class="outerFrame"> <!--the outer container of the entire page, used to define its size-->
         <UserNavbar /> <!-- the naviagation bar-->
         <div class="tableLayoutAndDisplay"> <!--a container to separate the table and inputs from the chat-->
-            <TableLayout 
+            <TableLayout
                 v-bind:potTotal="potTotal"
                 v-bind:communityCards="communityCards"
                 v-bind:players="players"
@@ -11,10 +11,14 @@
             />
             <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
         </div>
-        <Chat v-bind:full="chatFull" v-bind:tableName="tableName" v-bind:userID="userID"/> <!--the chat container holding all items related to messaging other players-->
+
+        <div id="chatContainer"  v-bind:class="{ chatHalf: !chatFull}">
+            <Chat v-bind:tableName="tableName" v-bind:userID="userID"/>
+        </div>
+
         <ReportPocket v-if="!chatFull"
-            v-bind:report_OffenderName="report_OffenderName" 
-            v-bind:report_OffenderMessageId="report_OffenderMessageId"
+              v-bind:report_OffenderName="report_OffenderName"
+              v-bind:report_OffenderMessageId="report_OffenderMessageId"
         /> <!--the report box that shows up upon a player requesting to report another player, takes half of the space alotted to the chat-->
     </div>
 </template>
@@ -23,7 +27,18 @@
     /* because borders do not accept percentages, they interfere with the scaling calculations, 
     the solution is to surround elements with an outer div with a back ground and then put another
     div inside with the elements, this simulates a black border*/
-    
+
+    /* Limit the chat's size*/
+    #chatContainer {
+        float: left;
+        width: 30%;
+        height: 93%;
+    }
+
+     .chatHalf {
+        height: 46.5% !important;
+    }
+
     .outerFrame{
         width: 80vw;
         height: 45vw;
@@ -34,7 +49,7 @@
         width: 70%;
         height: 93%;
     }
-    
+
     img{
         width: 100%;
         height: 100%;
@@ -42,14 +57,11 @@
 </style>
 
 <script>
-
 import UserNavbar from './navbars/UserNavbar.vue';
 import Chat from './pokerComponents/Chat.vue';
 import ReportPocket from './pokerComponents/ReportPocket.vue';
 import TableLayout from './pokerComponents/TableLayout.vue';
 import Display from './pokerComponents/Display.vue';
-
-
 import io from "socket.io-client";
 
 export default {
@@ -73,13 +85,12 @@ export default {
             tableName: '', // NOTE: CANNOT USE THIS FOR MESSAGES NOW, USE ROOM ID
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
             raiseToValue: 0, // TODO: set this based on table stakes
-            
+
             // right now the chat calls back to the poker page to send a report, might want to have the chat run with its own socket
-            report_OffenderName: '', 
+            report_OffenderName: '',
             report_OffenderMessageId: '',
             // the image resource files for the card images
             imageFiles: require("./pokerComponents/ImageFiles").imageFiles,
-
 
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
@@ -129,7 +140,7 @@ export default {
                 this.makeDecision('CHECK/FOLD');
             }
         });
-        
+
         this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
             this.seatID = msg.seatID;
             this.tableName = msg.tableName;
@@ -158,18 +169,18 @@ export default {
             }
             this.$router.push({ name: "Tables" });
         });
-        
+
         this.socket.on('beginTheGame', msgJSON => { // each player receives their two personal cards upon the game starting
             let msg = JSON.parse(msgJSON);
             this.myCards[0].src = this.imageFiles.find(file => file.name === msg[0]).src;
             this.myCards[1].src = this.imageFiles.find(file => file.name === msg[1]).src;
         });
-        
+
         this.socket.on('showdown', msgJSON => { // the showdown has begun, now all player cards are being shown
             let msg = JSON.parse(msgJSON);
             for(let i = 0; i < this.players.length; i++){
                 this.players[i].cards = {
-                    card1: {src: this.imageFiles.find(file => file.name === msg[i][0]).src}, 
+                    card1: {src: this.imageFiles.find(file => file.name === msg[i][0]).src},
                     card2: {src: this.imageFiles.find(file => file.name === msg[i][1]).src}
                 };
             }
@@ -186,6 +197,7 @@ export default {
 
         this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
             // each player will reset the ui for a new game
+            this.myCards = [{src: this.imageFiles.find(file => file.name === 'card_empty').src}, {src: this.imageFiles.find(file => file.name === 'card_empty').src}];
             for(let i = 0; i < this.players.length; i++){
                 this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'card_back').src}, card2: {src: this.imageFiles.find(file => file.name === 'card_back').src}};
             }
@@ -200,7 +212,7 @@ export default {
         this.myCards = [{src: this.imageFiles.find(file => file.name === 'card_empty').src}, {src: this.imageFiles.find(file => file.name === 'card_empty').src}];
         for(let i = 0; i < this.players.length; i++){
             this.players[i].accountImage.src = this.imageFiles.find(file => file.name === 'invisible').src;
-            this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'card_back').src}, card2: {src: this.imageFiles.find(file => file.name === 'card_back').src}};
+            this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'invisible').src}, card2: {src: this.imageFiles.find(file => file.name === 'invisible').src}};
         }
         for(let i = 0; i < this.communityCards.length; i++){
             this.communityCards[i].src = this.imageFiles.find(file => file.name === 'card_empty').src;
