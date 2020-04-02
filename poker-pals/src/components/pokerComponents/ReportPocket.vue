@@ -1,27 +1,57 @@
 <template>
     <div class="reportBoxBorder"> <!--the report box that is toggled in and out of view when a report is requested-->
         <div class="reportBox">
-            <div class="reportTag centerText">Report</div>
-            <div class="buttonXOuter" v-on:click="cancelReport()">
-                <div class="buttonX centerText">X</div>
-            </div>
-            <div class="mainTitle">Filing a report against player: <strong class="extraBold">{{ report_OffenderName }}</strong></div>
-            <div class="witnessQuestionText">Did you witness any of the following?</div>
-            <select class="selector" v-model="selected">
-                <option disabled value="">Select an option</option>
-                <option>option 1</option>
-                <option>option 2</option>
-                <option>option 3</option>
-            </select>
-            <div class="describeReasonText">Please describe the reason for reporting.</div>
-            <textarea class="inputTextBox" v-model="message"></textarea>
-            <button class="buttonCancel centerText" v-on:click="cancelReport()">Cancel</button>
-            <button class="buttonSubmit centerText" v-on:click="submitReport()">Submit</button>
+            <b-row class="row d-flex justify-content-between">
+                <div class="reportHeader">
+                    Report
+                </div>
+                <b-button class="close" @click="cancelReport()">
+                    &times;
+                </b-button>
+            </b-row>
+            <b-row class="row">
+                <div class="offending-user-header">File a report against <strong class="extraBold">{{ report_OffenderName }}</strong></div>
+            </b-row>
+            <b-row class="row">
+                <div class="prompt">Did you witness any of the following?</div>
+                <select class="selector" v-model="selected">
+                    <option disabled value="">Select an option</option>
+                    <option>option 1</option>
+                    <option>option 2</option>
+                    <option>option 3</option>
+                </select>
+                <div id="option-warning" class="warning hide">
+                    Please select an option.
+                </div>
+            </b-row>
+            <b-row>
+                <div class="prompt">Please describe the reason for reporting.</div>
+                <textarea class="inputTextBox" v-model="message"></textarea>
+                <div id="reason-warning" class="warning hide">
+                    Please enter a reason.
+                </div>
+            </b-row>
+            <b-row class="d-flex justify-content-end">
+                 <b-button class="report-button centerText" variant="light" @click="cancelReport()">
+                    Cancel
+                </b-button>
+                 <b-button class="buttonSubmit centerText report-button" variant="primary" @click="submitReport()">
+                    Submit
+                </b-button>
+            </b-row>
+            
+
+    
         </div>
     </div>
 </template>
 
 <style scoped>
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
     .reportBoxBorder{
         float: left;
         width: 30%;
@@ -34,13 +64,14 @@
         height: 99%;
         background: #dedede;
         margin: 0% 0% 0% 0.5%;
+        padding: 3% 3%;
     }
-    .reportTag{
-        float: left;
+    .reportHeader{
+        /* float: left;
         width: 33%;
-        height: 15%;
-        font-size: 2vw;
-        background: transparent;
+        height: 15%; */
+        font-size: 1.5vw;
+        /* background: transparent; */
         font-weight: 1000;
         color: black;
     }
@@ -49,13 +80,20 @@
         width: 13%;
         height: 13%;
         margin: 2% 0% 0% 48%;
-        background: #666666;
         cursor: pointer;
     }
     .buttonXOuter:active{
         transform: translateY(4%);
     }
-    .buttonX{
+    .close {
+        padding: 0% 3%;
+         font-size: 1.5vw;
+    }
+    .close:hover {
+        background-color: white;
+    }
+
+    /* .buttonX{
         float: left;
         width: 90%;
         height: 90%;
@@ -63,34 +101,46 @@
         margin: 5% 0% 0% 5%;
         background: #bf214b;
         color: white;
-    }
-    .mainTitle{
+    } */
+    .offending-user-header {
         float: left;
         width: 94%;
         height: 10%;
-        font-size: 1.25vw;
-        margin: 0% 0% 0% 3%;
-        background: transparent;
+        font-size: 1.15vw;
         text-align: left;
         color: black;
     }
-    .witnessQuestionText{
+    .prompt {
         float: left;
         width: 94%;
         height: 10%;
         font-size: 1vw;
-        margin: 5% 0% 0% 3%;
-        background: transparent;
+        margin: 5% 0% 0% 0%;
         text-align: left;
         color: black;
     }
+
+    .warning {
+        float: left;
+        width: 94%;
+        height: 10%;
+        font-size: 0.8vw;
+        background: transparent;
+        text-align: left;
+        color: rgb(196, 0, 0);
+        font-style: italic;
+    }
+
+    .hide {
+        display: none;
+    }
+
     .selector{
         float: left;
         width: 70%;
         height: 10%;
         font-size: 1vw;
         border-radius: 2%/12%;
-        margin: 0% 0% 0% 3%;
     }
     .describeReasonText{
         float: left;
@@ -107,8 +157,6 @@
         width: 94%;
         height: 17%;
         font-size: 1vw;
-        margin: 0% 0% 0% 3%;
-        text-align: left;
         resize: none;
     }
     .buttonCancel{
@@ -120,7 +168,7 @@
         border: 1px solid black;
         margin: 3% 0% 0% 53%;
     }
-    .buttonSubmit{
+    .oldButtonSubmit{
         float: left;
         width: 20%;
         height: 10%;
@@ -131,6 +179,24 @@
         background: #01b0d9;
         color: white;
     }
+
+    .report-button {
+        width: 20%;
+        height: 10%;
+        font-size: 1vw;
+        margin: 3% 0% 0% 3%;
+    }
+
+    .buttonSubmit {
+        background: #01b0d9;
+        color: white;
+    }
+
+    .buttonSubmit:hover {
+        background: #0199bb;
+    }
+
+
     .extraBold{
         font-weight: 1000;
     }
@@ -159,12 +225,33 @@ export default {
             this.$parent.cancelReport();
         },
         submitReport(){
-            if(this.selected === ''){
-                alert('please select reason'); // later use alternative option to indicate this
+            console.log(this.message);
+            if(this.selected === '' || this.message === ''){
+                this.setSelectionWarningVisibility(this.selected);
+                this.setReasonWarningVisibility(this.message);
+                //alert('please select reason'); // later use alternative option to indicate this
             }
-            else{
+            else {
                 // send off report to the parent
                 this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId);
+            }
+        },
+        setSelectionWarningVisibility(selection) {
+            let optionWarning = document.getElementById("option-warning");
+            if (selection === '') {
+                optionWarning.classList.remove("hide");
+            }
+            else {
+                optionWarning.classList.add("hide");
+            }
+        },
+        setReasonWarningVisibility(message) {
+            let reasonWarning = document.getElementById("reason-warning");
+            if (message === '') {
+                reasonWarning.classList.remove("hide");
+            }
+            else {
+                reasonWarning.classList.add("hide");
             }
         }
 
