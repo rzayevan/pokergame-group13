@@ -56,6 +56,7 @@ class PokerTable {
      * Sets the timeout for the next player
      */
     receiveTimeout(timeout){
+        clearTimeout(this.timeout);
         this.timeout = timeout;
     }
 
@@ -236,6 +237,7 @@ class PokerTable {
             }
         }
         this.setCommunityCards();
+        this.tableSeats[this.seatTurnID].action = 'THINKING';
     }
 
     /**
@@ -397,6 +399,9 @@ class PokerTable {
                 default: // FOLDED
                     this.playerFoldFinish();
                     break;
+            }
+            if(!this.showdown){
+                this.tableSeats[this.seatTurnID].action = 'THINKING';
             }
             return true;
         }
@@ -617,6 +622,7 @@ class PokerTable {
             this.currentRankingHand = 1;
             for(let i = 0; i < this.numberOfTableSeats; i++) {
                 if(this.tableSeats[i].inPlay) {
+                    console.log('again');
                     this.tableSeats[i].handRank = 1; // the best hand rank starts at -1 so give this player something higher
                 }
             }
@@ -639,6 +645,10 @@ class PokerTable {
             this.tableSeats[i].chips += players[i].returnPot;
         }
         this.potTotal = 0;
+        for(let i = 0; i < 6; i++){
+            console.log("turn: " + this.tableSeats[i].turn + " dealer: " + this.tableSeats[i].dealer);
+        }
+        
     }
 
     /**
@@ -667,11 +677,16 @@ class PokerTable {
         let chips = seat.chips;
         this.potTotal += seat.bet; // what ever they left in the bet is now part of the pot
         io.sockets.connected[seat.socketID].leave(room.id);
-        seat.resetSeat();
+        let itWasTheirTurn = false;
         if(userID === this.tableSeats[this.seatTurnID].userID){ // it was their turn, find the next one
+            itWasTheirTurn = true;
+        }
+        seat.resetSeat();
+        if(itWasTheirTurn){ // it was their turn, find the next one
             clearTimeout(this.timeout); // player made an action, stop the timeout
+            console.log('it was their turn');
             this.findNextTurn();
-            this.setplayerTurn();
+            this.setPlayerTurn();
         }
         if(this.getNumberOfPlayersStillInPlay() === 1){ // at this point the last player does not get a turn, they just win
             this.beginTheShowDown();

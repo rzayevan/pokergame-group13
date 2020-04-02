@@ -76,12 +76,17 @@ class PokerController {
         let room = this.rooms.find(room => room.id === msg.roomID);
         let table = room.table;
         let user = DataAccessLayer.ReadUsersFile().find(user => user.id === msg.userID);
+        let alreadyInShowdown = false;
+        if(table.showdown){
+            // if a showdown is occuring at this stage then we don't need to call another showdown
+            alreadyInShowdown = true;
+        }
         user.chips += table.bootPlayer(user.id, io, room); // boot the player and return any chips they had (not including pot)
         DataAccessLayer.UpdateUser(user);
         socket.leave(room.id);
         socket.emit('leaveRoom');
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
-        if(table.showdown){// after each move we need to check if the table is ready for a showdown
+        if(table.showdown && !alreadyInShowdown){// after each move we need to check if the table is ready for a showdown
             if(table.showDownWithCardReveal){
                 this.beginShowingTheRemainingCommunityCards(io, room);
             } else { // only one person remains no card reveal required
@@ -90,7 +95,7 @@ class PokerController {
                     for(let i = 0; i < winners.length; i++){
                         io.to(`${winners[i]}`).emit('winner');
                     }
-                    setTimeout(function() { self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
+                    setTimeout(function() { console.log('fuck1'); self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
                 }, 1000);
             }
         }
@@ -144,7 +149,7 @@ class PokerController {
                             for(let i = 0; i < winners.length; i++){
                                 io.to(`${winners[i]}`).emit('winner');
                             }
-                            setTimeout(function() { self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
+                            setTimeout(function() { console.log('fuck2'); self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
                         }, 1000);
                     }
                 } else {
@@ -171,7 +176,7 @@ class PokerController {
                     for(let i = 0; i < winners.length; i++){
                         io.to(`${winners[i]}`).emit('winner');
                     }
-                    setTimeout(function() { self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
+                    setTimeout(function() { console.log('fuck3'); self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
                 }, 1000);
             }
         } else {
@@ -223,7 +228,7 @@ class PokerController {
                     for(let i = 0; i < winners.length; i++){
                         io.to(`${winners[i]}`).emit('winner');
                     }
-                    setTimeout(function() { self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
+                    setTimeout(function() { console.log('fuck4'); self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
                 }, 1000);
             }
             table.showNextPlayerCards();

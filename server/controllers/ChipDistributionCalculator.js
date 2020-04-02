@@ -5,6 +5,7 @@ let PokerUtils = require('../utilities/PokerUtils.js');
  * @param {Object[]} players An array of players to calculate chip distribution for
  */
 exports.calculateChipDistribution = function(players) {
+    console.log(JSON.stringify(players));
     // a sample set of players with their bets and card rankings
     let numberOfTableSeats = PokerUtils.GetNumberOfTableSeats();
     let slots = this.pushPlayersIntoSlotsByRank(players, numberOfTableSeats);
@@ -39,26 +40,20 @@ exports.pushPlayersIntoSlotsByRank = function(players, numberOfTableSeats){
         slots.push([]);
     }
     players.sort(function(a, b){return b.rank - a.rank}); // sort by rank, high to low
-    let rankTag = -1;
-    for(let i = 0; i < players.length; i++){
-        if(players[i].rank === rankTag){
-            // this player matches the previous player in rank
-            rankTag = players[i].rank;
-            players[i].rank = players[i-1].rank;
+    if(players[0].rank === -1){
+        return slots; // any players who had winning hands left the game, no chips are distributed
+    }
+    players[0].positionRank = 0; // the first player has at least the best hand they automatically get position 0
+    for(let i = 1; i < players.length; i++){
+        if(players[i].rank === players[i-1].rank){ // this player matches the previous player in rank
+            players[i].positionRank = players[i-1].positionRank;
         }
-        else{// this player does not match the previous rank
-            if(i !== 0){ // move them down one rank
-                rankTag = players[i].rank;
-                players[i].rank = players[i-1].rank + 1;
-            }
-            else{
-                rankTag = players[i].rank;
-                players[i].rank = 1;
-            }
+        else{
+            players[i].positionRank = players[i-1].positionRank + 1;
         }
     }
     for(let i = 0; i < players.length; i++){
-        slots[players[i].rank - 1].push(players[i]);
+        slots[players[i].positionRank].push(players[i]);
     }
     return slots;
 }

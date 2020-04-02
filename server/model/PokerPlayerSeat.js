@@ -57,6 +57,7 @@ class PokerPlayerSeat {
      * Resets the player to be in a new-game state
      */
     resetPlayer(){ // will reset the player for a new game
+        this.handRank = -1;
         this.ableToAct = true;
         this.inPlay = true;
         this.dealer = false;
@@ -71,7 +72,8 @@ class PokerPlayerSeat {
     getChipDistributionObject(){
         return { 
             id: this.seatID,
-            rank: this.handRank, 
+            rank: this.handRank,
+            positionRank: -1, // used later in the chip distribution calculator, for keep track of rank positions
             moneyPot: this.pot, 
             returnPot: 0 
         };
