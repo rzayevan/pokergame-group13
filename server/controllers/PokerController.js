@@ -1,7 +1,6 @@
 const { v1: uuid } = require('uuid');
 let PokerUtils = require('../utilities/PokerUtils.js');
-//let PokerTable = require("../model/PokerTable.js");
-let PokerTable_Test = require("../model/PokerTable_Test.js");
+let PokerTable = require("../model/PokerTable.js");
 const DataAccessLayer = require('../controllers/DataAccessLayer.js');
 
 class PokerController {
@@ -16,7 +15,7 @@ class PokerController {
                 let room = {
                     id: uuid(),
                     //table: new PokerTable(this.pokerTableStats[i]),
-                    table: new PokerTable_Test(this.pokerTableStats[i]),
+                    table: new PokerTable(this.pokerTableStats[i]),
                 }
                 this.rooms[i*this.numberOfEachRoom + j] = room;
             }
