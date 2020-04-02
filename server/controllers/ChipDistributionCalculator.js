@@ -1,14 +1,9 @@
-let PokerUtils = require('../utilities/PokerUtils.js');
-
 /**
  * Calculates the chip distribution of the supplied players
  * @param {Object[]} players An array of players to calculate chip distribution for
  */
 exports.calculateChipDistribution = function(players) {
-    console.log(JSON.stringify(players));
-    // a sample set of players with their bets and card rankings
-    let numberOfTableSeats = PokerUtils.GetNumberOfTableSeats();
-    let slots = this.pushPlayersIntoSlotsByRank(players, numberOfTableSeats);
+    let slots = this.pushPlayersIntoSlotsByRank(players);
 
     for(let i = 0; i < slots.length; i++){ // for each slot of winners distribute their chips
         let winners = slots[i]; // this is now an array of all players at a particular rank
@@ -31,12 +26,11 @@ exports.calculateChipDistribution = function(players) {
 /**
  * Puts players into their winning ranks
  * @param {Object[]} players An array of player objects
- * @param {int} numberOfTableSeats The number of table seats
  */
-exports.pushPlayersIntoSlotsByRank = function(players, numberOfTableSeats){
+exports.pushPlayersIntoSlotsByRank = function(players){
     // sort the players into their winning ranks, a slot can have more than one player
     let slots = [];
-    for(let i = 0; i < numberOfTableSeats; i++){
+    for(let i = 0; i < players.length; i++){
         slots.push([]);
     }
     players.sort(function(a, b){return b.rank - a.rank}); // sort by rank, high to low

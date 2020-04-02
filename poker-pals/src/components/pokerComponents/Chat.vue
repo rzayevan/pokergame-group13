@@ -7,7 +7,7 @@
             <b-col>
                 <!--  TODO: Remove buttons added for testing.  -->
                 <!--these buttons are not permanent, only for testing functionality-->
-                <b-row v-show="false">
+                <b-row v-show="true">
                     <button class="testButton" v-on:click="$parent.logIn('948bf810-71e2-11ea-a8e0-73473bc162b1')">log in as dev</button>
                     <button class="testButton" v-on:click="$parent.logIn('9e9a98d0-71e6-11ea-b474-933b66303ca9')">log in as john</button>
                     <button class="testButton" v-on:click="$parent.logIn('8fd55dc0-71f6-11ea-a4ad-f1607ee8ca58')">log in as mack</button>

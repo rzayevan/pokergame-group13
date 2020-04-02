@@ -43,7 +43,7 @@ const POKER_TABLE_STATS = [
 /**
  * time player has to make decision
  */
-const POKER_TABLE_TIMEOUT = 3000;
+const POKER_TABLE_TIMEOUT = 10000;
 /**
  * Returns the NUM_OF_TABLE_SEATS constant
  */

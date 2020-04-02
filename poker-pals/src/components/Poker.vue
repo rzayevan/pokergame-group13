@@ -146,6 +146,7 @@ export default {
             this.tableName = msg.tableName;
             this.roomID = msg.roomID;
             this.bigBlind = msg.bigBlind;
+            this.raiseToValue = this.bigBlind;
             this.players[this.seatID].youTag = true;
         });
 

@@ -67,13 +67,24 @@ class PokerPlayerSeat {
     }
 
     /**
+     * Resets the player to be ready for next stage of the round
+     */
+    resetForNextStage(){
+        this.madeDecision = false; // reset decision
+        this.pot += this.bet; // update each player's pot
+        this.bet = 0; // reset bet
+        this.turn = false;
+    }
+
+    /**
      * Returns an object contraining current chip distribution for the seat
      */
     getChipDistributionObject(){
         return { 
             id: this.seatID,
+            inPlay: this.inPlay, // used in a special case when only one player remains, no ranks are provided, the chips are just given to him
             rank: this.handRank,
-            positionRank: -1, // used later in the chip distribution calculator, for keep track of rank positions
+            positionRank: -1, // used later in the chip distribution calculator, for keeping track of rank positions
             moneyPot: this.pot, 
             returnPot: 0 
         };
@@ -260,7 +271,7 @@ class PokerPlayerSeat {
      * @param {User} profile A User object containing user information for the joining user
      * @param {String} socketID The id of the users socket
      * @param {int} chips The number of chipd the player is bringing to the table
-     * @param {Boolean} gameStarted A boolean stating whether or not the games has already started
+     * @param {Boolean} gameStarted A boolean stating whether or not the game has already started
      */
     addPlayerToTable(profile, socketID, chips, gameStarted) { 
         // use the userID to join the table
