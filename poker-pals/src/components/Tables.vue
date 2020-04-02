@@ -23,6 +23,7 @@
                 <p> {{tableIndex.table.tableName}}</p>
             </div>
             <div class = "seats" id = "seatsId">
+            <!-- TODO: Update seat availability as seats fill up.--> 
                 <p> {{tableIndex.table.numberOfTableSeats}}/{{tableIndex.table.numberOfTableSeats}}</p>
             </div>
         </div>
