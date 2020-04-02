@@ -1,28 +1,29 @@
 <template>
 <!-- Table list div --> 
   <div class = "table-list">
+    <UserNavbar class="navbar-section"/>
     <ul>
     <!-- Loop through tables and display --> 
-    <li v-for="(table, x) in tables" :key="table.id">
+    <li v-for="(tableIndex, tableNum) in tables" :key="tableIndex.id">
       <!-- Join room on click --> 
-      <div class="table"  id = "table-click" v-on:click="joinRoom(table.id, x)">
+      <div class="table"  id = "table-click" v-on:click="joinRoom(table.id, tableNum)">
         <!-- Display table's buyin and blinds --> 
         <div class="table-description">
             <div class = "table-stakes">
-                <p>{{table.buyin}}</p> 
-                <p> {{table.blinds}} </p>
+                <p>{{tableIndex.table.buyIn}}</p> 
+                <p>{{tableIndex.table.bigBlind}}</p>
             </div> 
             <div class = "chips-pic">
-              <img alt="Vue logo" src="../images/chip.png">
+              <img alt="Chip picture" src="../images/chip.png">
             </div> 
         </div> 
         <!-- Display table's name and seat availability --> 
         <div class="table-details">
             <div class = "table-name">
-                <p> {{table.name}}</p>
+                <p> {{tableIndex.table.tableName}}</p>
             </div>
             <div class = "seats" id = "seatsId">
-                <p> {{table.sockets.length}}/6</p>
+                <p> {{tableIndex.table.numberOfTableSeats}}/{{tableIndex.table.numberOfTableSeats}}</p>
             </div>
         </div>
       </div>
@@ -32,21 +33,41 @@
 </template>
 
 <script>
+import io from "socket.io-client";
+import UserNavbar from "./navbars/UserNavbar";
+
 export default {
   name: 'Tables',
-  props: ['tables'], 
+  components: {
+      UserNavbar
+  },
+  created() {
+        this.socket = io("http://localhost:3000");
+  },
 
   data() {
     return {
-      hover: true,
+      socket: {},
+      tables: [],
     };
   },
+
+  mounted() {
+    //Retrieve the current tables available and store into tables array 
+      this.socket.on("serve-tables", rooms => {
+          this.tables = rooms; 
+          console.log('These are the tables');
+          console.log(this.tables);
+
+    })
+  },
+  
   methods: {
     //Function to handle room joining
     joinRoom: function (table, tableNum) {
       //To do: Replace alert with a navigation to the poker game page (Trello)
       alert("Joined Table " + (tableNum+1));
-      this.$parent.socket.emit("join-room",table);
+      this.socket.emit("'joinRoomRequest'",table);
     }
   }
 }
@@ -54,10 +75,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.active {
-  background: red;
-}
 
 ul {
   overflow-x:hidden;

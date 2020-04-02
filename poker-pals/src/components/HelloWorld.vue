@@ -1,23 +1,18 @@
 <template>
   <div class="hello">
-    <Tables v-bind:tables="tables" v-bind:socket="socket"/>
   </div>
 </template>
 
 <script>
   import io from "socket.io-client"
 
-  import Tables from '../components/Tables.vue';
-
   export default {
     name: 'HelloWorld',
     components: {
-    Tables
     },
     data() {
       return {
         socket: {},
-        tables: []
       }
     },
     // gets called before the view is rendered
@@ -30,10 +25,6 @@
       this.socket.on("connected", data => {
         console.log("client received a message: " + data);
       });
-      //Retrieve the current tables available and store into tables array 
-      this.socket.on("serve-tables", rooms => {
-          this.tables = Object.values(rooms); 
-      })
     }
   }
 </script>

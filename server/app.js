@@ -12,8 +12,6 @@ const DataAccessLayer = require('./controllers/DataAccessLayer.js');
 const UserUtils = require('./utilities/UserUtils.js');
 const ReportUtils = require('./utilities/ReportUtils.js');
 
-let rooms = {};
-
 http.listen(3000, () => {
     let users = DataAccessLayer.ReadUsersFile();
     let reports = DataAccessLayer.ReadReportsFile();
@@ -24,34 +22,12 @@ http.listen(3000, () => {
     pokerController = new PokerController(numberOfEachRoom);
 
     reportController = new ReportController();
-
-    console.log('Listening on port *: 3000');
-    console.log("Creating Tables");
-
-
-    //Create set number of tables on server startup
-
-    for (let x = 1; x <= 10; x++) {
-        //Create x number of rooms 
-        const room = {
-            id: uuidv4(),
-            name: "Table " + x,
-            buyin: 20000,
-            blinds: "1000 / 2000",
-            sockets: []
-        }
-        rooms[room.id] = room;
-    }
-
-    console.log(rooms);
-
 });
 
 io.on('connection', (socket) => {
-    console.log("Client connected.");
-    console.log(rooms)
     socket.emit("connected", "Hello from server");
-    socket.emit("serve-tables", rooms);
+    socket.emit("serve-tables", pokerController.rooms);
+    console.log(pokerController.rooms);
 
     socket.on('add-new-user', function(user) {
         // create a new user if the email provided is unique
@@ -101,20 +77,4 @@ io.on('connection', (socket) => {
     socket.on('exitRoomRequest', function(msg) {
         pokerController.exitRoomRequest(io, socket, msg);
     });
-
-    //Adds player to room 
-    socket.on('join-room', (roomId, callback) => {
-        const room = rooms[roomId];
-        joinRoom(socket, room);
-    });
 });
-
-//Function to handle joining a room
-const joinRoom = (socket, room) => {
-    room.sockets.push(socket);
-    socket.join(room.id, () => {
-        socket.roomId = room.id;
-        console.log(socket.id, "Joined", room.id);
-
-    });
-};
