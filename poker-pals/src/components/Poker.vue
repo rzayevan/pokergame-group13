@@ -62,7 +62,6 @@ import Chat from './pokerComponents/Chat.vue';
 import ReportPocket from './pokerComponents/ReportPocket.vue';
 import TableLayout from './pokerComponents/TableLayout.vue';
 import Display from './pokerComponents/Display.vue';
-//import io from "socket.io-client";
 
 export default {
     name: "Poker",
@@ -136,7 +135,7 @@ export default {
                 }
             });
             this.socket.on('leaveRoom', () => { // each player upon joining a table will receive the id of the seat they are to sit at
-                for(let i = 0; i < 6; i++){
+                for(let i = 0; i < this.players.length; i++){
                     let player = this.players[i];
                     player.occupied = false;
                     player.dealerStatus = false;

@@ -284,14 +284,7 @@ class PokerController {
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
         setTimeout(function() { self.bootPlayers(io, room); }, 2000); // remove any players that lost all their chips
     }
-
-
-
-
-
-
-
-
+    
     /**
      * Any players that have lost all their chips are removed from the table
      * @param {Object} io The io of the system
