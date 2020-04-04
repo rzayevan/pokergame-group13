@@ -56,7 +56,10 @@ io.on('connection', (socket) => {
 
     socket.on('submit report', function(reportData) {
         console.log("in app")
-        ReportUtils.submitReport(reportData);
+        let submitReportSuccess = ReportUtils.submitReport(reportData);
+
+        socket.emit("submitReportResponse", submitReportSuccess);
+
     })
 
     socket.on('request reports', function() {

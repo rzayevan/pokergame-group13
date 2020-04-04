@@ -4,30 +4,45 @@ const DataAccessLayer = require('../controllers/DataAccessLayer.js');
 const UserUtils = require('./UserUtils.js');
 
 exports.submitReport = function(reportData) {
-    console.log("hihihihi")
+    try {
+        console.log(reportData);
+        // TODO: Delete and replace with function to grab relevant chat data from the table
+        let chatMessages = [];
+        chatMessages.push({ username: "mack", message: "Jim you suck"});
+        chatMessages.push({ username: "Jim", message: "Leave me alone"});
+        chatMessages.push({ username: "mack", message: "No you suck"});
+        chatMessages.push({ username: "mack", message: "You're a loser"});
+        chatMessages.push({ username: "mack", message: "Idiot"});
+    
+        // TODO: Replace with the username of the offending user 
+        let offendingUser = UserUtils.getUserByUsername("mack");
+        // TODO: Replace with the username of the submitting user 
+        let submittingUser = UserUtils.getUserByUsername("Jim");
+    
+        console.log(submittingUser);
+    
+        let report = new Report();
+        report.CreateNewReport(offendingUser, submittingUser, reportData.reportType, reportData.reportComment, chatMessages, "notreviewed");
+        console.log(report);
+    
+       return DataAccessLayer.AddReportToFile(report);
+    }
+    catch (error) {
+        return false;
+    }
+    
+}
 
-    console.log(reportData);
-
-    // TODO: Delete and replace with function to grab relevant chat data from the table
-    let chatMessages = [];
-    chatMessages.push({ username: "mack", message: "Jim you suck"});
-    chatMessages.push({ username: "Jim", message: "Leave me alone"});
-    chatMessages.push({ username: "mack", message: "No you suck"});
-    chatMessages.push({ username: "mack", message: "You're a loser"});
-    chatMessages.push({ username: "mack", message: "Idiot"});
-
-    // TODO: Replace with the username of the offending user 
-    let offendingUser = UserUtils.getUserByUsername("mack");
-    // TODO: Replace with the username of the submitting user 
-    let submittingUser = UserUtils.getUserByUsername("Jim");
-
-    console.log(submittingUser);
-
-    let report = new Report();
-    report.CreateNewReport(offendingUser, submittingUser, reportData.reportType, reportData.reportComment, chatMessages, "notreviewed");
-    console.log(report);
-
-    DataAccessLayer.AddReportToFile(report);
+isReportDataValid = function(reportData) {
+    if (reportData.reportType === "") {
+        return false;
+    }
+    if (reportData.reportComment === "") {
+        return false;
+    }
+    if (reportData.offenderUsername === "") {
+        return false;
+    }
 }
 
 // Retrieves reports from cache and formats them for display in the Reports component 

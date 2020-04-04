@@ -1,11 +1,31 @@
 <template>
     <div class="reportBoxBorder"> <!--the report box that is toggled in and out of view when a report is requested-->
-        <div class="reportBox">
+        <div class="submit-message" v-if="!showForm && submittedSuccessfully">
+            <div class="message-container">
+                <div> 
+                    Report submitted successfully
+                </div>
+                <b-button class="centerText ok-button" variant="outline-primary" @click="closeReport()">
+                    OK
+                </b-button>  
+            </div>  
+        </div>
+        <div class="submit-message" v-if="!showForm && !submittedSuccessfully">
+            <div class="message-container">
+                <div> 
+                    Could not submit report
+                </div>
+                <b-button class="centerText ok-button" variant="outline-primary" @click="closeReport()">
+                    OK
+                </b-button>  
+            </div>                  
+        </div>
+        <div class="reportBox" v-if="showForm">
             <b-row class="row d-flex justify-content-between">
                 <div class="reportHeader">
                     Report
                 </div>
-                <b-button class="close" @click="cancelReport()">
+                <b-button class="close" @click="closeReport()">
                     &times;
                 </b-button>
             </b-row>
@@ -20,19 +40,28 @@
                     <option>option 2</option>
                     <option>option 3</option>
                 </select>
-                <div id="option-warning" class="warning hide">
+                <div id="option-warning" class="warning hidden">
                     Please select an option.
                 </div>
             </b-row>
             <b-row>
                 <div class="prompt">Please describe the reason for reporting.</div>
-                <textarea class="inputTextBox" v-model="message"></textarea>
-                <div id="reason-warning" class="warning hide">
+                <!-- <textarea class="inputTextBox" v-model="message"></textarea> -->
+                <b-form-textarea
+                    id="textarea"
+                    class="inputTextBox"
+                    v-model="message"
+                    placeholder="Enter a reason..."
+                    rows="3"
+                    max-rows="2"
+                    >
+                </b-form-textarea>
+                <div id="reason-warning" class="warning hidden">
                     Please enter a reason.
                 </div>
             </b-row>
             <b-row class="d-flex justify-content-end">
-                 <b-button class="report-button centerText" variant="light" @click="cancelReport()">
+                 <b-button class="report-button centerText" variant="light" @click="closeReport()">
                     Cancel
                 </b-button>
                  <b-button class="buttonSubmit centerText report-button" variant="primary" @click="submitReport()">
@@ -56,15 +85,42 @@
         float: left;
         width: 30%;
         height: 46.5%;
-        background: black;
+        background: #f2f3f5;
+        padding: 1.5% 1%;
+        /* border: solid 2px #dedede; */
     }
+    .submit-message {
+        display: flex;
+        align-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    .message-container {
+        margin: auto;
+    }
+    .message-content {
+        font-size: 1vw;
+        text-align: left;
+    }
+
+    .ok-button {
+        margin: auto;
+        font-size: 1vw;
+           border-color: #01b0d9;
+           background-color: white;
+        /* color: white; */
+    }
+
+    .ok-button:hover {
+        background-color: #01b0d9;
+    }
+
     .reportBox{
         float: left;
-        width: 99%;
-        height: 99%;
-        background: #dedede;
-        margin: 0% 0% 0% 0.5%;
-        padding: 3% 3%;
+        width: 100%;
+        height: 100%;
+        /* margin: 0% 0% 0% 0.5%; */
+     
     }
     .reportHeader{
         /* float: left;
@@ -131,7 +187,7 @@
         font-style: italic;
     }
 
-    .hide {
+    .hidden {
         display: none;
     }
 
@@ -141,6 +197,7 @@
         height: 10%;
         font-size: 1vw;
         border-radius: 2%/12%;
+        border-color: #ced4da;
     }
     .describeReasonText{
         float: left;
@@ -154,8 +211,8 @@
     }
     .inputTextBox{
         float: left;
-        width: 94%;
-        height: 17%;
+        width: 100%;
+        height: 15%;
         font-size: 1vw;
         resize: none;
     }
@@ -213,23 +270,23 @@ export default {
     props: [
         "report_OffenderName",
         "report_OffenderMessageId",
+        "showForm",
+        "submittedSuccessfully"
     ],
     data(){
         return {
             selected: '',
-            message: '',
+            message: ''
         }
     },
     methods:{
-        cancelReport(){
-            this.$parent.cancelReport();
+        closeReport(){
+            this.$parent.closeReport();
         },
         submitReport(){
-            console.log(this.message);
             if(this.selected === '' || this.message === ''){
                 this.setSelectionWarningVisibility(this.selected);
                 this.setReasonWarningVisibility(this.message);
-                //alert('please select reason'); // later use alternative option to indicate this
             }
             else {
                 // send off report to the parent
@@ -239,22 +296,21 @@ export default {
         setSelectionWarningVisibility(selection) {
             let optionWarning = document.getElementById("option-warning");
             if (selection === '') {
-                optionWarning.classList.remove("hide");
+                optionWarning.classList.remove("hidden");
             }
             else {
-                optionWarning.classList.add("hide");
+                optionWarning.classList.add("hidden");
             }
         },
         setReasonWarningVisibility(message) {
             let reasonWarning = document.getElementById("reason-warning");
             if (message === '') {
-                reasonWarning.classList.remove("hide");
+                reasonWarning.classList.remove("hidden");
             }
             else {
-                reasonWarning.classList.add("hide");
+                reasonWarning.classList.add("hidden");
             }
         }
-
     }
 }
 </script>
