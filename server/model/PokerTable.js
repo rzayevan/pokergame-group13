@@ -5,7 +5,7 @@ let PokerTableAssistant = require('./PokerTableAssistant.js');
 class PokerTable {
     /**
      * Constructor for the PokerTable object
-     * @param {Obect} pokerTableStat The pokerTableStat object
+     * @param {Object} pokerTableStat The pokerTableStat object
      */
     constructor(pokerTableStat){
         this.bigBlind = pokerTableStat.bigBlind; // the big blind of the table
@@ -39,6 +39,16 @@ class PokerTable {
             }
         }
         return true;
+    }
+
+    getNumberOfFullSeats(){
+        let count = 0;
+        for(let i = 0; i < this.tableSeats.length; i++){
+            if(!this.tableSeats[i].seatOpen){
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -221,11 +231,10 @@ class PokerTable {
     bootPlayer(userID, io, room){
         let seat = this.tableSeats.find(seat => seat.userID === userID);
         let chips = seat.chips;
-        io.sockets.connected[seat.socketID].leave(room.id);
+        let socket = io.sockets.connected[seat.socketID];
+        if(socket !== undefined){socket.leave(room.id);} // if it was undefined then it was a disconnect (so the socket has already left the room)
         let itWasTheirTurn = false;
-        if(this.assistant.wasItTheirTurn(userID)){ // it was their turn, find the next one
-            itWasTheirTurn = true;
-        }
+        if(this.assistant.wasItTheirTurn(userID)){ itWasTheirTurn = true; } // it was their turn
         seat.resetSeat();
         let newTimeout = false;
         if(itWasTheirTurn){ // it was their turn, find the next one

@@ -283,7 +283,7 @@ class PokerPlayerSeat {
         this.name = profile.username;
         this.chips = chips;
         this.dealer = false;
-        this.icon = /*profile.icon*/'player_icon_1'; // TODO: user.js needs to store user image icon
+        this.icon = profile.icon; // TODO: user.js needs to store user image icon
         this.action = 'WAITING';
         this.turn = false;
     }

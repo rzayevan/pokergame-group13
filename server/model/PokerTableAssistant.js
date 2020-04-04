@@ -89,6 +89,9 @@ module.exports = class PokerTableAssistant {
     }
 
     wasItTheirTurn(userID){
+        if(this.seatTurnID === -1){ // the game hasn't even started
+            return false;
+        }
         return userID === this.tableSeats[this.seatTurnID].userID;
     }
 

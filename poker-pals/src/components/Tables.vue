@@ -1,41 +1,102 @@
 <template>
-    <div id="tables-page">
-        <UserNavbar class="navbar-section"/>
-        <div class="table">
-            <div class="table-description">
-                <div class = "table-stakes">
-                    <p> 20,000 </p> 
-                    <p> 1000/2000 </p>
-                </div> 
-                <div class = "chips-pic">
-                <img alt="Vue logo" src="../assets/chip.png">
-                </div> 
+<!-- Table list div --> 
+  <div class = "table-list">
+    <UserNavbar class="navbar-section"/>
+    <ul>
+    <!-- Loop through tables and display --> 
+    <li v-for="room in rooms" :key="room.roomID">
+      <!-- Join room on click --> 
+      <div class="table" id = "table-click" v-on:click="joinRoom(room)">
+        <!-- Display table's buyin and blinds --> 
+        <div class="table-description">
+            <div class = "table-stakes">
+                <p>{{room.buyIn}}</p> 
+                <p>{{room.bigBlind}}</p>
             </div> 
-            <div class="table-details">
-                <div class = "table-name">
-                    <p> Table 1</p>
-                </div>
-                <div class = "seats">
-                    <p> 6/6 </p>
-                </div>
+            <div class = "chips-pic">
+              <img alt="Chip picture" src="../images/chip.png">
+            </div> 
+        </div> 
+        <!-- Display table's name and seat availability --> 
+        <div class="table-details">
+            <div class = "table-name">
+                <p> {{room.tableName}}</p>
+            </div>
+            <div class = "seats" id = "seatsId">
+            <!-- TODO: Update seat availability as seats fill up.--> 
+                <p> {{room.numberOfFullSeats}}/{{room.numberOfTableSeats}}</p>
             </div>
         </div>
-    </div>
+      </div>
+    </li>
+    </ul>
+  </div>
 </template>
 
 <script>
+import io from "socket.io-client";
 import UserNavbar from "./navbars/UserNavbar";
 
 export default {
-  name: 'Tables',
-  components: {
-      UserNavbar
-  }
+    name: 'Tables',
+    components: {
+        UserNavbar
+    },
+    props: ['authenticated', 'userID'],
+    created() {
+        this.socket = io("http://localhost:3000");
+    },
+    data() {
+        return {
+            socket: {},
+            rooms: [],
+        };
+    },
+    mounted() {
+        if(!this.authenticated){
+            this.$router.replace({ name: "Login" }); // send client back to login page
+        }
+        this.socket.emit('serveRoomList'); // send request for the list of rooms
+
+        //Receive the current rooms available and store into rooms array 
+        this.socket.on("receiveRoomList", rooms => {
+            this.rooms = rooms;
+        });
+
+        this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
+            this.$router.push({ name: 'Poker', params: {
+                authenticated: true,
+                socket: this.socket,
+                userID: this.userID,
+                roomID: msg.roomID,
+                seatID: msg.seatID,
+                tableName: msg.tableName,
+                bigBlind: msg.bigBlind,
+            }});
+        });
+    },
+    methods: {
+        //Function to handle room joining
+        joinRoom: function (room) {
+            this.socket.emit("joinRoomRequest", { // we send our assigned user id
+                userID: this.userID,
+                roomID: room.roomID, // the room the player wants to join
+            });
+        }
+    }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+ul {
+  overflow-x:hidden;
+}
+
+li {
+  display: inline-block; 
+}
 
 .table {
     background: #348c44;

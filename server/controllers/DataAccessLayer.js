@@ -48,11 +48,12 @@ exports.ReadUsersFile = function() {
         user.password = splitLine[3];
         user.email = splitLine[4];
         user.chips = parseInt(splitLine[5]);
-        user.handsWon = parseInt(splitLine[6]);
-        user.handsPlayed = parseInt(splitLine[7]);
+        user.icon = splitLine[6];
+        user.handsWon = parseInt(splitLine[7]);
+        user.handsPlayed = parseInt(splitLine[8]);
         user.handsLost = user.handsPlayed - user.handsWon;
-        user.lastUpdatedDate = new Date(splitLine[8]);
-        user.createdDate = new Date(splitLine[9]);
+        user.lastUpdatedDate = new Date(splitLine[9]);
+        user.createdDate = new Date(splitLine[10]);
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -68,7 +69,7 @@ exports.AddUserToFile = function(user) {
     // Create a string to store in the text file as a user
     let userString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
                      user.username + "," + user.password + "," + 
-                     user.email + "," + user.chips + "," + 
+                     user.email + "," + user.chips + "," + user.icon + "," +
                      user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," 
                      + user.createdDate.toISOString() + ",\n";
     // Append the string to the text file
@@ -96,7 +97,7 @@ exports.UpdateUser = function(user) {
     // Create a new string to update the file to
     let newUserString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
                         user.username + "," + user.password + "," + 
-                        user.email + "," + user.chips + "," + 
+                        user.email + "," + user.chips + "," + user.icon + "," +
                         user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," 
                         + user.createdDate.toISOString() + ",";
 

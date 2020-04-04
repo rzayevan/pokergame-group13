@@ -14,10 +14,43 @@ class PokerController {
             for(let j = 0; j < this.numberOfEachRoom; j++) { // right now two of each table is created
                 let room = {
                     id: uuid(),
-                    //table: new PokerTable(this.pokerTableStats[i]),
                     table: new PokerTable(this.pokerTableStats[i]),
                 }
                 this.rooms[i*this.numberOfEachRoom + j] = room;
+            }
+        }
+    }
+
+    getRoomList(){ // returns an object containing vita info on the tables
+        let list = [];
+        for(let i = 0; i < this.rooms.length; i++){
+            let room = this.rooms[i];
+            list.push({
+                roomID: room.id,
+                tableName: room.table.tableName,
+                buyIn: room.table.buyIn,
+                bigBlind: room.table.bigBlind,
+                numberOfFullSeats: room.table.getNumberOfFullSeats(),
+                numberOfTableSeats: PokerUtils.GetNumberOfTableSeats()
+            });
+        }
+        return list;
+    }
+
+    disconnectFromTable(io, socket){
+        for(let i = 0; i < this.rooms.length; i++){
+            let room = this.rooms[i];
+            for(let j = 0; j < room.table.tableSeats.length; j++){
+                let seat = room.table.tableSeats[j];
+                if(seat.socketID === socket.id){
+                    let msg = {
+                        userID: seat.userID,
+                        roomID: room.id,
+                        seatID: seat.seatID,
+                    };
+                    this.exitRoomRequest(io, socket, msg); // we make a exitroom request for them
+                    return;
+                }
             }
         }
     }
@@ -45,7 +78,9 @@ class PokerController {
      */
     joinRoom(io, socket, msg) { // request sent from client that they want to join the table
         let profile = DataAccessLayer.ReadUsersFile().find(profile => profile.id === msg.userID); // get their profile
-        let roomToJoin = this.rooms[msg.roomID]; // TODO: when tables is linked to poker, use .find(),
+        if(profile === undefined){ return; };
+        let roomToJoin = this.rooms.find(room => room.id === msg.roomID);
+        if(roomToJoin === undefined){ return; }
         let table = roomToJoin.table;
         if(this.canUserJoinRoom(roomToJoin, profile)){// the user can join the table
             profile.chips -= table.buyIn; // user pays the buy in
