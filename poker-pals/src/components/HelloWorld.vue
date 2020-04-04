@@ -1,13 +1,15 @@
 <template>
   <div class="hello">
-    <h1>Testing</h1>
   </div>
 </template>
 
 <script>
   import io from "socket.io-client"
+
   export default {
     name: 'HelloWorld',
+    components: {
+    },
     data() {
       return {
         socket: {},
