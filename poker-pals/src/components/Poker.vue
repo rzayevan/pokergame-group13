@@ -85,11 +85,9 @@ export default {
             report_OffenderMessageId: '',
             // the image resource files for the card images
             imageFiles: require("./pokerComponents/ImageFiles").imageFiles,
-
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             submittedSuccessfully: false,
             showForm: true,
-
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
             cardReveal: false, // set to false until the show down, the players will show their cards
             potTotal: 0,
@@ -193,6 +191,8 @@ export default {
                 this.setPlayerCardsVisibility(false); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)
             });
 
+            // Listen for the server's response to a report submission
+            // Depending on the response, display a success or failure message
             this.socket.on('submitReportResponse', response => {
                 this.showForm = false;
                 this.submittedSuccessfully = response;
@@ -209,7 +209,8 @@ export default {
             for(let i = 0; i < this.communityCards.length; i++){
                 this.communityCards[i].src = this.imageFiles.find(file => file.name === 'card_empty').src;
             }
-            this.setPlayerCardsVisibility(false); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)     
+            this.raiseToValue = this.bigBlind;
+            this.players[this.seatID].youTag = true;
         }
     },
     methods:{

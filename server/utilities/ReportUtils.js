@@ -3,9 +3,11 @@ let Report = require("../model/Report.js");
 const DataAccessLayer = require('../controllers/DataAccessLayer.js');
 const UserUtils = require('./UserUtils.js');
 
+// If the report is valid, save it 
+// Return true if the report was saved, false otherwise 
+// TODO: remove hardcoded data 
 exports.submitReport = function(reportData) {
     try {
-        console.log(reportData);
         // TODO: Delete and replace with function to grab relevant chat data from the table
         let chatMessages = [];
         chatMessages.push({ username: "mack", message: "Jim you suck"});
@@ -18,21 +20,19 @@ exports.submitReport = function(reportData) {
         let offendingUser = UserUtils.getUserByUsername("mack");
         // TODO: Replace with the username of the submitting user 
         let submittingUser = UserUtils.getUserByUsername("Jim");
-    
-        console.log(submittingUser);
-    
+        
+        // Create and save the new report
         let report = new Report();
         report.CreateNewReport(offendingUser, submittingUser, reportData.reportType, reportData.reportComment, chatMessages, "notreviewed");
-        console.log(report);
-    
-       return DataAccessLayer.AddReportToFile(report);
+        return DataAccessLayer.AddReportToFile(report);
     }
     catch (error) {
         return false;
     }
-    
 }
 
+// Determine whether or not the report contains valid data
+// TODO: check all report fields (ie. chat messages, submitting user)
 isReportDataValid = function(reportData) {
     if (reportData.reportType === "") {
         return false;

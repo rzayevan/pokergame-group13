@@ -58,12 +58,10 @@ io.on('connection', (socket) => {
         pokerController.disconnectFromTable(io, socket);
     });
 
+    // Attempt to submit the report and return the result of the attempt
     socket.on('submit report', function(reportData) {
-        console.log("in app")
         let submitReportSuccess = ReportUtils.submitReport(reportData);
-
         socket.emit("submitReportResponse", submitReportSuccess);
-
     })
 
     socket.on('request reports', function() {
