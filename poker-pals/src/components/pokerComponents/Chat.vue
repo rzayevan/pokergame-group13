@@ -90,10 +90,16 @@
             }
         },
         mounted: function() {
-            var self = this;
+            let self = this;
             this.socket.on('messageSentSuccessful', function(msg){
                 let you = msg.senderID === self.$parent.userID;
-                self.addMessage({id: msg.id, senderID: msg.senderID, name: msg.name, you: you, message: msg.message});
+                self.addMessage({
+                    id: msg.id, 
+                    senderID: msg.senderID, 
+                    name: msg.name, 
+                    you: you, message: 
+                    msg.message
+                });
             });
         },
         methods:{
@@ -105,7 +111,7 @@
             },
             sendMessage: function (event) {
                 event.preventDefault(); // prevent page reload
-                if (this.message !== "") {
+                if (this.message !== "" && this.message.trim() !== "") {
                     this.$parent.socket.emit("userSentMessage", {
                         userID: this.$parent.userID,
                         roomID: this.$parent.roomID,
