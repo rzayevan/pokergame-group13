@@ -2,22 +2,39 @@
     <div class="reportBoxBorder"> <!--the report box that is toggled in and out of view when a report is requested-->
         <div class="submit-message" v-if="!showForm && submittedSuccessfully">
             <div class="message-container">
-                <div> 
-                    Report submitted successfully
-                </div>
-                <b-button class="centerText ok-button" variant="outline-primary" @click="closeReport()">
-                    OK
-                </b-button>  
+    
+                <b-row class="report-message">
+                    <b-nav-text class="material-icons"> check_circle </b-nav-text> 
+                    <div>Report submitted successfully</div>
+                    <div class="message-text">Your report will be reviewed shortly.</div>
+                </b-row>
+                 <b-row class="ok-container">
+                    <b-button class="centerText ok-button" variant="outline-primary" @click="closeReport()">OK</b-button>  
+                </b-row>
+
+        
             </div>  
         </div>
         <div class="submit-message" v-if="!showForm && !submittedSuccessfully">
             <div class="message-container">
-                <div> 
+
+                
+                  <b-row class="report-message">
+                    <b-nav-text class="material-icons"> cancel </b-nav-text> 
+                    <div>Failed to submit report</div>
+                    <div class="message-text">Please try again.</div>
+                </b-row>
+                 <b-row class="ok-container">
+                    <b-button class="centerText ok-button" variant="outline-primary" @click="closeReport()">OK</b-button>  
+                </b-row>
+
+
+                <!-- <div> 
                     Could not submit report
                 </div>
                 <b-button class="centerText ok-button" variant="outline-primary" @click="closeReport()">
                     OK
-                </b-button>  
+                </b-button>   -->
             </div>                  
         </div>
         <div class="reportBox" v-if="showForm">
@@ -87,24 +104,43 @@
         height: 46.5%;
         background: #f2f3f5;
         padding: 1.5% 1%;
-        /* border: solid 2px #dedede; */
     }
     .submit-message {
         display: flex;
-        align-content: center;
         width: 100%;
         height: 100%;
     }
     .message-container {
+        width: 100%;
+        height: 100%;
         margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+
     }
     .message-content {
         font-size: 1vw;
         text-align: left;
+    } 
+
+    .report-message {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .message-text {
+        font-size: 1vw;
+    }
+
+    .ok-container {
+        display: flex;
+        justify-content: flex-end;
     }
 
     .ok-button {
-        margin: auto;
+        /* margin: auto; */
         font-size: 1vw;
            border-color: #01b0d9;
            background-color: white;
@@ -113,6 +149,10 @@
 
     .ok-button:hover {
         background-color: #01b0d9;
+    }
+
+    .material-icons {
+        font-size: 5vw !important;
     }
 
     .reportBox{
@@ -162,7 +202,7 @@
         float: left;
         width: 94%;
         height: 10%;
-        font-size: 1.15vw;
+        font-size: 1vw;
         text-align: left;
         color: black;
     }
