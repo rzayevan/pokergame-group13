@@ -3,6 +3,8 @@ let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let User = require("./model/User.js");
+const { v1: uuid } = require('uuid');
+
 let PokerController = require("./controllers/PokerController.js");
 let ReportController = require("./controllers/ReportController.js");
 let pokerController, reportController;
@@ -82,5 +84,19 @@ io.on('connection', (socket) => {
 
     socket.on('exitRoomRequest', function(msg){
         pokerController.exitRoomRequest(io, socket, msg);
+    });
+
+    socket.on('userSentMessage', function(msg) {
+        let sender = UserUtils.getUser(msg.userID);
+
+        let messageObject = {
+            id: uuid(),
+            senderID: msg.userID,
+            name: sender.username,
+            message: msg.message
+        };
+
+        // Send userReceivedMessage event to all users within table
+        io.to(msg.roomID).emit("messageSentSuccessful", messageObject);
     });
 });
