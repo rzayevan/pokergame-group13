@@ -1,13 +1,9 @@
-let PokerUtils = require('../utilities/PokerUtils.js');
-
 /**
  * Calculates the chip distribution of the supplied players
  * @param {Object[]} players An array of players to calculate chip distribution for
  */
 exports.calculateChipDistribution = function(players) {
-    // a sample set of players with their bets and card rankings
-    let numberOfTableSeats = PokerUtils.GetNumberOfTableSeats();
-    let slots = this.pushPlayersIntoSlotsByRank(players, numberOfTableSeats);
+    let slots = this.pushPlayersIntoSlotsByRank(players);
 
     for(let i = 0; i < slots.length; i++){ // for each slot of winners distribute their chips
         let winners = slots[i]; // this is now an array of all players at a particular rank
@@ -30,35 +26,28 @@ exports.calculateChipDistribution = function(players) {
 /**
  * Puts players into their winning ranks
  * @param {Object[]} players An array of player objects
- * @param {int} numberOfTableSeats The number of table seats
  */
-exports.pushPlayersIntoSlotsByRank = function(players, numberOfTableSeats){
+exports.pushPlayersIntoSlotsByRank = function(players){
     // sort the players into their winning ranks, a slot can have more than one player
     let slots = [];
-    for(let i = 0; i < numberOfTableSeats; i++){
+    for(let i = 0; i < players.length; i++){
         slots.push([]);
     }
     players.sort(function(a, b){return b.rank - a.rank}); // sort by rank, high to low
-    let rankTag = -1;
-    for(let i = 0; i < players.length; i++){
-        if(players[i].rank === rankTag){
-            // this player matches the previous player in rank
-            rankTag = players[i].rank;
-            players[i].rank = players[i-1].rank;
+    if(players[0].rank === -1){
+        return slots; // any players who had winning hands left the game, no chips are distributed
+    }
+    players[0].positionRank = 0; // the first player has at least the best hand they automatically get position 0
+    for(let i = 1; i < players.length; i++){
+        if(players[i].rank === players[i-1].rank){ // this player matches the previous player in rank
+            players[i].positionRank = players[i-1].positionRank;
         }
-        else{// this player does not match the previous rank
-            if(i !== 0){ // move them down one rank
-                rankTag = players[i].rank;
-                players[i].rank = players[i-1].rank + 1;
-            }
-            else{
-                rankTag = players[i].rank;
-                players[i].rank = 1;
-            }
+        else{
+            players[i].positionRank = players[i-1].positionRank + 1;
         }
     }
     for(let i = 0; i < players.length; i++){
-        slots[players[i].rank - 1].push(players[i]);
+        slots[players[i].positionRank].push(players[i]);
     }
     return slots;
 }

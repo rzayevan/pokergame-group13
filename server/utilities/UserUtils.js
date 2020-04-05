@@ -1,4 +1,5 @@
-const DataAccessLayer = require('../controllers/DataAccessLayer.js')
+const DataAccessLayer = require('../controllers/DataAccessLayer.js');
+const NUMBER_OF_ICONS = 16;
 
 /**
  * Checks if the provided credentials match the ones stored in the application
@@ -6,14 +7,15 @@ const DataAccessLayer = require('../controllers/DataAccessLayer.js')
 exports.credentialsMatch = function(user) {
     let users = DataAccessLayer.GetCachedUsers();
     let matchFound = false;
-
+    let userID = -1;
     users.forEach(existingUser => {
         if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
             matchFound = true;
+            userID = existingUser.id;
         }
     });
 
-    return matchFound;
+    return {matchFound: matchFound, userID: userID};
 }
 
 /**
@@ -40,4 +42,13 @@ exports.getUser = function(id) {
     });
 
     return matchingUser;
+}
+
+exports.createUserIcon = function(number) {
+    if(number !== undefined && !Number.isNaN(number)){
+        return 'player_icon_' + number.toString();
+    }
+    else{
+        return 'player_icon_' + Math.floor(Math.random()*NUMBER_OF_ICONS+1).toString();
+    }
 }

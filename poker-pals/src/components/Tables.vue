@@ -4,14 +4,14 @@
     <UserNavbar class="navbar-section"/>
     <ul>
     <!-- Loop through tables and display --> 
-    <li v-for="(tableIndex, tableNum) in tables" :key="tableIndex.id">
+    <li v-for="room in rooms" :key="room.roomID">
       <!-- Join room on click --> 
-      <div class="table"  id = "table-click" v-on:click="joinRoom(table.id, tableNum)">
+      <div class="table" id = "table-click" v-on:click="joinRoom(room)">
         <!-- Display table's buyin and blinds --> 
         <div class="table-description">
             <div class = "table-stakes">
-                <p>{{tableIndex.table.buyIn}}</p> 
-                <p>{{tableIndex.table.bigBlind}}</p>
+                <p>{{room.buyIn}}</p> 
+                <p>{{room.bigBlind}}</p>
             </div> 
             <div class = "chips-pic">
               <img alt="Chip picture" src="../images/chip.png">
@@ -20,11 +20,11 @@
         <!-- Display table's name and seat availability --> 
         <div class="table-details">
             <div class = "table-name">
-                <p> {{tableIndex.table.tableName}}</p>
+                <p> {{room.tableName}}</p>
             </div>
             <div class = "seats" id = "seatsId">
             <!-- TODO: Update seat availability as seats fill up.--> 
-                <p> {{tableIndex.table.numberOfTableSeats}}/{{tableIndex.table.numberOfTableSeats}}</p>
+                <p> {{room.numberOfFullSeats}}/{{room.numberOfTableSeats}}</p>
             </div>
         </div>
       </div>
@@ -38,39 +38,52 @@ import io from "socket.io-client";
 import UserNavbar from "./navbars/UserNavbar";
 
 export default {
-  name: 'Tables',
-  components: {
-      UserNavbar
-  },
-  created() {
+    name: 'Tables',
+    components: {
+        UserNavbar
+    },
+    props: ['authenticated', 'userID'],
+    created() {
         this.socket = io("http://localhost:3000");
-  },
+    },
+    data() {
+        return {
+            socket: {},
+            rooms: [],
+        };
+    },
+    mounted() {
+        if(!this.authenticated){
+            this.$router.replace({ name: "Login" }); // send client back to login page
+        }
+        this.socket.emit('serveRoomList'); // send request for the list of rooms
 
-  data() {
-    return {
-      socket: {},
-      tables: [],
-    };
-  },
+        //Receive the current rooms available and store into rooms array 
+        this.socket.on("receiveRoomList", rooms => {
+            this.rooms = rooms;
+        });
 
-  mounted() {
-    //Retrieve the current tables available and store into tables array 
-      this.socket.on("serve-tables", rooms => {
-          this.tables = rooms; 
-          console.log('These are the tables');
-          console.log(this.tables);
-
-    })
-  },
-  
-  methods: {
-    //Function to handle room joining
-    joinRoom: function (table, tableNum) {
-      //To do: Replace alert with a navigation to the poker game page (Trello)
-      alert("Joined Table " + (tableNum+1));
-      this.socket.emit("'joinRoomRequest'",table);
+        this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
+            this.$router.push({ name: 'Poker', params: {
+                authenticated: true,
+                socket: this.socket,
+                userID: this.userID,
+                roomID: msg.roomID,
+                seatID: msg.seatID,
+                tableName: msg.tableName,
+                bigBlind: msg.bigBlind,
+            }});
+        });
+    },
+    methods: {
+        //Function to handle room joining
+        joinRoom: function (room) {
+            this.socket.emit("joinRoomRequest", { // we send our assigned user id
+                userID: this.userID,
+                roomID: room.roomID, // the room the player wants to join
+            });
+        }
     }
-  }
 }
 </script>
 
