@@ -37,7 +37,7 @@ exports.emailExists = function(user) {
 exports.getUserById = function(id) {
     let users = DataAccessLayer.GetCachedUsers();
 
-    var matchingUser = users.find(user => {
+    let matchingUser = users.find(user => {
         return user.id === id;
     });
 
@@ -47,7 +47,7 @@ exports.getUserById = function(id) {
 exports.getUserByUsername = function(username) {
     let users = DataAccessLayer.GetCachedUsers();
 
-    var matchingUser = users.find(user => {
+    let matchingUser = users.find(user => {
         return user.username === username;
     });
 

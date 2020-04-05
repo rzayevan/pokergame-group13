@@ -34,7 +34,7 @@
             </b-row>
             <b-row class="row">
                 <div class="prompt">Did you witness any of the following?</div>
-                <select class="selector" v-model="selected">
+                <select class="type-dropdown" v-model="selected">
                     <option disabled value="">Select an option</option>
                     <option>option 1</option>
                     <option>option 2</option>
@@ -174,7 +174,7 @@
     .hidden {
         display: none;
     }
-    .selector{
+    .type-dropdown{
         float: left;
         width: 70%;
         height: 10%;
