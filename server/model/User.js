@@ -15,6 +15,8 @@ class User {
          this.email;
          // The number of chips the user has
          this.chips;
+         // The image icon name of the user
+         this.icon;
          // The number of hands the user has won
          this.handsWon;
          // The number of hands the user has lost
@@ -28,7 +30,7 @@ class User {
     }
 
     // Populates the fields of a newly created User object
-    CreateNewUser(username, password, email, isAdmin = false) {
+    CreateNewUser(username, password, email, icon, isAdmin = false) {
         // The uuid of the user
         this.id = uuid();
         // A boolean stating whether the user is an Admin or not
@@ -41,6 +43,8 @@ class User {
         this.email = email;
         // The number of chips the user has
         this.chips = 100;
+        // The image icon name of the user
+        this.icon = icon;
         // The number of hands the user has won
         this.handsWon = 0;
         // The number of hands the user has lost
@@ -70,6 +74,8 @@ class User {
          this.email = userToCopy.email;
          // The number of chips the user has
          this.chips = userToCopy.chips;
+         // The image icon name of the user
+         this.icon = userToCopy.icon;
          // The number of hands the user has won
          this.handsWon = userToCopy.handsWon;
          // The number of hands the user has lost

@@ -57,6 +57,7 @@ class PokerPlayerSeat {
      * Resets the player to be in a new-game state
      */
     resetPlayer(){ // will reset the player for a new game
+        this.handRank = -1;
         this.ableToAct = true;
         this.inPlay = true;
         this.dealer = false;
@@ -66,12 +67,24 @@ class PokerPlayerSeat {
     }
 
     /**
+     * Resets the player to be ready for next stage of the round
+     */
+    resetForNextStage(){
+        this.madeDecision = false; // reset decision
+        this.pot += this.bet; // update each player's pot
+        this.bet = 0; // reset bet
+        this.turn = false;
+    }
+
+    /**
      * Returns an object contraining current chip distribution for the seat
      */
     getChipDistributionObject(){
         return { 
             id: this.seatID,
-            rank: this.handRank, 
+            inPlay: this.inPlay, // used in a special case when only one player remains, no ranks are provided, the chips are just given to him
+            rank: this.handRank,
+            positionRank: -1, // used later in the chip distribution calculator, for keeping track of rank positions
             moneyPot: this.pot, 
             returnPot: 0 
         };
@@ -173,7 +186,7 @@ class PokerPlayerSeat {
      * @param {int} bigBlind The big blind of the table
      */
     playerRaiseAction(currentBet, raiseToValue, bigBlind){
-
+        //TODO: error check raise value (its now being typed in)
         //If a minimum raise by the value of a bigblind against the current bet is needed
         if(raiseToValue < currentBet + bigBlind) {
             return { 
@@ -258,7 +271,7 @@ class PokerPlayerSeat {
      * @param {User} profile A User object containing user information for the joining user
      * @param {String} socketID The id of the users socket
      * @param {int} chips The number of chipd the player is bringing to the table
-     * @param {Boolean} gameStarted A boolean stating whether or not the games has already started
+     * @param {Boolean} gameStarted A boolean stating whether or not the game has already started
      */
     addPlayerToTable(profile, socketID, chips, gameStarted) { 
         // use the userID to join the table
@@ -270,7 +283,7 @@ class PokerPlayerSeat {
         this.name = profile.username;
         this.chips = chips;
         this.dealer = false;
-        this.icon = /*profile.icon*/'player_icon_1'; // TODO: user.js needs to store user image icon
+        this.icon = profile.icon; // TODO: user.js needs to store user image icon
         this.action = 'WAITING';
         this.turn = false;
     }
