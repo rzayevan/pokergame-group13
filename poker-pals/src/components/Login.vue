@@ -104,8 +104,8 @@
       });
 
       // Navigate to tables page if authentication was successful
-      this.socket.on("authenticated", userID => {
-        this.$router.push({ name: "Tables", params: {authenticated: true, userID: userID}});
+      this.socket.on("authenticated", userData => {
+        this.$router.push({ name: "Tables", params: {authenticated: true, userID: userData.id}});
       });
 
       // display error message sent from server

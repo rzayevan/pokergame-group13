@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
         // authenticate the user if the credentials provided exist in the stored data
         let result = UserUtils.credentialsMatch(user);
         if (result.matchFound) {
-            socket.emit("authenticated", result.userID);
+            socket.emit("authenticated", result.userData);
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");
         }

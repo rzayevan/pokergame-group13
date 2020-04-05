@@ -7,15 +7,15 @@ const NUMBER_OF_ICONS = 16;
 exports.credentialsMatch = function(user) {
     let users = DataAccessLayer.GetCachedUsers();
     let matchFound = false;
-    let userID = -1;
+    let userData = {};
     users.forEach(existingUser => {
         if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
             matchFound = true;
-            userID = existingUser.id;
+            userData = existingUser;
         }
     });
 
-    return {matchFound: matchFound, userID: userID};
+    return {matchFound: matchFound, userData: userData};
 }
 
 /**
