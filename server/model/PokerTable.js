@@ -7,11 +7,11 @@ class PokerTable {
      * Constructor for the PokerTable object
      * @param {Object} pokerTableStat The pokerTableStat object
      */
-    constructor(pokerTableStat){
+    constructor(pokerTableStat, number){
         this.bigBlind = pokerTableStat.bigBlind; // the big blind of the table
         this.buyIn = pokerTableStat.buyIn;
         this.timeout = null; // table will clear this if action taken within time limit
-        this.tableName = pokerTableStat.name;
+        this.tableName = pokerTableStat.name + ' ' + number;
         this.tableSeats = []; // the list of table seats
         for(let i = 0; i < PokerUtils.GetNumberOfTableSeats(); i++){
             this.tableSeats.push(new PokerPlayerSeat(i));

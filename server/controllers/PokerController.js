@@ -14,7 +14,7 @@ class PokerController {
             for(let j = 0; j < this.numberOfEachRoom; j++) { // right now two of each table is created
                 let room = {
                     id: uuid(),
-                    table: new PokerTable(this.pokerTableStats[i]),
+                    table: new PokerTable(this.pokerTableStats[i], i + 1),
                 }
                 this.rooms[i*this.numberOfEachRoom + j] = room;
             }
@@ -152,6 +152,7 @@ class PokerController {
      */
     turnDecision(io, socket, msg) {
         let room = this.rooms.find(room => room.id === msg.roomID);
+        if(room === undefined){ return; }
         let table = room.table;
         let self = this;
         if(table.isItTheirTurn(msg.userID, msg.seatID, socket.id)) {
@@ -197,9 +198,7 @@ class PokerController {
     exitRoomRequest(io, socket, msg) {
         let self = this;
         let room = this.rooms.find(room => room.id === msg.roomID);
-        if(room === undefined){
-            return;
-        }
+        if(room === undefined){ return; }
         let table = room.table;
         let user = DataAccessLayer.ReadUsersFile().find(user => user.id === msg.userID);
         let alreadyInShowdown = table.assistant.showdown; // if a showdown is occuring at this stage then we don't need to call another showdown
