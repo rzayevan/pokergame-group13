@@ -142,13 +142,15 @@
     .ok-button {
         /* margin: auto; */
         font-size: 1vw;
-           border-color: #01b0d9;
-           background-color: white;
+        border-color: #01b0d9;
+        color: #01b0d9;
+        background-color: white;
         /* color: white; */
     }
 
     .ok-button:hover {
         background-color: #01b0d9;
+        color: white;
     }
 
     .material-icons {

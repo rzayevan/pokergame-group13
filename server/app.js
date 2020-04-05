@@ -95,7 +95,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('userSentMessage', function(msg) {
-        let sender = UserUtils.getUser(msg.userID);
+        let sender = UserUtils.getUserById(msg.userID);
 
         let messageObject = {
             id: uuid(),
