@@ -186,7 +186,7 @@ class PokerPlayerSeat {
      * @param {int} bigBlind The big blind of the table
      */
     playerRaiseAction(currentBet, raiseToValue, bigBlind){
-
+        //TODO: error check raise value (its now being typed in)
         //If a minimum raise by the value of a bigblind against the current bet is needed
         if(raiseToValue < currentBet + bigBlind) {
             return { 
