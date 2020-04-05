@@ -8,9 +8,9 @@ import exampleComponent from './components/HelloWorld.vue';
 export default [
     {path: '/', redirect: { name: 'Login'}},
     {path: '/login', name: 'Login', component: loginComponent},
-    {path: '/poker', name: 'Poker', component: pokerComponent},
-    {path: '/profile', name: 'Profile', component: profileComponent},
-    {path: '/reports', name: 'Reports', component: reportsComponent},
-    {path: '/tables', name: 'Tables', component: tablesComponent},
+    {path: '/poker', name: 'Poker', component: pokerComponent, props: true},
+    {path: '/profile', name: 'Profile', component: profileComponent, props: true},
+    {path: '/reports', name: 'Reports', component: reportsComponent, props: true},
+    {path: '/tables', name: 'Tables', component: tablesComponent, props: true},
     {path: '/example', name: 'Example', component: exampleComponent}
 ]

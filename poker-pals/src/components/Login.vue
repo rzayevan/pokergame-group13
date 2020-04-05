@@ -12,7 +12,7 @@
       <div class="row align-items-center">
         <!--  Poker Pals Logo  -->
         <div class="col-md-6 offset-md-0 col-6 offset-3 ">
-          <img alt="Poker Pals logo" src="../assets/logo.svg">
+          <img alt="Poker Pals logo" src="../assets/logo.jpg">
         </div>
 
         <div class="col-md-6">
@@ -104,8 +104,8 @@
       });
 
       // Navigate to tables page if authentication was successful
-      this.socket.on("authenticated", () => {
-        this.$router.push({ name: "Tables" });
+      this.socket.on("authenticated", userID => {
+        this.$router.push({ name: "Tables", params: {authenticated: true, userID: userID}});
       });
 
       // display error message sent from server
