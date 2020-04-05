@@ -27,7 +27,6 @@ http.listen(3000, () => {
 io.on('connection', (socket) => {
     socket.emit("connected", "Hello from server");
     socket.emit("serve-tables", pokerController.rooms);
-    console.log(pokerController.rooms);
 
     socket.on('add-new-user', function(user) {
         // create a new user if the email provided is unique
