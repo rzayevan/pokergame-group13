@@ -105,6 +105,13 @@
 
       // Navigate to tables page if authentication was successful
       this.socket.on("authenticated", userData => {
+        // navigate to reports page if the user is an admin
+        if(userData.isAdmin) {
+          this.$router.push({ name: "Reports", params: {authenticated: true, userID: userData.id}});
+          return;
+        }
+
+        // otherwise, navigate to tables page
         this.$router.push({ name: "Tables", params: {authenticated: true, userID: userData.id}});
       });
 
