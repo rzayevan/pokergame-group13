@@ -20,7 +20,7 @@
                 </b-row>
                 <div id="messages" >
                     <ChatMessage v-for="item in items" :key="item.id"
-                         v-bind:you="item.senderID === userID"
+                         v-bind:you="item.you"
                          v-bind:name="item.name"
                          v-bind:message="item.message"
                          v-bind:messageId="item.id"
@@ -82,27 +82,19 @@
         },
         data() {
             return {
-                tableName: 'Big Fish',
-                userID: 1000,
+                tableName: this.$parent.tableName,
+                userID: this.$parent.userID,
+                socket: this.$parent.socket,
                 message: '',
-                items: [ // right now chat does not receive messages, either it will use props or have its own socket functions
-                    // sample messages stored in chat
-                    { id: 1, senderID: 1000, name: 'Mark123', message: 'Hi!' },
-                    { id: 2, senderID: 2000, name: 'John456', message: 'gl hf!' },
-                    { id: 3, senderID: 3000, name: 'Luke854', message: 'no' },
-                    { id: 4, senderID: 3000, name: 'Luke854', message: '>:(' },
-                    { id: 5, senderID: 3000, name: 'John456', message: 'oh okay... ' },
-                    { id: 6, senderID: 3000, name: 'Mark123', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
-                    { id: 7, senderID: 3000, name: 'Luke854', message: 'f' },
-                    { id: 8, senderID: 3000, name: 'Luke854', message: 'asdsad' },
-                    { id: 9, senderID: 1000, name: 'Mark123', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
-                    { id: 10, senderID: 3000, name: 'Luke854', message: 'f' },
-                    { id: 11, senderID: 3000, name: 'Mark123', message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' },
-                    { id: 12, senderID: 3000, name: 'Luke854', message: 'f' },
-                    { id: 13, senderID: 1000, name: 'Luke854', message: 'f' },
-                    { id: 14, senderID: 1000, name: 'Luke854', message: 'f' },
-                ],
+                items: [],
             }
+        },
+        mounted: function() {
+            var self = this;
+            this.socket.on('messageSentSuccessful', function(msg){
+                let you = msg.senderID === self.$parent.userID;
+                self.addMessage({id: msg.id, senderID: msg.senderID, name: msg.name, you: you, message: msg.message});
+            });
         },
         methods:{
             openReport(name, messageId){
@@ -113,7 +105,19 @@
             },
             sendMessage: function (event) {
                 event.preventDefault(); // prevent page reload
-                // TODO: Send message to server
+                if (this.message !== "") {
+                    this.$parent.socket.emit("userSentMessage", {
+                        userID: this.$parent.userID,
+                        roomID: this.$parent.roomID,
+                        message: this.message
+                    });
+
+                    // Clear the input field
+                    this.message = "";
+                }
+            },
+            addMessage: function (msg) {
+                this.items.push(msg);
             }
         }
     };
