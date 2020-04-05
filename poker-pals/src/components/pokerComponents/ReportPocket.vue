@@ -40,7 +40,7 @@
                     <option>option 2</option>
                     <option>option 3</option>
                 </select>
-                <div id="option-warning" class="warning hidden">Please select an option.</div>
+                <div id="option-warning" class="warning" v-show="showSelectionWarning">Please select an option.</div>
             </b-row>
             <b-row>
                 <div class="prompt">Please describe the reason for reporting.</div>
@@ -53,7 +53,7 @@
                     max-rows="2"
                     >
                 </b-form-textarea>
-                <div id="reason-warning" class="warning hidden">Please enter a reason.</div>
+                <div id="reason-warning" class="warning" v-show="showMesssageWarning">Please enter a reason.</div>
             </b-row>
             <b-row class="d-flex justify-content-end">
                  <b-button class="report-button centerText" variant="light" @click="closeReport()">Cancel</b-button>
@@ -224,7 +224,9 @@ export default {
     data(){
         return {
             selected: '',
-            message: ''
+            message: '',
+            showSelectionWarning: false,
+            showMesssageWarning: false
         }
     },
     methods:{
@@ -244,22 +246,20 @@ export default {
         },
         // Display or hide selection warning
         setSelectionWarningVisibility(selection) {
-            let optionWarning = document.getElementById("option-warning");
             if (selection === '') {
-                optionWarning.classList.remove("hidden");
+                this.showSelectionWarning = true;
             }
             else {
-                optionWarning.classList.add("hidden");
+                this.showSelectionWarning = false;
             }
         },
         // Display or hide reason warning
         setReasonWarningVisibility(message) {
-            let reasonWarning = document.getElementById("reason-warning");
             if (message === '') {
-                reasonWarning.classList.remove("hidden");
+                this.showMesssageWarning = true;
             }
             else {
-                reasonWarning.classList.add("hidden");
+                this.showMesssageWarning = false;
             }
         }
     }
