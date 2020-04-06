@@ -14,7 +14,7 @@
                 </div>
                 <div class="chipCount">
                     <div class="chipImage">
-                        <img src="../../images/chip.png"/>
+                        <img :src="require('../../images/ImageFiles').getImage('chip').src"/>
                     </div>
                     <div class="chipCountValue">{{ chipTotal }}</div>
                 </div>
@@ -22,13 +22,13 @@
         </div>
         <div v-if="occupied" v-bind:class= classes.betBox>
             <div class="betImage" :style="{visibility: betValue === 0 ? 'hidden' : 'visible'}">
-                <img src="../../images/chip.png"/>
+                <img :src="require('../../images/ImageFiles').getImage('chip').src"/>
             </div>
             <div class="betValue">
                 <div class="betValueText" :style="{visibility: betValue === 0 ? 'hidden' : 'visible'}">{{ betValue }}</div>
             </div>
             <div class="dealerIcon" :style="{visibility: dealerStatus ? 'visible' : 'hidden'}">
-                <img src="../../images/dealer_icon.png" />
+                <img :src="require('../../images/ImageFiles').getImage('dealer_icon').src"/>
             </div>
         </div>
         <div v-if="occupied" v-bind:class= classes.youTag :style="{visibility: youTag ? 'visible' : 'hidden'}">

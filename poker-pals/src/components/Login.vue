@@ -12,7 +12,7 @@
       <div class="row align-items-center">
         <!--  Poker Pals Logo  -->
         <div class="col-md-6 offset-md-0 col-6 offset-3 ">
-          <img alt="Poker Pals logo" src="../assets/logo.jpg">
+          <img alt="Poker Pals logo" :src="require('../images/ImageFiles').getImage('logo_card').src">
         </div>
 
         <div class="col-md-6">

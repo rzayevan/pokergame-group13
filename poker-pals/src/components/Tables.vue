@@ -14,7 +14,7 @@
                 <p>{{room.bigBlind}}</p>
             </div> 
             <div class = "chips-pic">
-              <img alt="Chip picture" src="../images/chip.png">
+              <img alt="Chip picture" :src="require('../images/ImageFiles').getImage('chip').src">
             </div> 
         </div> 
         <!-- Display table's name and seat availability --> 
