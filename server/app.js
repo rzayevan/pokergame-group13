@@ -58,6 +58,12 @@ io.on('connection', (socket) => {
         pokerController.disconnectFromTable(io, socket);
     });
 
+    // Attempt to submit the report and return the result of the attempt
+    socket.on('submit report', function(reportData) {
+        let submitReportSuccess = ReportUtils.submitReport(reportData);
+        socket.emit("submitReportResponse", submitReportSuccess);
+    })
+
     socket.on('request reports', function() {
         reportController.retrieveReports(this, false);
     });
@@ -87,7 +93,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('userSentMessage', function(msg) {
-        let sender = UserUtils.getUser(msg.userID);
+        let sender = UserUtils.getUserById(msg.userID);
 
         let messageObject = {
             id: uuid(),
