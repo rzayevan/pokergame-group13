@@ -113,9 +113,8 @@
         this.$router.push({ name: "Reports", params: {authenticated: true, socket: this.socket, userID: userID}});
       });
 
-      this.socket.on("banned", userID => {
-        alert('account banned: ' + userID); // TODO: add Banned to routes
-        //this.$router.push({ name: "Banned", params: {authenticated: true, socket: this.socket, userID: userID}});
+      this.socket.on("banned", () => {
+        this.$router.push({ name: "Banned", params: {authenticated: true}});
       });
 
       // display error message sent from server

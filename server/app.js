@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
         let result = UserUtils.credentialsMatch(user);
         if (result.matchFound) {
             if(result.banned){
-                socket.emit("banned", result.userID); // the still need thier user id in order to request an account review
+                socket.emit("banned"); // the still need thier user id in order to request an account review
             } else if(result.admin){
                 socket.emit("authenticatedAdmin", result.userID);
             } else {
