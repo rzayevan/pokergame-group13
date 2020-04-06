@@ -1,9 +1,9 @@
 <template>
     <div class="clock" :style="{visibility: timer ? 'visible' : 'hidden'}"> <!--when visible an animation starts representing the time the player has left to act-->
-        <img src="../../images/clock.png"/>
+        <img :src="require('../../images/ImageFiles').getImage('clock').src"/>
         <div class="clock_pointer">
             <transition name="rotate"> <!--animation for clock needle-->
-                <img v-if="timer" src="../../images/clock_pointer.png"/>
+                <img v-if="timer" :src="require('../../images/ImageFiles').getImage('clock_pointer').src"/>
             </transition>
         </div>
     </div>

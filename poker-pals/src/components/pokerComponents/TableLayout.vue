@@ -1,11 +1,11 @@
 <template>
     <div class="tableLayout"> <!--the container holding the entire table view-->
         <div class="buttonExitTable" v-on:click='$parent.exitTable()'> <!-- the exit table button-->
-            <img src="../../images/exit_symbol.png"/>
+            <img :src="require('../../images/ImageFiles').getImage('exit_symbol').src"/>
         </div>
         <div class="tableObjects"> <!--a container to hold the table and players, keeps everything centered-->
             <div class="tableImage"> <!--the green capsule shaped table image-->
-                <img src="../../images/table.png"/>
+                <img :src="require('../../images/ImageFiles').getImage('table').src"/>
             </div>
             <div class="tableItems"> <!--a container to hold the pot count and community cards-->
                 <div class="potContainer">
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="tableDeck"> <!--image showing the deck of cards, for visuals only-->
-                    <img src="../../images/cards/card_back.png"/>
+                    <img :src="require('../../images/ImageFiles').getImage('card_back').src"/>
                 </div>
             </div>
             <div class="players"> <!--the container holding the six players at the table, each player receives a collection of props to be displayed-->
