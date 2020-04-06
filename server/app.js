@@ -47,7 +47,13 @@ io.on('connection', (socket) => {
         // authenticate the user if the credentials provided exist in the stored data
         let result = UserUtils.credentialsMatch(user);
         if (result.matchFound) {
-            socket.emit("authenticated", result.userID);
+            if(result.banned){
+                socket.emit("banned", result.userID); // the still need thier user id in order to request an account review
+            } else if(result.admin){
+                socket.emit("authenticatedAdmin", result.userID);
+            } else {
+                socket.emit("authenticatedUser", result.userID); 
+            }
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");
         }

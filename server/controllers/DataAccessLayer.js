@@ -54,6 +54,7 @@ exports.ReadUsersFile = function() {
         user.handsLost = user.handsPlayed - user.handsWon;
         user.lastUpdatedDate = new Date(splitLine[9]);
         user.createdDate = new Date(splitLine[10]);
+        user.banned = (splitLine[11] === 'true');
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -70,8 +71,8 @@ exports.AddUserToFile = function(user) {
     let userString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
                      user.username + "," + user.password + "," + 
                      user.email + "," + user.chips + "," + user.icon + "," +
-                     user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," 
-                     + user.createdDate.toISOString() + ",\n";
+                     user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," +
+                     user.createdDate.toISOString() + "," + user.banned + ",\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
     // Add the User to the cache
@@ -98,8 +99,8 @@ exports.UpdateUser = function(user) {
     let newUserString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
                         user.username + "," + user.password + "," + 
                         user.email + "," + user.chips + "," + user.icon + "," +
-                        user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," 
-                        + user.createdDate.toISOString() + ",";
+                        user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," +
+                        user.createdDate.toISOString() + "," + user.banned + ",";
 
     // Create a regexp to find the correct contents to change
     const regex = new RegExp(originalUserStringRegex, "g");
