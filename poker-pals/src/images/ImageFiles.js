@@ -14,7 +14,6 @@ module.exports =  {
         {src: require(`./other/exit_symbol.png`), name: 'exit_symbol'},
         {src: require(`./other/logo_card.png`), name: 'logo_card'},
         {src: require(`./other/logo_word.png`), name: 'logo_word'},
-        {src: require(`./other/not_found.png`), name: 'not_found'},
         {src: require(`./other/table.png`), name: 'table'},
 
         {src: require(`./icons/camel.png`), name: 'player_icon_1'},
