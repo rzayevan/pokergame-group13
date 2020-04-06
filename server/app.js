@@ -100,15 +100,15 @@ io.on('connection', (socket) => {
 
     socket.on('userSentMessage', function(msg) {
         let sender = UserUtils.getUserById(msg.userID);
-
-        let messageObject = {
-            id: uuid(),
-            senderID: msg.userID,
-            name: sender.username,
-            message: msg.message
-        };
-
-        // Send userReceivedMessage event to all users within table
-        io.to(msg.roomID).emit("messageSentSuccessful", messageObject);
+        if(sender !== undefined){
+            let messageObject = {
+                id: uuid(),
+                senderID: msg.userID,
+                name: sender.username,
+                message: msg.message
+            };
+            // Send userReceivedMessage event to all users within table
+            io.to(msg.roomID).emit("messageSentSuccessful", messageObject);
+        }
     });
 });
