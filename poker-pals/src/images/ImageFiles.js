@@ -1,13 +1,7 @@
 module.exports =  {
 
     getImage(name){
-        let image = this.imageFiles.find(image => image.name === name);
-        if(image === undefined){
-            return this.imageFiles.find(image => image.name === 'not_found');
-        }
-        else{
-            return image;
-        }
+        return this.imageFiles.find(image => image.name === name);
     },
 
     imageFiles: [ // each image resource is loaded into an array and elements can request them by either index or name
