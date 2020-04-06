@@ -82,7 +82,7 @@ export default {
             report_OffenderName: '',
             report_OffenderMessageId: '',
             // the image resource files for the card images
-            imageFiles: require("../images/ImageFiles").imageFiles,
+            imageFiles: require("./pokerComponents/ImageFiles").imageFiles,
 
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
