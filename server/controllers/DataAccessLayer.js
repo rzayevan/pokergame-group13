@@ -196,11 +196,20 @@ exports.AddReportToFile = function(report) {
                      report.submittingUserId + "|||" + report.reportType + "|||" + 
                      report.reportComment + "|||" + report.dateSubmitted.toISOString() + "|||" + 
                      newLastUpdatedDate.toISOString() + "|||" + report.status + "|||" + chatLogString + "|||\n";
-    // Append the string to the text file
-    fs.appendFileSync('data/Reports.txt', reportString);
 
-    // Add the report to the cache
-    cachedReports.push(report);
+    try {
+        // Append the string to the text file
+        fs.appendFileSync('data/Reports.txt', reportString);
+        // Add the report to the cache
+        cachedReports.push(report);
+        
+        return true;
+    }
+    catch (error) {
+        return false;
+    }
+
+ 
 }
 
 /**

@@ -34,11 +34,21 @@ exports.emailExists = function(user) {
     return emailExists;
 }
 
-exports.getUser = function(id) {
+exports.getUserById = function(id) {
     let users = DataAccessLayer.GetCachedUsers();
 
-    var matchingUser = users.find(user => {
+    let matchingUser = users.find(user => {
         return user.id === id;
+    });
+
+    return matchingUser;
+}
+
+exports.getUserByUsername = function(username) {
+    let users = DataAccessLayer.GetCachedUsers();
+
+    let matchingUser = users.find(user => {
+        return user.username === username;
     });
 
     return matchingUser;

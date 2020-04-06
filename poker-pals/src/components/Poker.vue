@@ -19,6 +19,8 @@
         <ReportPocket v-if="!chatFull"
               v-bind:report_OffenderName="report_OffenderName"
               v-bind:report_OffenderMessageId="report_OffenderMessageId"
+              v-bind:showForm="showForm"
+              v-bind:submittedSuccessfully="submittedSuccessfully"
         /> <!--the report box that shows up upon a player requesting to report another player, takes half of the space alotted to the chat-->
     </div>
 </template>
@@ -83,8 +85,9 @@ export default {
             report_OffenderMessageId: '',
             // the image resource files for the card images
             imageFiles: require("./pokerComponents/ImageFiles").imageFiles,
-
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
+            submittedSuccessfully: false,
+            showForm: true,
             cheatSheetOpen: true, // toggle to diplay cheat sheet or not
             cardReveal: false, // set to false until the show down, the players will show their cards
             potTotal: 0,
@@ -187,6 +190,14 @@ export default {
                 }
                 this.setPlayerCardsVisibility(false); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)
             });
+
+            // Listen for the server's response to a report submission
+            // Depending on the response, display a success or failure message
+            this.socket.on('submitReportResponse', response => {
+                this.showForm = false;
+                this.submittedSuccessfully = response;
+            });
+
             // end of socket.on functions
             // asign the standard card_back image to each of player cards inititally
             // later the server will send the true cards at the show down
@@ -232,13 +243,18 @@ export default {
             this.cardReveal = visible;
         },
         submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
-            // TODO: pass this off to the server
-            // later add to reportPocket an indication the message was sent
-            alert(JSON.stringify(selected) + " " + JSON.stringify(message) + " " + JSON.stringify(report_OffenderName) + " " + JSON.stringify(report_OffenderMessageId));
-            this.chatFull = true;
+            let reportData = {
+                reportType: selected,
+                reportComment: message,
+                offenderUsername: report_OffenderName,
+                chatMessageId: report_OffenderMessageId
+            };
+
+            this.socket.emit("submit report", reportData);
         },
-        cancelReport(){
+        closeReport() {
             this.chatFull = true;
+            this.showForm = true;
         },
         openReport(name, messageId){
             // called by child
