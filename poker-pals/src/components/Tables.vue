@@ -34,7 +34,6 @@
 </template>
 
 <script>
-//import io from "socket.io-client";
 import UserNavbar from "./navbars/UserNavbar";
 
 export default {
