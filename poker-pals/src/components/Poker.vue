@@ -84,7 +84,7 @@ export default {
             report_OffenderName: '',
             report_OffenderMessageId: '',
             // the image resource files for the card images
-            imageFiles: require("./pokerComponents/ImageFiles").imageFiles,
+            imageFiles: require("../images/ImageFiles").imageFiles,
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             submittedSuccessfully: false,
             showForm: true,
