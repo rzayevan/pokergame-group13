@@ -4,7 +4,7 @@ let PokerTable = require("../model/PokerTable.js");
 const DataAccessLayer = require('../controllers/DataAccessLayer.js');
 
 class PokerController {
-    constructor(numberOfEachRoom) {
+    constructor(numberOfEachRoom, io) {
         this.pokerTableStats = PokerUtils.GetPokerTableStats();
         this.numberOfEachRoom = numberOfEachRoom;
         this.rooms = [];
@@ -94,6 +94,7 @@ class PokerController {
                 bigBlind: result.bigBlind,
             });
             io.to(roomToJoin.id).emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the updated table state in this room
+            io.emit("receiveRoomList", this.getRoomList()); // update the room list
             if(table.canAGameBegin() && !table.tableActive){ // check if we can begin a game
                 table.tableActive = true; // the table is now active
                 this.beginTheGame(io, roomToJoin);
@@ -209,6 +210,7 @@ class PokerController {
         socket.leave(room.id);
         socket.emit('leaveRoom');
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
+        io.emit("receiveRoomList", this.getRoomList()); // update the room list
         if(result.newTimeout){table.receiveTimeout(self.createDecisionTimeout(io, room, self));}
         if(table.assistant.showdown && !alreadyInShowdown){// after each move we need to check if the table is ready for a showdown
             this.timeForShowdown(io, room, self);
@@ -297,6 +299,7 @@ class PokerController {
         table.reset(); // reset the table for a new game
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
         io.to(room.id).emit('reset');
+        io.emit("receiveRoomList", this.getRoomList()); // update the room list
         if(table.canAGameBegin()){
             self.beginTheGame(io, room);
         }
