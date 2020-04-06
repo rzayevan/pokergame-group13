@@ -4,7 +4,7 @@ let PokerTable = require("../model/PokerTable.js");
 const DataAccessLayer = require('../controllers/DataAccessLayer.js');
 
 class PokerController {
-    constructor(numberOfEachRoom, io) {
+    constructor(numberOfEachRoom) {
         this.pokerTableStats = PokerUtils.GetPokerTableStats();
         this.numberOfEachRoom = numberOfEachRoom;
         this.rooms = [];

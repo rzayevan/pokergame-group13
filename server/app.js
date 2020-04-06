@@ -20,7 +20,7 @@ http.listen(3000, () => {
     // Declare the amount of each room type to create
     // TODO: Make this dynamic
     let numberOfEachRoom = 2;
-    pokerController = new PokerController(numberOfEachRoom, io);
+    pokerController = new PokerController(numberOfEachRoom);
 
     reportController = new ReportController();
 

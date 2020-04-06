@@ -291,7 +291,7 @@ export default {
     components: {
         Clock,
     },
-    props: [
+    props: [ // 'active' was an old prop that got left in by accident
         'occupied', 'classes', 'dealerStatus', 'cards', 'cardReveal', 'betValue', 'accountName',
         'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'timerReset'
     ],

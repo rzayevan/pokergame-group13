@@ -43,12 +43,8 @@ export default {
         UserNavbar
     },
     props: ['authenticated', 'socket', 'userID'],
-    created() {
-        //this.socket = io("http://localhost:3000");
-    },
     data() {
         return {
-            //socket: {},
             rooms: [],
         };
     },
