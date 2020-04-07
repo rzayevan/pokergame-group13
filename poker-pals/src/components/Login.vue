@@ -105,16 +105,16 @@
 
       // Navigate to tables page if authentication was successful
       this.socket.on("authenticatedUser", userID => {
-        this.$router.push({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: userID}});
+        this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: userID}});
       });
 
       // Navigate to reports page if authentication was successful
       this.socket.on("authenticatedAdmin", userID => {
-        this.$router.push({ name: "Reports", params: {authenticated: true, socket: this.socket, userID: userID}});
+        this.$router.replace({ name: "Reports", params: {authenticated: true, socket: this.socket, userID: userID}});
       });
 
       this.socket.on("banned", () => {
-        this.$router.push({ name: "Banned", params: {authenticated: true}});
+        this.$router.replace({ name: "Banned", params: {authenticated: true}});
       });
 
       // display error message sent from server

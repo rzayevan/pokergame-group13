@@ -208,7 +208,7 @@ class PokerController {
         let result = table.bootPlayer(user.id, io, room); // boot the player and return any chips they had (not including pot)
         user.chips += result.chips;
         DataAccessLayer.UpdateUser(user);
-        //socket.emit("acountChips", user.chips);
+        socket.emit("acountChips", user.chips);
         socket.leave(room.id);
         socket.emit('leaveRoom');
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));

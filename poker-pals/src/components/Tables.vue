@@ -45,15 +45,19 @@ export default {
     data() {
         return {
             rooms: [],
-            chips: 0,
         };
     },
     mounted() {
-        console.log('hello again');
         if(!this.authenticated){
             this.$router.replace({ name: "Login" }); // send client back to login page
         }
         else {
+            // when navigating to this component several times we need to clear the listeners
+            this.socket.removeListener("receiveRoomList");
+            this.socket.removeListener("dailyBonus");
+            this.socket.removeListener("acountChips");
+            this.socket.removeListener('joinRoom');
+
             this.socket.emit('serveRoomList'); // send request for the list of rooms
 
             //Receive the current rooms available and store into rooms array 
@@ -75,12 +79,11 @@ export default {
 
             this.socket.on("acountChips", chips => {
                 // TODO: update navbar's chip count
-                //console.log('your chips: ' + chips);
-                this.chips = chips;
+                console.log('your chips: ' + chips);
             });
 
             this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
-                this.$router.push({ name: 'Poker', params: {
+                this.$router.replace({ name: 'Poker', params: {
                     authenticated: true,
                     socket: this.socket,
                     userID: this.userID,

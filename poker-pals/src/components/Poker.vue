@@ -111,6 +111,15 @@ export default {
             this.$router.replace({ name: "Login" });
         }
         else{
+            // when navigating to this component several times we need to clear the listeners
+            this.socket.removeListener("tableState");
+            this.socket.removeListener("leaveRoom");
+            this.socket.removeListener("beginTheGame");
+            this.socket.removeListener('showdown');
+            this.socket.removeListener("winner");
+            this.socket.removeListener('badMove');
+            this.socket.removeListener("reset");
+            this.socket.removeListener("submitReportResponse");
             // define all of the socket.on methods here
             this.socket.on('tableState', msgJSON => { // on a state update the UI is updated with all relavent info that can change, this simplifies socket calls by not having a unique socket call for each type of element update
                 let msg = JSON.parse(msgJSON);
@@ -153,15 +162,13 @@ export default {
                     player.youTag = false;
                     player.timer = false;
                 }
-                this.$router.push({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
             });
-
             this.socket.on('beginTheGame', msgJSON => { // each player receives their two personal cards upon the game starting
                 let msg = JSON.parse(msgJSON);
                 this.myCards[0].src = this.imageFiles.getImage(msg[0]).src;
                 this.myCards[1].src = this.imageFiles.getImage(msg[1]).src;
             });
-
             this.socket.on('showdown', msgJSON => { // the showdown has begun, now all player cards are being shown
                 let msg = JSON.parse(msgJSON);
                 for(let i = 0; i < this.players.length; i++){
@@ -172,15 +179,12 @@ export default {
                 }
                 this.setPlayerCardsVisibility(true); // TODO: move this to a separate socket call, it only needs to execute once
             });
-
             this.socket.on('winner', () => { // later add some animation to indicate that they won
                 // TODO: winner animation goes here
             });
-
             this.socket.on('badMove', () => { // later add some animation to indicate that they won
                 alert('bad move');
             });
-
             this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
                 // each player will reset the ui for a new game
                 this.myCards = [{src: this.imageFiles.getImage('card_empty').src}, {src: this.imageFiles.getImage('card_empty').src}];
