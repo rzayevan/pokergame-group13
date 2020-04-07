@@ -43,10 +43,7 @@
 
   export default {
   name: "report-grid",
-  props: {
-    data: Array,
-    columns: Array,
-  },
+  props: ['authenticated', 'userID'],
   components: {
       ReportModal,
       AdminNavbar
@@ -54,6 +51,8 @@
   data(){
     // Empty report data to pass to ReportModal. Updated when a row is clicked  
     return {
+      data: Array,
+      columns: Array,
       searchQuery: '',
       sortKey: '',
       sortOrders: {},
@@ -67,6 +66,11 @@
         chatLogs: [],
         isReviewed: false
       }
+    }
+  },
+  mounted() {
+    if (!this.authenticated) {
+      this.$router.replace({ name: "Login" }); // send client back to login page
     }
   },
   computed: {
