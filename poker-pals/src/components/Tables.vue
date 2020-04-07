@@ -93,6 +93,10 @@ export default {
                     bigBlind: msg.bigBlind,
                 }});
             });
+
+            this.socket.on('cannotJoinRoom', response => {
+                alert('cannot join room, reason: ' + response.reason);
+            });
         }
     },
     methods: {
