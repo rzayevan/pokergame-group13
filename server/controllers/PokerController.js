@@ -85,6 +85,7 @@ class PokerController {
         if(this.canUserJoinRoom(roomToJoin, profile)){// the user can join the table
             profile.chips -= table.buyIn; // user pays the buy in
             DataAccessLayer.UpdateUser(profile); // we took the buy in from their account, update it
+            socket.emit("acountChips", profile.chips);
             let result = table.addPlayerToTable(profile, socket.id); // the table will fill a seat based on the profile and send back the seat id
             socket.join(roomToJoin.id); // now this client will receive messages from the tableName room
             socket.emit('joinRoom', {
@@ -207,6 +208,7 @@ class PokerController {
         let result = table.bootPlayer(user.id, io, room); // boot the player and return any chips they had (not including pot)
         user.chips += result.chips;
         DataAccessLayer.UpdateUser(user);
+        //socket.emit("acountChips", user.chips);
         socket.leave(room.id);
         socket.emit('leaveRoom');
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));

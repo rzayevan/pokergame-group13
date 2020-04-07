@@ -45,9 +45,11 @@ export default {
     data() {
         return {
             rooms: [],
+            chips: 0,
         };
     },
     mounted() {
+        console.log('hello again');
         if(!this.authenticated){
             this.$router.replace({ name: "Login" }); // send client back to login page
         }
@@ -57,6 +59,24 @@ export default {
             //Receive the current rooms available and store into rooms array 
             this.socket.on("receiveRoomList", rooms => {
                 this.rooms = rooms;
+            });
+
+            this.socket.on("dailyBonus", dailyBonusObject => {
+                console.log('thanks for logging in, your bonus for today is: ' + dailyBonusObject.dailyBonus);
+                // TODO: update navbar's chip count
+                // first update with account chips, then upon popup exit, update with dailybonus added
+                /*  daily bonus object is of the format
+                    dailyBonusObject = {
+                        accountChips: user.chips,
+                        dailyBonus: UserUtils.getDailyBonusValue(),
+                    }
+                */
+            });
+
+            this.socket.on("acountChips", chips => {
+                // TODO: update navbar's chip count
+                //console.log('your chips: ' + chips);
+                this.chips = chips;
             });
 
             this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at

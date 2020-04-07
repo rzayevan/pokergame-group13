@@ -1,5 +1,6 @@
 const DataAccessLayer = require('../controllers/DataAccessLayer.js');
 const NUMBER_OF_ICONS = 16;
+const DAILY_BONUS_VALUE = 100;
 
 /**
  * Checks if the provided credentials match the ones stored in the application
@@ -65,4 +66,8 @@ exports.createUserIcon = function(number) {
     else{
         return 'player_icon_' + Math.floor(Math.random()*NUMBER_OF_ICONS+1).toString();
     }
+}
+
+exports.getDailyBonusValue = function() {
+    return DAILY_BONUS_VALUE;
 }
