@@ -11,19 +11,19 @@ class PokerController {
         this.pokerTableTimeout = PokerUtils.GetPokerTableTimeout();
 
         for (let i = 0; i < this.pokerTableStats.length; i++) { // for each type of table we create a few
-            for(let j = 0; j < this.numberOfEachRoom; j++) { // right now two of each table is created
+            for (let j = 0; j < this.numberOfEachRoom; j++) { // right now two of each table is created
                 let room = {
                     id: uuid(),
                     table: new PokerTable(this.pokerTableStats[i], i + 1),
                 }
-                this.rooms[i*this.numberOfEachRoom + j] = room;
+                this.rooms[i * this.numberOfEachRoom + j] = room;
             }
         }
     }
 
-    getRoomList(){ // returns an object containing vita info on the tables
+    getRoomList() { // returns an object containing vital info on the tables
         let list = [];
-        for(let i = 0; i < this.rooms.length; i++){
+        for (let i = 0; i < this.rooms.length; i++) {
             let room = this.rooms[i];
             list.push({
                 roomID: room.id,
@@ -37,12 +37,12 @@ class PokerController {
         return list;
     }
 
-    disconnectFromTable(io, socket){
-        for(let i = 0; i < this.rooms.length; i++){
+    disconnectFromTable(io, socket) {
+        for (let i = 0; i < this.rooms.length; i++) {
             let room = this.rooms[i];
-            for(let j = 0; j < room.table.tableSeats.length; j++){
+            for (let j = 0; j < room.table.tableSeats.length; j++) {
                 let seat = room.table.tableSeats[j];
-                if(seat.socketID === socket.id){
+                if (seat.socketID === socket.id) {
                     let msg = {
                         userID: seat.userID,
                         roomID: room.id,
@@ -63,7 +63,7 @@ class PokerController {
      */
     canUserJoinRoom(roomToJoin, profile) { // check if the user is permitted to join the table
         let table = roomToJoin.table;
-        if(roomToJoin === undefined || table.isTableFull() || table.isPlayerAtTable(profile) || profile.chips < table.buyIn){
+        if (roomToJoin === undefined || table.isTableFull() || table.isPlayerAtTable(profile) || profile.chips < table.buyIn) {
             return false; // the user cannot join this table/room
         }
 
@@ -78,11 +78,11 @@ class PokerController {
      */
     joinRoom(io, socket, msg) { // request sent from client that they want to join the table
         let profile = DataAccessLayer.ReadUsersFile().find(profile => profile.id === msg.userID); // get their profile
-        if(profile === undefined){ return; };
+        if (profile === undefined) { return; };
         let roomToJoin = this.rooms.find(room => room.id === msg.roomID);
-        if(roomToJoin === undefined){ return; }
+        if (roomToJoin === undefined) { return; }
         let table = roomToJoin.table;
-        if(this.canUserJoinRoom(roomToJoin, profile)){// the user can join the table
+        if (this.canUserJoinRoom(roomToJoin, profile)) { // the user can join the table
             profile.chips -= table.buyIn; // user pays the buy in
             DataAccessLayer.UpdateUser(profile); // we took the buy in from their account, update it
             let result = table.addPlayerToTable(profile, socket.id); // the table will fill a seat based on the profile and send back the seat id
@@ -94,23 +94,23 @@ class PokerController {
                 bigBlind: result.bigBlind,
             });
             io.to(roomToJoin.id).emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the updated table state in this room
-            if(table.canAGameBegin() && !table.tableActive){ // check if we can begin a game
+            if (table.canAGameBegin() && !table.tableActive) { // check if we can begin a game
                 table.tableActive = true; // the table is now active
                 this.beginTheGame(io, roomToJoin);
             }
         }
     }
 
-    createDecisionTimeout(io, room, self){ // if after the timeout the next player does not response they are auto folded
-        return setTimeout(function(){ self.turnDecisionTimeOut(io, room) }, PokerUtils.GetPokerTableTimeout());
+    createDecisionTimeout(io, room, self) { // if after the timeout the next player does not response they are auto folded
+        return setTimeout(function() { self.turnDecisionTimeOut(io, room) }, PokerUtils.GetPokerTableTimeout());
     }
 
-    turnDecisionTimeOut(io, room){
+    turnDecisionTimeOut(io, room) {
         let table = room.table;
         let self = this;
         table.playerAction('FOLD', -1); // will assess the action, we don't need to assess response
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
-        if(table.assistant.showdown) {// after each move we need to check if the table is ready for a showdown
+        if (table.assistant.showdown) { // after each move we need to check if the table is ready for a showdown
             this.timeForShowdown(io, room, self);
         } else {
             table.receiveTimeout(self.createDecisionTimeout(io, room, self)); // send the table the timeout object to reset, if player responds within time limit
@@ -126,19 +126,18 @@ class PokerController {
         let self = this;
         let table = room.table;
         setTimeout(function() { // in five seconds the game will begin
-            if(table.canAGameBegin()){ // we check this again to make sure no one tried to leave in the 5 second window
+            if (table.canAGameBegin()) { // we check this again to make sure no one tried to leave in the 5 second window
                 table.beginTheGame(); // the game is set up
                 io.to(room.id).emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the new table state
-                for(let i = 0; i < table.tableSeats.length; i++){
+                for (let i = 0; i < table.tableSeats.length; i++) {
                     let seat = table.tableSeats[i];
-                    if(seat.socketID !== -1){
+                    if (seat.socketID !== -1) {
                         io.to(`${seat.socketID}`).emit('beginTheGame', JSON.stringify(seat.cards));
                     }
                 }
                 // now the player whos the current turn can send us a decision
                 table.receiveTimeout(self.createDecisionTimeout(io, room, self)); // send the table the timeout object to reset, if player responds within time limit    
-            }
-            else{
+            } else {
                 table.tableActive = false; // the table is now in active
             }
         }, 5000);
@@ -152,15 +151,15 @@ class PokerController {
      */
     turnDecision(io, socket, msg) {
         let room = this.rooms.find(room => room.id === msg.roomID);
-        if(room === undefined){ return; }
+        if (room === undefined) { return; }
         let table = room.table;
         let self = this;
-        if(table.isItTheirTurn(msg.userID, msg.seatID, socket.id)) {
+        if (table.isItTheirTurn(msg.userID, msg.seatID, socket.id)) {
             // there is a limited number of actions a player can take based on their current state
             // ask if they can make that move, if not then do nothing, later also disable buttons based on lack of options 
-            if(table.playerAction(msg.action, msg.raiseToValue)) { // will assess the action and return a response true or false
+            if (table.playerAction(msg.action, msg.raiseToValue)) { // will assess the action and return a response true or false
                 io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
-                if(table.assistant.showdown) {// after each move we need to check if the table is ready for a showdown
+                if (table.assistant.showdown) { // after each move we need to check if the table is ready for a showdown
                     this.timeForShowdown(io, room, self);
                 } else {
                     table.receiveTimeout(self.createDecisionTimeout(io, room, self)); // send the table the timeout object to reset, if player responds within time limit
@@ -177,9 +176,9 @@ class PokerController {
      * @param {Object} room The room of the table
      * @param {Object} self self reference
      */
-    timeForShowdown(io, room, self){
+    timeForShowdown(io, room, self) {
         let table = room.table;
-        if(table.assistant.showDownWithCardReveal){
+        if (table.assistant.showDownWithCardReveal) {
             this.beginShowingTheRemainingCommunityCards(io, room);
         } else { // only one person remains no card reveal required
             setTimeout(function() { // show the winner
@@ -198,7 +197,7 @@ class PokerController {
     exitRoomRequest(io, socket, msg) {
         let self = this;
         let room = this.rooms.find(room => room.id === msg.roomID);
-        if(room === undefined){ return; }
+        if (room === undefined) { return; }
         let table = room.table;
         let user = DataAccessLayer.ReadUsersFile().find(user => user.id === msg.userID);
         let alreadyInShowdown = table.assistant.showdown; // if a showdown is occuring at this stage then we don't need to call another showdown
@@ -208,8 +207,8 @@ class PokerController {
         socket.leave(room.id);
         socket.emit('leaveRoom');
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
-        if(result.newTimeout){table.receiveTimeout(self.createDecisionTimeout(io, room, self));}
-        if(table.assistant.showdown && !alreadyInShowdown){// after each move we need to check if the table is ready for a showdown
+        if (result.newTimeout) { table.receiveTimeout(self.createDecisionTimeout(io, room, self)); }
+        if (table.assistant.showdown && !alreadyInShowdown) { // after each move we need to check if the table is ready for a showdown
             this.timeForShowdown(io, room, self);
         }
     }
@@ -219,16 +218,16 @@ class PokerController {
      * @param {Object} io The io of the system
      * @param {Object} room The room the table being assessed is in
      */
-    beginShowingTheRemainingCommunityCards(io, room) { 
+    beginShowingTheRemainingCommunityCards(io, room) {
         let table = room.table;
         let count = table.assistant.getNumberOfCommunityCardsLeftToReveal();
         var self = this;
+
         function showCommunityCard() { // each time this runs a single community card revealed
-            if(count < 1){ // we are done showing community cards now show player cards
+            if (count < 1) { // we are done showing community cards now show player cards
                 clearInterval(timeout);
                 self.beginFlippingOverEachPlayersCards(io, room); // now begin showing player cards
-            }
-            else{
+            } else {
                 table.showOneMoreCommunityCard();
             }
             count--;
@@ -247,16 +246,16 @@ class PokerController {
         let count = table.assistant.getNumberOfPlayersStillInPlay();
         let self = this;
         io.to(room.id).emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
-        function flipNextPlayerCards(){ // each player one at a time will either show or 'throw away' their cards depending on if they have a higher hand
-            if(count < 1) {
+
+        function flipNextPlayerCards() { // each player one at a time will either show or 'throw away' their cards depending on if they have a higher hand
+            if (count < 1) {
                 clearInterval(timeout);
                 setTimeout(function() { // all players have show or thrown their cards, now show the winner(s)
                     self.showWinners(io, room);
                     setTimeout(function() { self.calculateAndDistributeChips(io, room); }, 1000); // calculate the chip distribution
                 }, 1000);
-            }
-            else{
-                table.showNextPlayerCards(); 
+            } else {
+                table.showNextPlayerCards();
             }
             count--;
             io.to(room.id).emit('showdown', JSON.stringify(table.getShowdownCardRevealState()));
@@ -264,9 +263,9 @@ class PokerController {
         let timeout = setInterval(flipNextPlayerCards, 2000);
     }
 
-    showWinners(io, room){
+    showWinners(io, room) {
         let winners = room.table.getWinnerSocketIDs();
-        for(let i = 0; i < winners.length; i++){
+        for (let i = 0; i < winners.length; i++) {
             io.to(`${winners[i]}`).emit('winner');
         }
     }
@@ -283,7 +282,7 @@ class PokerController {
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
         setTimeout(function() { self.bootPlayers(io, room); }, 2000); // remove any players that lost all their chips
     }
-    
+
     /**
      * Any players that have lost all their chips are removed from the table
      * @param {Object} io The io of the system
@@ -296,10 +295,9 @@ class PokerController {
         table.reset(); // reset the table for a new game
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
         io.to(room.id).emit('reset');
-        if(table.canAGameBegin()){
+        if (table.canAGameBegin()) {
             self.beginTheGame(io, room);
-        }
-        else{
+        } else {
             table.tableActive = false;
         }
     }

@@ -19,7 +19,7 @@ http.listen(3000, () => {
 
     // Declare the amount of each room type to create
     // TODO: Make this dynamic
-    let numberOfEachRoom = 2;
+    let numberOfEachRoom = 1;
     pokerController = new PokerController(numberOfEachRoom);
 
     reportController = new ReportController();
@@ -28,7 +28,7 @@ http.listen(3000, () => {
 });
 
 io.on('connection', (socket) => {
-    console.log("Client connected.");          
+    console.log("Client connected.");
     socket.emit("connected", "Hello from server");
 
     socket.on('add-new-user', function(user) {
@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('disconnect', function () {
+    socket.on('disconnect', function() {
         console.log('disconnected');
         pokerController.disconnectFromTable(io, socket);
     });
@@ -76,19 +76,19 @@ io.on('connection', (socket) => {
     socket.on('serveRoomList', function() {
         socket.emit("receiveRoomList", pokerController.getRoomList());
     });
-    
+
     // start of added code to talk with poker.vue
     // these next two functions are temporary, need to login and join table via login page and tables page
-    socket.on('joinRoomRequest', function(msg){ // a user wishes to join a room/table
+    socket.on('joinRoomRequest', function(msg) { // a user wishes to join a room/table
         pokerController.joinRoom(io, socket, msg);
     });
 
     // each player will send a message upon a game play button click, this will check whether or not it is the player's turn and if the move is valid
-    socket.on('turnDecision', function(msg){
+    socket.on('turnDecision', function(msg) {
         pokerController.turnDecision(io, socket, msg);
     });
 
-    socket.on('exitRoomRequest', function(msg){
+    socket.on('exitRoomRequest', function(msg) {
         pokerController.exitRoomRequest(io, socket, msg);
     });
 

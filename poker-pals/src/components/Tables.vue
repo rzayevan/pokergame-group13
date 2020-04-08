@@ -23,7 +23,6 @@
                 <p> {{room.tableName}}</p>
             </div>
             <div class = "seats" id = "seatsId">
-            <!-- TODO: Update seat availability as seats fill up.--> 
                 <p> {{room.numberOfFullSeats}}/{{room.numberOfTableSeats}}</p>
             </div>
         </div>
@@ -96,6 +95,7 @@ ul {
 
 li {
   display: inline-block; 
+  cursor: pointer;
 }
 
 .table {
