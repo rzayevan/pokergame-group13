@@ -25,6 +25,8 @@ class User {
          this.handsPlayed;
          // The last time this entry was updated
          this.lastUpdatedDate;
+         // The last time this entry was logged in
+         this.lastLoggedInDate;
          // The time this entry was created
          this.createdDate;
          // Wether or not the user is banned
@@ -55,6 +57,8 @@ class User {
         this.handsPlayed = 0;
         // The last time this entry was updated
         this.lastUpdatedDate = new Date();
+        // The last time this entry was logged in
+        this.lastLoggedInDate = new Date();
         // The time this entry was created
         this.createdDate = new Date();
         // Wether or not the user is banned
@@ -66,32 +70,34 @@ class User {
      * @param {User} userToCopy The user that is being copied into this User object
      */
     CopyUser(userToCopy) {
-         // The id of the user
-         this.id = userToCopy.id;
-         // A boolean stating whether the user is an Admin or not
-         this.isAdmin = userToCopy.isAdmin;
-         // The username of the user
-         this.username = userToCopy.username;
-         // The password of the user
-         this.password = userToCopy.password;
-         // The email of the user
-         this.email = userToCopy.email;
-         // The number of chips the user has
-         this.chips = userToCopy.chips;
-         // The image icon name of the user
-         this.icon = userToCopy.icon;
-         // The number of hands the user has won
-         this.handsWon = userToCopy.handsWon;
-         // The number of hands the user has lost
-         this.handsPlayed = userToCopy.handsLost;
-         // The number of hands the user has played
-         this.handsPlayed = userToCopy.handsPlayed;
-         // The last time this entry was updated
-         this.lastUpdatedDate = userToCopy.lastUpdatedDate;
-         // The time this entry was created
-         this.createdDate = userToCopy.createdDate;
-         // Wether or not the user is banned
-         this.banned = false;
+        // The id of the user
+        this.id = userToCopy.id;
+        // A boolean stating whether the user is an Admin or not
+        this.isAdmin = userToCopy.isAdmin;
+        // The username of the user
+        this.username = userToCopy.username;
+        // The password of the user
+        this.password = userToCopy.password;
+        // The email of the user
+        this.email = userToCopy.email;
+        // The number of chips the user has
+        this.chips = userToCopy.chips;
+        // The image icon name of the user
+        this.icon = userToCopy.icon;
+        // The number of hands the user has won
+        this.handsWon = userToCopy.handsWon;
+        // The number of hands the user has lost
+        this.handsPlayed = userToCopy.handsLost;
+        // The number of hands the user has played
+        this.handsPlayed = userToCopy.handsPlayed;
+        // The last time this entry was updated
+        this.lastUpdatedDate = userToCopy.lastUpdatedDate;
+        // The last time this entry was logged in
+        this.lastLoggedInDate;
+        // The time this entry was created
+        this.createdDate = userToCopy.createdDate;
+        // Wether or not the user is banned
+        this.banned = false;
     }
 }
 

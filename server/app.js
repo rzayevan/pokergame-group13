@@ -50,7 +50,17 @@ io.on('connection', (socket) => {
             if(result.banned){
                 socket.emit("banned");
             } else {
-                socket.emit("authenticatedUser", result.userID); 
+                socket.emit("authenticatedUser", result.userID);
+                let loggedInResult = DataAccessLayer.UserLoggedIn(result.userID);
+                // at this moment the user's funds have already been updated we want to send a visual effect
+                // so send back the user's funds - bonus, and the bonus, the user will click and their displayed funds is updated
+                if(loggedInResult.dailyBonus !== 0){
+                    // we want the bonus to show up after the table list has, set a timeout function
+                    setTimeout(function(){ socket.emit("dailyBonus", loggedInResult) }, 1000); // 1 second seems fair
+                }
+                else{
+                    socket.emit("acountChips", loggedInResult.accountChips);
+                }
             }
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");

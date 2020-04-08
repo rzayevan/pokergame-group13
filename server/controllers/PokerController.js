@@ -63,11 +63,17 @@ class PokerController {
      */
     canUserJoinRoom(roomToJoin, profile) { // check if the user is permitted to join the table
         let table = roomToJoin.table;
-        if(roomToJoin === undefined || table.isTableFull() || table.isPlayerAtTable(profile) || profile.chips < table.buyIn){
-            return false; // the user cannot join this table/room
+        if(roomToJoin === undefined){
+            return {allowed: false, reason: 'room is undefined'}
+        } else if(table.isTableFull()){
+            return {allowed: false, reason: 'table is full'}
+        } else if(table.isPlayerAtTable(profile)){
+            return {allowed: false, reason: 'player is already at table'}
+        } else if(profile.chips < table.buyIn){
+            return {allowed: false, reason: 'not enough chips'}
+        } else{
+            return {allowed: true, reason: 'all conditions pass'}
         }
-
-        return true;
     }
 
     /**
@@ -82,9 +88,11 @@ class PokerController {
         let roomToJoin = this.rooms.find(room => room.id === msg.roomID);
         if(roomToJoin === undefined){ return; }
         let table = roomToJoin.table;
-        if(this.canUserJoinRoom(roomToJoin, profile)){// the user can join the table
+        let response = this.canUserJoinRoom(roomToJoin, profile);
+        if(response.allowed){// the user can join the table
             profile.chips -= table.buyIn; // user pays the buy in
             DataAccessLayer.UpdateUser(profile); // we took the buy in from their account, update it
+            socket.emit("acountChips", profile.chips);
             let result = table.addPlayerToTable(profile, socket.id); // the table will fill a seat based on the profile and send back the seat id
             socket.join(roomToJoin.id); // now this client will receive messages from the tableName room
             socket.emit('joinRoom', {
@@ -100,6 +108,10 @@ class PokerController {
                 this.beginTheGame(io, roomToJoin);
             }
         }
+        else{
+            socket.emit('cannotJoinRoom', response);
+        }
+        return response;
     }
 
     createDecisionTimeout(io, room, self){ // if after the timeout the next player does not response they are auto folded
@@ -207,6 +219,7 @@ class PokerController {
         let result = table.bootPlayer(user.id, io, room); // boot the player and return any chips they had (not including pot)
         user.chips += result.chips;
         DataAccessLayer.UpdateUser(user);
+        socket.emit("acountChips", user.chips);
         socket.leave(room.id);
         socket.emit('leaveRoom');
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));

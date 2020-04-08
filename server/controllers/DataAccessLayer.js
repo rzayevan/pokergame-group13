@@ -7,6 +7,8 @@ let Report = require("../model/Report.js");
 let ChatMessage = require("../model/ChatMessage.js");
 let ServerUtils = require("../utilities/ServerUtils.js");
 
+const UserUtils = require('../utilities/UserUtils.js');
+
 let cachedUsers = [];
 let cachedReports = [];
 let cachedMessages = [];
@@ -62,8 +64,9 @@ exports.ReadUsersFile = function() {
         user.handsPlayed = parseInt(splitLine[8]);
         user.handsLost = user.handsPlayed - user.handsWon;
         user.lastUpdatedDate = new Date(splitLine[9]);
-        user.createdDate = new Date(splitLine[10]);
-        user.banned = (splitLine[11] === 'true');
+        user.lastLoggedInDate = new Date(splitLine[10]);
+        user.createdDate = new Date(splitLine[11]);
+        user.banned = (splitLine[12] === 'true');
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -81,6 +84,7 @@ exports.AddUserToFile = function(user) {
                      user.username + "," + user.password + "," + 
                      user.email + "," + user.chips + "," + user.icon + "," +
                      user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," +
+                     user.lastLoggedInDate + ',' +
                      user.createdDate.toISOString() + "," + user.banned + ",\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
@@ -109,6 +113,7 @@ exports.UpdateUser = function(user) {
                         user.username + "," + user.password + "," + 
                         user.email + "," + user.chips + "," + user.icon + "," +
                         user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," +
+                        user.lastLoggedInDate.toISOString() + ',' +
                         user.createdDate.toISOString() + "," + user.banned + ",";
 
     // Create a regexp to find the correct contents to change
@@ -139,6 +144,37 @@ exports.UpdateUser = function(user) {
 }
 
 /**
+ * Returns a daily bonus object if the user is logging in on a new day
+ */
+exports.UserLoggedIn = function(userID){
+    // check if the current day is different from the last logged in date
+    // we check year month and day
+    let user = cachedUsers.find(user => user.id === userID);
+    if(user === undefined){ return null; }
+    let lastDate = user.lastLoggedInDate;
+    let currentDate = new Date();
+    let lastDateYMD = lastDate.getFullYear().toString() + lastDate.getMonth().toString() + lastDate.getDate().toString();
+    let currentDateYMD = currentDate.getFullYear().toString() + currentDate.getMonth().toString() + currentDate.getDate().toString();
+    let result;
+    if(lastDateYMD !== currentDateYMD){ // new day for log in, they get the daily bonus
+        result = {
+            accountChips: user.chips,
+            dailyBonus: UserUtils.getDailyBonusValue(),
+        }
+        user.chips += UserUtils.getDailyBonusValue();
+    }
+    else{
+        result = {
+            accountChips: user.chips,
+            dailyBonus: 0,
+        }
+    }
+    user.lastLoggedInDate = currentDate;
+    this.UpdateUser(user);
+    return result;
+}
+
+/*
  * Adds the supplied ChatMessage object to the cache
  * @param message The ChatMessage object to be added to the cache
  */
