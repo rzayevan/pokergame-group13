@@ -41,15 +41,13 @@
     import io from "socket.io-client";
     export default {
         name: "AdminNavbar.vue",
+        props: ['userData'],
         created() {
             this.socket = io("http://localhost:3000"); // connect to our server
         },
         methods: {
             logOut: function() {
-                this.socket.emit('log out user', {
-                    email: "user@gmail.com",
-                    password: "pass"
-                });
+                this.socket.emit('log out user', this.userData);
             }
         }
     };

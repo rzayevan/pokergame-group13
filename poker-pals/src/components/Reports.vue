@@ -1,6 +1,6 @@
 <template>
   <div id="reports-page">
-    <AdminNavbar class="navbar-section"/>
+    <AdminNavbar :userData=userData class="navbar-section"/>
     <div class="wrapper">
       <ReportModal
         :reportData=reportData
@@ -42,7 +42,7 @@
 
   export default {
   name: "report-grid",
-  props: ['authenticated', 'socket', 'userID'],
+  props: ['authenticated', 'socket', 'userData'],
   components: {
       ReportModal,
       AdminNavbar

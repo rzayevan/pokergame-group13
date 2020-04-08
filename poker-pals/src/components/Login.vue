@@ -112,7 +112,7 @@
         
         // navigate to reports page if the user is an admin
         if(userData.isAdmin) {
-          this.$router.push({ name: "Reports", params: {authenticated: true, socket: this.socket, userID: userData.id}});
+          this.$router.push({ name: "Reports", params: {authenticated: true, socket: this.socket, userData: userData}});
           return;
         }
 
