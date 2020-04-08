@@ -1,10 +1,10 @@
 <template>
     <div class="display">
         <div class="cheatSheetToggle" v-on:click="toggleCheatSheet()"> <!--a toggle to show or hide the cheat sheet-->
-            <img src="../../images/cheat_sheet_icon.png"/>
+            <img :src="require('../../images/ImageFiles').getImage('cheat_sheet_icon').src"/>
         </div>
         <div class="cheatSheet" :style="{visibility: cheatSheetOpen ? 'visible' : 'hidden'}">
-            <img src="../../images/cheatSheet.png"/>
+            <img :src="require('../../images/ImageFiles').getImage('cheat_sheet').src"/>
         </div>
         <div class="playerCards"> <!--container holding the players personal cards-->
             <div class="playerCard" id="playerCard1">

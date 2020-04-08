@@ -12,7 +12,7 @@
       <div class="row align-items-center">
         <!--  Poker Pals Logo  -->
         <div class="col-md-6 offset-md-0 col-6 offset-3 ">
-          <img alt="Poker Pals logo" src="../assets/logo.jpg">
+          <img alt="Poker Pals logo" :src="require('../images/ImageFiles').getImage('logo_card').src">
         </div>
 
         <div class="col-md-6">
@@ -105,6 +105,11 @@
 
       // Navigate to tables page if authentication was successful
       this.socket.on("authenticated", userData => {
+        // if the user is banned, navigate to banned page
+        this.socket.on("banned", () => {
+          this.$router.replace({ name: "Banned", params: {authenticated: true}});
+        });
+        
         // navigate to reports page if the user is an admin
         if(userData.isAdmin) {
           this.$router.push({ name: "Reports", params: {authenticated: true, userID: userData.id}});

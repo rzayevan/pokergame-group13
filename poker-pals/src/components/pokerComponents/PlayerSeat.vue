@@ -5,7 +5,7 @@
                 <div class="action">
                     <div class="actionText">{{ action }}</div>
                 </div>
-                <Clock v-bind:timer="timer"/> <!--the clock timer-->
+                <Clock v-bind:timer="timer" v-bind:timerReset="timerReset"/> <!--the clock timer-->
                 <div class="identification">
                     <div class="accountImage">
                         <img v-bind:src="accountImage.src"/>
@@ -14,7 +14,7 @@
                 </div>
                 <div class="chipCount">
                     <div class="chipImage">
-                        <img src="../../images/chip.png"/>
+                        <img :src="require('../../images/ImageFiles').getImage('chip').src"/>
                     </div>
                     <div class="chipCountValue">{{ chipTotal }}</div>
                 </div>
@@ -22,13 +22,13 @@
         </div>
         <div v-if="occupied" v-bind:class= classes.betBox>
             <div class="betImage" :style="{visibility: betValue === 0 ? 'hidden' : 'visible'}">
-                <img src="../../images/chip.png"/>
+                <img :src="require('../../images/ImageFiles').getImage('chip').src"/>
             </div>
             <div class="betValue">
                 <div class="betValueText" :style="{visibility: betValue === 0 ? 'hidden' : 'visible'}">{{ betValue }}</div>
             </div>
             <div class="dealerIcon" :style="{visibility: dealerStatus ? 'visible' : 'hidden'}">
-                <img src="../../images/dealer_icon.png" />
+                <img :src="require('../../images/ImageFiles').getImage('dealer_icon').src"/>
             </div>
         </div>
         <div v-if="occupied" v-bind:class= classes.youTag :style="{visibility: youTag ? 'visible' : 'hidden'}">
@@ -293,7 +293,7 @@ export default {
     },
     props: [
         'occupied', 'classes', 'dealerStatus', 'cards', 'cardReveal', 'betValue', 'accountName',
-        'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'active'
+        'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'timerReset'
     ],
 }
 </script>

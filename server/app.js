@@ -48,9 +48,25 @@ io.on('connection', (socket) => {
         // authenticate the user if the credentials provided exist in the stored data
         let result = UserUtils.credentialsMatch(user);
         if (result.matchFound) {
-            UserUtils.setUserLogInStatus(user, true);
-            socket.emit("authenticated", result.userData);
-            console.log(user.username + " has logged in.");  
+            if(result.banned){
+                socket.emit("banned");
+            } else {
+                // log the user in and notify the client
+                UserUtils.setUserLogInStatus(user, true);
+                socket.emit("authenticated", result.userData);
+                console.log(user.username + " has logged in.");  
+
+                let loggedInResult = DataAccessLayer.UserLoggedIn(result.userID);
+                // at this moment the user's funds have already been updated we want to send a visual effect
+                // so send back the user's funds - bonus, and the bonus, the user will click and their displayed funds is updated
+                if(loggedInResult.dailyBonus !== 0){
+                    // we want the bonus to show up after the table list has, set a timeout function
+                    setTimeout(function(){ socket.emit("dailyBonus", loggedInResult) }, 1000); // 1 second seems fair
+                }
+                else{
+                    socket.emit("acountChips", loggedInResult.accountChips);
+                }
+            }
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");
         }
@@ -65,6 +81,12 @@ io.on('connection', (socket) => {
         console.log('disconnected');
         pokerController.disconnectFromTable(io, socket);
     });
+
+    // Attempt to submit the report and return the result of the attempt
+    socket.on('submit report', function(reportData) {
+        let submitReportSuccess = ReportUtils.submitReport(reportData);
+        socket.emit("submitReportResponse", submitReportSuccess);
+    })
 
     socket.on('request reports', function() {
         reportController.retrieveReports(this, false);
@@ -95,16 +117,20 @@ io.on('connection', (socket) => {
     });
 
     socket.on('userSentMessage', function(msg) {
-        let sender = UserUtils.getUser(msg.userID);
+        let sender = UserUtils.getUserById(msg.userID);
+        if(sender !== undefined){
+            let messageObject = {
+                id: uuid(),
+                senderID: msg.userID,
+                name: sender.username,
+                message: msg.message
+            };
 
-        let messageObject = {
-            id: uuid(),
-            senderID: msg.userID,
-            name: sender.username,
-            message: msg.message
-        };
+            let storedMessage = new ChatMessage(msg.roomID, sender, msg.message);
+            DataAccessLayer.AddMessageToCache(storedMessage);
 
-        // Send userReceivedMessage event to all users within table
-        io.to(msg.roomID).emit("messageSentSuccessful", messageObject);
+            // Send userReceivedMessage event to all users within table
+            io.to(msg.roomID).emit("messageSentSuccessful", messageObject);
+        }
     });
 });

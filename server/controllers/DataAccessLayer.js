@@ -5,9 +5,13 @@ const replace = require('replace-in-file');
 let User = require("../model/User.js");
 let Report = require("../model/Report.js");
 let ChatMessage = require("../model/ChatMessage.js");
+let ServerUtils = require("../utilities/ServerUtils.js");
+
+const UserUtils = require('../utilities/UserUtils.js');
 
 let cachedUsers = [];
 let cachedReports = [];
+let cachedMessages = [];
 
 /**
  * Retrieves the array of cached Reports
@@ -21,6 +25,13 @@ exports.getCachedReports = function() {
  */
 exports.GetCachedUsers = function() {
     return cachedUsers;
+}
+
+/**
+ * Retrieves cached messages
+ */
+exports.GetCachedMessages = function() {
+    return cachedMessages;
 }
 
 /**
@@ -54,7 +65,9 @@ exports.ReadUsersFile = function() {
         user.handsPlayed = parseInt(splitLine[9]);
         user.handsLost = user.handsPlayed - user.handsWon;
         user.lastUpdatedDate = new Date(splitLine[10]);
-        user.createdDate = new Date(splitLine[11]);
+        user.lastLoggedInDate = new Date(splitLine[11]);
+        user.createdDate = new Date(splitLine[12]);
+        user.banned = (splitLine[13] === 'true');
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -72,8 +85,9 @@ exports.AddUserToFile = function(user) {
                     (user.isAdmin ? "true" : "false") + "," +
                      user.username + "," + user.password + "," + 
                      user.email + "," + user.chips + "," + user.icon + "," +
-                     user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," 
-                     + user.createdDate.toISOString() + ",\n";
+                     user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," +
+                     user.lastLoggedInDate + ',' +
+                     user.createdDate.toISOString() + "," + user.banned + ",\n";
     // Append the string to the text file
     fs.appendFileSync('data/Users.txt', userString);
     // Add the User to the cache
@@ -101,8 +115,9 @@ exports.UpdateUser = function(user) {
                         (user.isAdmin ? "true" : "false") + "," +
                         user.username + "," + user.password + "," + 
                         user.email + "," + user.chips + "," + user.icon + "," +
-                        user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," 
-                        + user.createdDate.toISOString() + ",";
+                        user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," +
+                        user.lastLoggedInDate.toISOString() + ',' +
+                        user.createdDate.toISOString() + "," + user.banned + ",";
 
     // Create a regexp to find the correct contents to change
     const regex = new RegExp(originalUserStringRegex, "g");
@@ -129,6 +144,50 @@ exports.UpdateUser = function(user) {
             // Log the error if the text file is not successfully updated
             console.log(err);
     });
+}
+
+/**
+ * Returns a daily bonus object if the user is logging in on a new day
+ */
+exports.UserLoggedIn = function(userID){
+    // check if the current day is different from the last logged in date
+    // we check year month and day
+    let user = cachedUsers.find(user => user.id === userID);
+    if(user === undefined){ return null; }
+    let lastDate = user.lastLoggedInDate;
+    let currentDate = new Date();
+    let lastDateYMD = lastDate.getFullYear().toString() + lastDate.getMonth().toString() + lastDate.getDate().toString();
+    let currentDateYMD = currentDate.getFullYear().toString() + currentDate.getMonth().toString() + currentDate.getDate().toString();
+    let result;
+    if(lastDateYMD !== currentDateYMD){ // new day for log in, they get the daily bonus
+        result = {
+            accountChips: user.chips,
+            dailyBonus: UserUtils.getDailyBonusValue(),
+        }
+        user.chips += UserUtils.getDailyBonusValue();
+    }
+    else{
+        result = {
+            accountChips: user.chips,
+            dailyBonus: 0,
+        }
+    }
+    user.lastLoggedInDate = currentDate;
+    this.UpdateUser(user);
+    return result;
+}
+
+/*
+ * Adds the supplied ChatMessage object to the cache
+ * @param message The ChatMessage object to be added to the cache
+ */
+exports.AddMessageToCache = function(message) {
+    cachedMessages.push(message);
+    // If the cachedMessages array now has more than the maximum number allowed
+    if (cachedMessages.length > ServerUtils.GetMaxChatMessages()) {
+        // Removes the first element in the array
+        cachedMessages.shift();
+    }
 }
 
 /**
@@ -199,11 +258,20 @@ exports.AddReportToFile = function(report) {
                      report.submittingUserId + "|||" + report.reportType + "|||" + 
                      report.reportComment + "|||" + report.dateSubmitted.toISOString() + "|||" + 
                      newLastUpdatedDate.toISOString() + "|||" + report.status + "|||" + chatLogString + "|||\n";
-    // Append the string to the text file
-    fs.appendFileSync('data/Reports.txt', reportString);
 
-    // Add the report to the cache
-    cachedReports.push(report);
+    try {
+        // Append the string to the text file
+        fs.appendFileSync('data/Reports.txt', reportString);
+        // Add the report to the cache
+        cachedReports.push(report);
+        
+        return true;
+    }
+    catch (error) {
+        return false;
+    }
+
+ 
 }
 
 /**

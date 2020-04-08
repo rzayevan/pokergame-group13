@@ -7,11 +7,11 @@
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto mx-3">
                     <b-nav-item class="mx-2">
-                        <img class="mr-2 img-fluid" src="../../assets/chip.png" alt="Poker Chip"/>
+                        <img class="mr-2 img-fluid" :src="require('../../images/ImageFiles').getImage('chip').src" alt="Poker Chip"/>
                         <span class="b-nav-text">{{userData.chips}}</span>
                     </b-nav-item>
                     <b-nav-item to="profile">
-                        <img class="img-fluid" v-bind:src="userData.playerIcon" alt="User Profile Image"/>
+                        <img class="img-fluid" v-bind:src="userData.playerIcon.src" alt="User Profile Image"/>
                     </b-nav-item>
                     <b-nav-item to="/">
                         <b-nav-text class="material-icons"> logout </b-nav-text>
@@ -59,7 +59,7 @@
             return {
                 userData : {
                     chips: 1200450,
-                    playerIcon: require("../../assets/player_icon_1.png")
+                    playerIcon: require("../../images/ImageFiles").getImage('player_icon_1')
                 }
             }
         },
