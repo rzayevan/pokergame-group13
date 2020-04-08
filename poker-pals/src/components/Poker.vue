@@ -153,7 +153,7 @@ export default {
                     player.youTag = false;
                     player.timer = false;
                 }
-                this.$router.push({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
             });
 
             this.socket.on('beginTheGame', cardsJSON => { // each player receives their two personal cards upon the game starting

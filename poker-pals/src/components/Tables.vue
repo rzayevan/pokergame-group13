@@ -60,7 +60,7 @@ export default {
             });
 
             this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
-                this.$router.push({ name: 'Poker', params: {
+                this.$router.replace({ name: 'Poker', params: {
                     authenticated: true,
                     socket: this.socket,
                     userID: this.userID,
