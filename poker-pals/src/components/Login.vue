@@ -108,11 +108,6 @@
         this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: userID}});
       });
 
-      // Navigate to reports page if authentication was successful
-      this.socket.on("authenticatedAdmin", userID => {
-        this.$router.replace({ name: "Reports", params: {authenticated: true, socket: this.socket, userID: userID}});
-      });
-
       this.socket.on("banned", () => {
         this.$router.replace({ name: "Banned", params: {authenticated: true}});
       });

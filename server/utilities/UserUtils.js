@@ -10,17 +10,15 @@ exports.credentialsMatch = function(user) {
     let matchFound = false;
     let userID = -1;
     let banned = false;
-    let admin = false;
     users.forEach(existingUser => {
         if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
             matchFound = true;
             userID = existingUser.id;
             banned = existingUser.banned;
-            admin = existingUser.isAdmin;
         }
     });
 
-    return {matchFound: matchFound, admin: admin, userID: userID, banned: banned};
+    return {matchFound: matchFound, userID: userID, banned: banned};
 }
 
 /**

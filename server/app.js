@@ -49,8 +49,6 @@ io.on('connection', (socket) => {
         if (result.matchFound) {
             if(result.banned){
                 socket.emit("banned");
-            } else if(result.admin){
-                socket.emit("authenticatedAdmin", result.userID);
             } else {
                 socket.emit("authenticatedUser", result.userID);
                 let loggedInResult = DataAccessLayer.UserLoggedIn(result.userID);
