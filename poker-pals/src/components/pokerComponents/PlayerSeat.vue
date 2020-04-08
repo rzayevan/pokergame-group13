@@ -5,7 +5,7 @@
                 <div class="action">
                     <div class="actionText">{{ action }}</div>
                 </div>
-                <Clock v-bind:timer="timer"/> <!--the clock timer-->
+                <Clock v-bind:timer="timer" v-bind:timerReset="timerReset"/> <!--the clock timer-->
                 <div class="identification">
                     <div class="accountImage">
                         <img v-bind:src="accountImage.src"/>
@@ -293,7 +293,7 @@ export default {
     },
     props: [
         'occupied', 'classes', 'dealerStatus', 'cards', 'cardReveal', 'betValue', 'accountName',
-        'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'active'
+        'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'timerReset'
     ],
 }
 </script>

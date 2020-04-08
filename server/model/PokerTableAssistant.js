@@ -241,7 +241,7 @@ module.exports = class PokerTableAssistant {
                 this.tableSeats[i].resetForNextStage(); // each player resets themselves and sends back their bet for the pot total
             }
             if(this.getNumberOfPlayersAbleToAct() < this.minimumNumberOfPlayersNeededToContinue) {
-                beginTheShowDown();
+                this.beginTheShowDown();
             }
             else if(this.communityCardsShown < this.riverNumber) { // we have more community cards to reveal
                 this.advanceTheGame();// set the turn to the next "able" player starting with the dealer
