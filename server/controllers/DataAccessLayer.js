@@ -201,7 +201,7 @@ exports.ReadReportsFile = function() {
     while (line = liner.next()) {
         // Convert the buffer recieved to an ascii string
         let lineString = line.toString('ascii');
-        
+
         // Split the string by three |
         // This allows for almost anything to be in the chat logs and not cause issues
         let splitLine = lineString.split('|||');
@@ -231,7 +231,7 @@ exports.ReadReportsFile = function() {
             let user = cachedUsers.find(x => x.id === userID);
             let message = chatMessages[i].split(/,(.+)/)[1];
 
-            // Create a ChatMessage object
+            // Create a ChatMessage object with an empty tableID
             messages.push(new ChatMessage("", user, message));
         }
 
