@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
                 socket.emit("authenticated", updatedUser);
                 console.log(user.email + " has logged in.");  
 
-                let loggedInResult = DataAccessLayer.UserLoggedIn(result.userID);
+                let loggedInResult = DataAccessLayer.UserLoggedIn(result.userData.id);
                 // at this moment the user's funds have already been updated we want to send a visual effect
                 // so send back the user's funds - bonus, and the bonus, the user will click and their displayed funds is updated
                 if(loggedInResult.dailyBonus !== 0){
