@@ -248,12 +248,14 @@ export default {
         setPlayerCardsVisibility(visible){
             this.cardReveal = visible;
         },
-        submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
+        submitReport(selected, message, report_OffenderName, report_OffenderMessageId, submittingUser){
             let reportData = {
                 reportType: selected,
                 reportComment: message,
                 offenderUsername: report_OffenderName,
-                chatMessageId: report_OffenderMessageId
+                chatMessageId: report_OffenderMessageId,
+                reportingUser: submittingUser,
+                roomID: this.roomID
             };
 
             this.socket.emit("submit report", reportData);
