@@ -95,6 +95,9 @@ io.on('connection', (socket) => {
     socket.on('userSentMessage', function(msg) {
         let sender = UserUtils.getUserById(msg.userID);
 
+        let storedMessage = new ChatMessage(msg.roomID, sender, msg.message);
+        DataAccessLayer.AddMessageToCache(storedMessage);
+
         let messageObject = {
             id: uuid(),
             senderID: msg.userID,
