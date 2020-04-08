@@ -1,7 +1,7 @@
 <template>
 <!-- Table list div --> 
   <div class = "table-list">
-    <UserNavbar class="navbar-section"/>
+    <UserNavbar :userData=userData class="navbar-section"/>
     <ul>
     <!-- Loop through tables and display --> 
     <li v-for="room in rooms" :key="room.roomID">
@@ -41,7 +41,7 @@ export default {
     components: {
         UserNavbar
     },
-    props: ['authenticated', 'socket', 'userID'],
+    props: ['authenticated', 'socket', 'userData'],
     data() {
         return {
             rooms: [],
@@ -86,7 +86,7 @@ export default {
                 this.$router.replace({ name: 'Poker', params: {
                     authenticated: true,
                     socket: this.socket,
-                    userID: this.userID,
+                    userID: this.userData.id,
                     roomID: msg.roomID,
                     seatID: msg.seatID,
                     tableName: msg.tableName,
@@ -103,7 +103,7 @@ export default {
         //Function to handle room joining
         joinRoom: function (room) {
             this.socket.emit("joinRoomRequest", { // we send our assigned user id
-                userID: this.userID,
+                userID: this.userData.id,
                 roomID: room.roomID, // the room the player wants to join
             });
         }

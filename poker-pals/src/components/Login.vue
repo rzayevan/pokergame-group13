@@ -117,7 +117,7 @@
         }
 
         // otherwise, navigate to tables page
-        this.$router.push({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: userData.id}});
+        this.$router.push({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: userData}});
       });
 
       // display error message sent from server
