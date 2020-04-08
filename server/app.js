@@ -3,6 +3,7 @@ let app = express();
 let http = require('http').Server(app);
 let io = require('socket.io')(http);
 let User = require("./model/User.js");
+let ChatMessage = require("./model/ChatMessage.js")
 const { v1: uuid } = require('uuid');
 
 let PokerController = require("./controllers/PokerController.js");

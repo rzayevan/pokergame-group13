@@ -1,6 +1,6 @@
 <template>
     <div class="outerFrame"> <!--the outer container of the entire page, used to define its size-->
-        <UserNavbar /> <!-- the naviagation bar-->
+        <UserNavbar :userData=userData /> <!-- the naviagation bar-->
         <div class="tableLayoutAndDisplay"> <!--a container to separate the table and inputs from the chat-->
             <TableLayout
                 v-bind:potTotal="potTotal"
@@ -75,7 +75,7 @@ export default {
         TableLayout,
         Display,
     },
-    props: ['authenticated', 'socket', 'userID', 'roomID', 'seatID', 'tableName', 'bigBlind'],
+    props: ['authenticated', 'socket', 'userID', 'userData', 'roomID', 'seatID', 'tableName', 'bigBlind'],
     data() {
         return {
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
@@ -162,7 +162,7 @@ export default {
                     player.youTag = false;
                     player.timer = false;
                 }
-                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} });
             });
             this.socket.on('beginTheGame', cardsJSON => { // each player receives their two personal cards upon the game starting
                 let cards = JSON.parse(cardsJSON);

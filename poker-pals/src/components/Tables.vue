@@ -87,6 +87,7 @@ export default {
                     authenticated: true,
                     socket: this.socket,
                     userID: this.userData.id,
+                    userData: this.userData,
                     roomID: msg.roomID,
                     seatID: msg.seatID,
                     tableName: msg.tableName,
