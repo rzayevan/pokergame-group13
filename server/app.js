@@ -52,9 +52,9 @@ io.on('connection', (socket) => {
                 socket.emit("banned");
             } else {
                 // log the user in and notify the client
-                UserUtils.setUserLogInStatus(user, true);
-                socket.emit("authenticated", result.userData);
-                console.log(user.username + " has logged in.");  
+                let updatedUser = UserUtils.setUserLogInStatus(result.userData, true);
+                socket.emit("authenticated", updatedUser);
+                console.log(user.email + " has logged in.");  
 
                 let loggedInResult = DataAccessLayer.UserLoggedIn(result.userID);
                 // at this moment the user's funds have already been updated we want to send a visual effect

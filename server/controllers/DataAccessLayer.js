@@ -103,7 +103,6 @@ exports.UpdateUser = function(user) {
     let index = cachedUsers.findIndex(x => x.id === user.id);
     // Get a pointer to the original User object
     let originalUser = cachedUsers[index];
-
     // Create a string that will be searched for within the text file
     let originalUserStringRegex = ".*" + originalUser.id + ".*";
 

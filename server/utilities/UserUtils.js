@@ -38,12 +38,13 @@ exports.emailExists = function(user) {
 }
 
 /**
- * Sets user log in status
  * Will set supplied user's loggedIn status to the boolean value provided
+ * Returns data belonging to the updated user
  */
 exports.setUserLogInStatus = function(user,loggedIn) {
     user.loggedIn = loggedIn;
     DataAccessLayer.UpdateUser(user);
+    return this.getUserById(user.id);
 }
 
 exports.getUserById = function(id) {
