@@ -8,14 +8,16 @@ exports.credentialsMatch = function(user) {
     let users = DataAccessLayer.GetCachedUsers();
     let matchFound = false;
     let userID = -1;
+    let banned = false;
     users.forEach(existingUser => {
         if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
             matchFound = true;
             userID = existingUser.id;
+            banned = existingUser.banned;
         }
     });
 
-    return {matchFound: matchFound, userID: userID};
+    return {matchFound: matchFound, userID: userID, banned: banned};
 }
 
 /**

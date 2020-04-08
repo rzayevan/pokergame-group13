@@ -47,7 +47,11 @@ io.on('connection', (socket) => {
         // authenticate the user if the credentials provided exist in the stored data
         let result = UserUtils.credentialsMatch(user);
         if (result.matchFound) {
-            socket.emit("authenticated", result.userID);
+            if(result.banned){
+                socket.emit("banned");
+            } else {
+                socket.emit("authenticatedUser", result.userID); 
+            }
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");
         }
@@ -94,18 +98,15 @@ io.on('connection', (socket) => {
 
     socket.on('userSentMessage', function(msg) {
         let sender = UserUtils.getUserById(msg.userID);
-
-        let storedMessage = new ChatMessage(msg.roomID, sender, msg.message);
-        DataAccessLayer.AddMessageToCache(storedMessage);
-
-        let messageObject = {
-            id: uuid(),
-            senderID: msg.userID,
-            name: sender.username,
-            message: msg.message
-        };
-
-        // Send userReceivedMessage event to all users within table
-        io.to(msg.roomID).emit("messageSentSuccessful", messageObject);
+        if(sender !== undefined){
+            let messageObject = {
+                id: uuid(),
+                senderID: msg.userID,
+                name: sender.username,
+                message: msg.message
+            };
+            // Send userReceivedMessage event to all users within table
+            io.to(msg.roomID).emit("messageSentSuccessful", messageObject);
+        }
     });
 });

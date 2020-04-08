@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import io from "socket.io-client";
 import UserNavbar from "./navbars/UserNavbar";
 
 export default {
@@ -42,13 +41,9 @@ export default {
     components: {
         UserNavbar
     },
-    props: ['authenticated', 'userID'],
-    created() {
-        this.socket = io("http://localhost:3000");
-    },
+    props: ['authenticated', 'socket', 'userID'],
     data() {
         return {
-            socket: {},
             rooms: [],
         };
     },
@@ -56,24 +51,26 @@ export default {
         if(!this.authenticated){
             this.$router.replace({ name: "Login" }); // send client back to login page
         }
-        this.socket.emit('serveRoomList'); // send request for the list of rooms
+        else {
+            this.socket.emit('serveRoomList'); // send request for the list of rooms
 
-        //Receive the current rooms available and store into rooms array 
-        this.socket.on("receiveRoomList", rooms => {
-            this.rooms = rooms;
-        });
+            //Receive the current rooms available and store into rooms array 
+            this.socket.on("receiveRoomList", rooms => {
+                this.rooms = rooms;
+            });
 
-        this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
-            this.$router.push({ name: 'Poker', params: {
-                authenticated: true,
-                socket: this.socket,
-                userID: this.userID,
-                roomID: msg.roomID,
-                seatID: msg.seatID,
-                tableName: msg.tableName,
-                bigBlind: msg.bigBlind,
-            }});
-        });
+            this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
+                this.$router.replace({ name: 'Poker', params: {
+                    authenticated: true,
+                    socket: this.socket,
+                    userID: this.userID,
+                    roomID: msg.roomID,
+                    seatID: msg.seatID,
+                    tableName: msg.tableName,
+                    bigBlind: msg.bigBlind,
+                }});
+            });
+        }
     },
     methods: {
         //Function to handle room joining

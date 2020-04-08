@@ -94,6 +94,7 @@ class PokerController {
                 bigBlind: result.bigBlind,
             });
             io.to(roomToJoin.id).emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the updated table state in this room
+            io.emit("receiveRoomList", this.getRoomList()); // update the room list
             if(table.canAGameBegin() && !table.tableActive){ // check if we can begin a game
                 table.tableActive = true; // the table is now active
                 this.beginTheGame(io, roomToJoin);
@@ -201,6 +202,7 @@ class PokerController {
         if(room === undefined){ return; }
         let table = room.table;
         let user = DataAccessLayer.ReadUsersFile().find(user => user.id === msg.userID);
+        if(user === undefined){ return; }
         let alreadyInShowdown = table.assistant.showdown; // if a showdown is occuring at this stage then we don't need to call another showdown
         let result = table.bootPlayer(user.id, io, room); // boot the player and return any chips they had (not including pot)
         user.chips += result.chips;
@@ -208,6 +210,7 @@ class PokerController {
         socket.leave(room.id);
         socket.emit('leaveRoom');
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
+        io.emit("receiveRoomList", this.getRoomList()); // update the room list
         if(result.newTimeout){table.receiveTimeout(self.createDecisionTimeout(io, room, self));}
         if(table.assistant.showdown && !alreadyInShowdown){// after each move we need to check if the table is ready for a showdown
             this.timeForShowdown(io, room, self);
@@ -296,6 +299,7 @@ class PokerController {
         table.reset(); // reset the table for a new game
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
         io.to(room.id).emit('reset');
+        io.emit("receiveRoomList", this.getRoomList()); // update the room list
         if(table.canAGameBegin()){
             self.beginTheGame(io, room);
         }

@@ -52,7 +52,13 @@
 export default {
     name: "Clock",
     props: [
-        'timer',
+        'timer', 'timerReset',
     ],
+    watch: {
+        timerReset: function(){
+            // TODO: reset the animation, if the turn does not change after card reveal (dealer), 
+            // then the animation never gets the cue to reset
+        }
+    }
 }
 </script>

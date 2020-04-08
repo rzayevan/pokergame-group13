@@ -47,6 +47,7 @@
                     v-bind:action="player.action"
                     v-bind:youTag="player.youTag"
                     v-bind:timer="player.timer"
+                    v-bind:timerReset="timerReset"
                 />
             </div>
         </div>
@@ -189,7 +190,7 @@ export default {
         PlayerSeat,
     },
     props: [
-        'potTotal', 'communityCards', 'players', 'cardReveal', 'bigBlind',
+        'potTotal', 'communityCards', 'players', 'cardReveal', 'bigBlind', 'timerReset',
     ],
 };
 </script>

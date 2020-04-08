@@ -104,8 +104,12 @@
       });
 
       // Navigate to tables page if authentication was successful
-      this.socket.on("authenticated", userID => {
-        this.$router.push({ name: "Tables", params: {authenticated: true, userID: userID}});
+      this.socket.on("authenticatedUser", userID => {
+        this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: userID}});
+      });
+
+      this.socket.on("banned", () => {
+        this.$router.replace({ name: "Banned", params: {authenticated: true}});
       });
 
       // display error message sent from server

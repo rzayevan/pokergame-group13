@@ -27,6 +27,8 @@ class User {
          this.lastUpdatedDate;
          // The time this entry was created
          this.createdDate;
+         // Wether or not the user is banned
+         this.banned;
     }
 
     // Populates the fields of a newly created User object
@@ -55,6 +57,8 @@ class User {
         this.lastUpdatedDate = new Date();
         // The time this entry was created
         this.createdDate = new Date();
+        // Wether or not the user is banned
+        this.banned = false;
     }
 
     /**
@@ -86,6 +90,8 @@ class User {
          this.lastUpdatedDate = userToCopy.lastUpdatedDate;
          // The time this entry was created
          this.createdDate = userToCopy.createdDate;
+         // Wether or not the user is banned
+         this.banned = false;
     }
 }
 
