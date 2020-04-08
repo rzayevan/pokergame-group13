@@ -19,14 +19,12 @@ class Report {
         this.lastUpdatedDate;
         // Value stating whether the report has not been reviewed, dismissed, or banned ('notreviewed', 'dismissed', and 'banned' respectively)
         this.status;
-        // ID of the table report occurred at
-        this.tableID;
         // The previous 5 chat messages related to the report
         this.chatLogs;
     }
 
     // Creates a report
-    CreateNewReport(offendingUser, submittingUser, reportType, reportComment, chatLogs, status, tableID) {
+    CreateNewReport(offendingUser, submittingUser, reportType, reportComment, chatLogs, status) {
         // The uuid of the report
         this.id = uuid();
         // The uuid of the offendingUser
@@ -43,8 +41,6 @@ class Report {
         this.lastUpdatedDate = new Date();
         // Value stating whether the report has not been reviewed, dismissed, or banned ('notreviewed', 'dismissed', and 'banned' respectively)
         this.status = status;
-        // ID of the table report occurred at
-        this.tableID = tableID;
         // The previous 5 chat messages related to the report
         this.chatLogs = chatLogs;
     }

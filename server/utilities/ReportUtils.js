@@ -32,7 +32,7 @@ exports.submitReport = function(reportData) {
         
         // Create and save the new report
         let report = new Report();
-        report.CreateNewReport(offendingUser, submittingUser, reportData.reportType, reportData.reportComment, chatMessages, "notreviewed", reportData.roomID);
+        report.CreateNewReport(offendingUser, submittingUser, reportData.reportType, reportData.reportComment, chatMessages, "notreviewed");
         return DataAccessLayer.AddReportToFile(report);
     }
     catch (error) {
@@ -75,7 +75,6 @@ exports.getReports = function() {
         formattedReports.push(formattedReport);
     });
 
-    console.log(formattedReports)
     return formattedReports;
 }
 
