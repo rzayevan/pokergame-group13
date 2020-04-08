@@ -34,6 +34,15 @@ exports.emailExists = function(user) {
     return emailExists;
 }
 
+/**
+ * Sets user log in status
+ * Will set supplied user's loggedIn status to the boolean value provided
+ */
+exports.setUserLogInStatus = function(user,loggedIn) {
+    user.loggedIn = loggedIn;
+    DataAccessLayer.UpdateUser(user);
+}
+
 exports.getUser = function(id) {
     let users = DataAccessLayer.GetCachedUsers();
 

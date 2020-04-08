@@ -43,17 +43,18 @@ exports.ReadUsersFile = function() {
         let user = new User();
 
         user.id = splitLine[0];
-        user.isAdmin = (splitLine[1] === 'true');
-        user.username = splitLine[2];
-        user.password = splitLine[3];
-        user.email = splitLine[4];
-        user.chips = parseInt(splitLine[5]);
-        user.icon = splitLine[6];
-        user.handsWon = parseInt(splitLine[7]);
-        user.handsPlayed = parseInt(splitLine[8]);
+        user.isLoggedIn = (splitLine[1] === 'true');
+        user.isAdmin = (splitLine[2] === 'true');
+        user.username = splitLine[3];
+        user.password = splitLine[4];
+        user.email = splitLine[5];
+        user.chips = parseInt(splitLine[6]);
+        user.icon = splitLine[7];
+        user.handsWon = parseInt(splitLine[8]);
+        user.handsPlayed = parseInt(splitLine[9]);
         user.handsLost = user.handsPlayed - user.handsWon;
-        user.lastUpdatedDate = new Date(splitLine[9]);
-        user.createdDate = new Date(splitLine[10]);
+        user.lastUpdatedDate = new Date(splitLine[10]);
+        user.createdDate = new Date(splitLine[11]);
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -67,7 +68,8 @@ exports.ReadUsersFile = function() {
  */
 exports.AddUserToFile = function(user) {
     // Create a string to store in the text file as a user
-    let userString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
+    let userString = user.id + "," + (user.isLoggedIn ? "true" : "false") + "," +
+                    (user.isAdmin ? "true" : "false") + "," +
                      user.username + "," + user.password + "," + 
                      user.email + "," + user.chips + "," + user.icon + "," +
                      user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," 
@@ -95,7 +97,8 @@ exports.UpdateUser = function(user) {
     let newLastUpdatedDate = new Date();
 
     // Create a new string to update the file to
-    let newUserString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
+    let newUserString = user.id + "," + (user.isLoggedIn ? "true" : "false") + "," +
+                        (user.isAdmin ? "true" : "false") + "," +
                         user.username + "," + user.password + "," + 
                         user.email + "," + user.chips + "," + user.icon + "," +
                         user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," 

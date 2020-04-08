@@ -33,11 +33,12 @@ io.on('connection', (socket) => {
 
     socket.on('add-new-user', function(user) {
         // create a new user if the email provided is unique
-        if (!UserUtils.emailExists(user)) {
+        if (!UserUtils.emailExists(user) && !user.loggedIn) {
             let newUser = new User();
             newUser.CreateNewUser(user.username, user.password, user.email, UserUtils.createUserIcon());
             DataAccessLayer.AddUserToFile(newUser);
             socket.emit("alert text", "Successfully signed up!");
+            console.log(user.username + " has signed up.");
         } else {
             socket.emit("alert text", "Email provided already exists. Please try again.");
         }
@@ -47,10 +48,17 @@ io.on('connection', (socket) => {
         // authenticate the user if the credentials provided exist in the stored data
         let result = UserUtils.credentialsMatch(user);
         if (result.matchFound) {
+            UserUtils.setUserLogInStatus(user, true);
             socket.emit("authenticated", result.userData);
+            console.log(user.username + " has logged in.");  
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");
         }
+    });
+
+    socket.on('log out user', function(user) {
+        UserUtils.setUserLogInStatus(user, false);
+        console.log(user.username + " has logged out.");   
     });
 
     socket.on('disconnect', function () {
