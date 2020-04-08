@@ -55,11 +55,10 @@
 </template>
 
 <style scoped>
-    .tableLayout{
-        position: relative;
+    .tableLayout {
         width: 100%;
-        height: 70%;
-        background: #b7b7b7;
+        height: 100%;
+        background-color: #b7b7b7;
     }
     .buttonExitTable{
         position: absolute;

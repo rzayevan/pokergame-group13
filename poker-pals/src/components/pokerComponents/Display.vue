@@ -1,6 +1,6 @@
 <template>
     <div class="display">
-        <div class="cheatSheetToggle" v-on:click="toggleCheatSheet()"> <!--a toggle to show or hide the cheat sheet-->
+            <div class="cheatSheetToggle" v-on:click="toggleCheatSheet()"> <!--a toggle to show or hide the cheat sheet-->
             <img :src="require('../../images/ImageFiles').getImage('cheat_sheet_icon').src"/>
         </div>
         <div class="cheatSheet" :style="{visibility: cheatSheetOpen ? 'visible' : 'hidden'}">
@@ -21,9 +21,8 @@
 <style scoped>
     .display{
         width: 100%;
-        height: 30%;
-        background: #eeeeee;
-        margin: 0%;
+        height: 100%;
+        background: #F2F3F5;
     }
     .cheatSheetToggle{
         float: left;

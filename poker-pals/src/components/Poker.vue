@@ -1,61 +1,58 @@
 <template>
-    <div class="outerFrame"> <!--the outer container of the entire page, used to define its size-->
-        <UserNavbar /> <!-- the naviagation bar-->
-        <div class="tableLayoutAndDisplay"> <!--a container to separate the table and inputs from the chat-->
-            <TableLayout
-                v-bind:potTotal="potTotal"
-                v-bind:communityCards="communityCards"
-                v-bind:players="players"
-                v-bind:cardReveal="cardReveal"
-                v-bind:bigBlind="bigBlind"
-            />
-            <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
+    <div class="container-fluid">
+        <UserNavbar class="w-100"/>
+        <div class="row flex-grow-1 no-gutters">
+            <div class="col-9">
+                <TableLayout
+                        v-bind:potTotal="potTotal"
+                        v-bind:communityCards="communityCards"
+                        v-bind:players="players"
+                        v-bind:cardReveal="cardReveal"
+                        v-bind:bigBlind="bigBlind"
+                />
+                <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
+            </div>
+            <div class="col-3">
+                <Chat v-bind:class="{ chatHalf: !chatFull}"
+                      v-bind:tableName="tableName"
+                      v-bind:userID="userID"
+                />
+                <ReportPocket v-show="!chatFull"
+                    v-bind:report_OffenderName="report_OffenderName"
+                    v-bind:report_OffenderMessageId="report_OffenderMessageId"
+                    v-bind:showForm="showForm"
+                    v-bind:submittedSuccessfully="submittedSuccessfully"
+                />
+            </div>
         </div>
-
-        <div id="chatContainer"  v-bind:class="{ chatHalf: !chatFull}">
-            <Chat v-bind:tableName="tableName" v-bind:userID="userID"/>
-        </div>
-
-        <ReportPocket v-if="!chatFull"
-              v-bind:report_OffenderName="report_OffenderName"
-              v-bind:report_OffenderMessageId="report_OffenderMessageId"
-              v-bind:showForm="showForm"
-              v-bind:submittedSuccessfully="submittedSuccessfully"
-        /> <!--the report box that shows up upon a player requesting to report another player, takes half of the space alotted to the chat-->
     </div>
 </template>
 
 <style scoped>
-    /* because borders do not accept percentages, they interfere with the scaling calculations, 
-    the solution is to surround elements with an outer div with a back ground and then put another
-    div inside with the elements, this simulates a black border*/
-
-    /* Limit the chat's size*/
-    #chatContainer {
-        float: left;
-        width: 30%;
-        height: 93%;
+    .container-fluid {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0;
+        overflow: hidden;
     }
 
-     .chatHalf {
+    .tableLayout {
+        height: 60%;
+        max-height: 60%;
+    }
+
+    .display {
+        height: 40%;
+        max-height: 40%;
+    }
+
+    .chatHalf {
         height: 46.5% !important;
     }
 
-    .outerFrame{
-        width: 80vw;
-        height: 45vw;
-    }
-    .tableLayoutAndDisplay{
-        position: relative;
-        float: left;
-        width: 70%;
-        height: 93%;
-    }
 
-    img{
-        width: 100%;
-        height: 100%;
-    }
+
 </style>
 
 <script>
