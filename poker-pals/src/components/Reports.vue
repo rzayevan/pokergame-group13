@@ -67,11 +67,6 @@
       }
     }
   },
-  mounted() {
-    if (!this.authenticated) {
-      this.$router.replace({ name: "Login" }); // send client back to login page
-    }
-  },
   computed: {
     // Sorts and filters report data, based on search terms or ordering direction
     filteredData: function () {
@@ -134,7 +129,7 @@
       }
     }
   },
-  mounted(){ // switched to mounted, props are not yet set in beforeCreate(), 
+  mounted() { // switched to mounted, props are not yet set in beforeCreate(), 
     if(!this.authenticated){
         this.$router.replace({ name: "Login" });
     } else { // because the socket will for some reason emit 'request reports' before checking athentication, this else statement is needed
