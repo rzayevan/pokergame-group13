@@ -98,6 +98,8 @@ class User {
         this.handsPlayed = userToCopy.handsPlayed;
         // The last time this entry was updated
         this.lastUpdatedDate = userToCopy.lastUpdatedDate;
+        // The last time this entry was logged in
+        this.lastLoggedInDate;
         // The time this entry was created
         this.createdDate = userToCopy.createdDate;
         // Wether or not the user is banned
