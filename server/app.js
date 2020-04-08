@@ -115,6 +115,10 @@ io.on('connection', (socket) => {
                 name: sender.username,
                 message: msg.message
             };
+
+            let storedMessage = new ChatMessage(msg.roomID, sender, msg.message);
+            DataAccessLayer.AddMessageToCache(storedMessage);
+
             // Send userReceivedMessage event to all users within table
             io.to(msg.roomID).emit("messageSentSuccessful", messageObject);
         }
