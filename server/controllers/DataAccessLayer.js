@@ -5,9 +5,11 @@ const replace = require('replace-in-file');
 let User = require("../model/User.js");
 let Report = require("../model/Report.js");
 let ChatMessage = require("../model/ChatMessage.js");
+let ServerUtils = require("../utilities/ServerUtils.js");
 
 let cachedUsers = [];
 let cachedReports = [];
+let cachedMessages = [];
 
 /**
  * Retrieves the array of cached Reports
@@ -21,6 +23,13 @@ exports.getCachedReports = function() {
  */
 exports.GetCachedUsers = function() {
     return cachedUsers;
+}
+
+/**
+ * Retrieves cached messages
+ */
+exports.GetCachedMessages = function() {
+    return cachedMessages;
 }
 
 /**
@@ -127,6 +136,19 @@ exports.UpdateUser = function(user) {
             // Log the error if the text file is not successfully updated
             console.log(err);
     });
+}
+
+/**
+ * Adds the supplied ChatMessage object to the cache
+ * @param message The ChatMessage object to be added to the cache
+ */
+exports.AddMessageToCache = function(message) {
+    cachedMessages.push(message);
+    // If the cachedMessages array now has more than the maximum number allowed
+    if (cachedMessages.length > ServerUtils.GetMaxChatMessages()) {
+        // Removes the first element in the array
+        cachedMessages.shift();
+    }
 }
 
 /**
