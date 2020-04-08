@@ -156,18 +156,18 @@ export default {
                 this.$router.push({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
             });
 
-            this.socket.on('beginTheGame', msgJSON => { // each player receives their two personal cards upon the game starting
-                let msg = JSON.parse(msgJSON);
-                this.myCards[0].src = this.imageFiles.getImage(msg[0]).src;
-                this.myCards[1].src = this.imageFiles.getImage(msg[1]).src;
+            this.socket.on('beginTheGame', cardsJSON => { // each player receives their two personal cards upon the game starting
+                let cards = JSON.parse(cardsJSON);
+                this.myCards[0].src = this.imageFiles.getImage(cards[0]).src;
+                this.myCards[1].src = this.imageFiles.getImage(cards[1]).src;
             });
 
-            this.socket.on('showdown', msgJSON => { // the showdown has begun, now all player cards are being shown
-                let msg = JSON.parse(msgJSON);
+            this.socket.on('showdown', cardsJSON => { // the showdown has begun, now all player cards are being shown
+                let cards = JSON.parse(cardsJSON);
                 for(let i = 0; i < this.players.length; i++){
                     this.players[i].cards = {
-                        card1: {src: this.imageFiles.getImage(msg[i][0]).src},
-                        card2: {src: this.imageFiles.getImage(msg[i][1]).src}
+                        card1: {src: this.imageFiles.getImage(cards[i][0]).src},
+                        card2: {src: this.imageFiles.getImage(cards[i][1]).src}
                     };
                 }
                 this.setPlayerCardsVisibility(true); // TODO: move this to a separate socket call, it only needs to execute once
