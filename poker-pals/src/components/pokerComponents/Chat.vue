@@ -70,7 +70,7 @@
         data() {
             return {
                 tableName: this.$parent.tableName,
-                userID: this.$parent.userData.id,
+                userData: this.$parent.userData,
                 socket: this.$parent.socket,
                 message: '',
                 items: [],

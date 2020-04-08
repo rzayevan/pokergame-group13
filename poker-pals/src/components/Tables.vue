@@ -86,7 +86,6 @@ export default {
                 this.$router.replace({ name: 'Poker', params: {
                     authenticated: true,
                     socket: this.socket,
-                    userID: this.userData.id,
                     userData: this.userData,
                     roomID: msg.roomID,
                     seatID: msg.seatID,
