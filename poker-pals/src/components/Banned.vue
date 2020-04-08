@@ -19,6 +19,12 @@
         name: "Banned.vue",
         components: {
             Navbar
+        },
+        props: ['authenticated'],
+        mounted() {
+            if(!this.authenticated){
+                this.$router.replace({ name: "Login" }); // send client back to login page
+            }
         }
     }
 </script>

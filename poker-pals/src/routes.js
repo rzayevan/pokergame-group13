@@ -4,6 +4,7 @@ import profileComponent from './components/Profile.vue';
 import reportsComponent from './components/Reports.vue';
 import tablesComponent from './components/Tables.vue';
 import exampleComponent from './components/HelloWorld.vue';
+import bannedComponent from './components/Banned.vue';
 
 export default [
     {path: '/', redirect: { name: 'Login'}},
@@ -12,5 +13,6 @@ export default [
     {path: '/profile', name: 'Profile', component: profileComponent, props: true},
     {path: '/reports', name: 'Reports', component: reportsComponent, props: true},
     {path: '/tables', name: 'Tables', component: tablesComponent, props: true},
+    {path: '/banned', name: 'Banned', component: bannedComponent, props: true},
     {path: '/example', name: 'Example', component: exampleComponent}
 ]

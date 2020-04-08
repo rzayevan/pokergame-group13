@@ -39,13 +39,15 @@
 <script>
   import ReportModal from './ReportModal.vue';
   import AdminNavbar from "./navbars/AdminNavbar";
-  import io from "socket.io-client";
 
   export default {
   name: "report-grid",
   props: {
     data: Array,
     columns: Array,
+    authenticated: Boolean, 
+    socket: Object, // now using the provided socket
+    userID: String,
   },
   components: {
       ReportModal,
@@ -131,24 +133,26 @@
       }
     }
   },
-  beforeCreate(){
-    this.socket = io("http://localhost:3000");
+  mounted(){ // switched to mounted, props are not yet set in beforeCreate(), 
+    if(!this.authenticated){
+        this.$router.replace({ name: "Login" });
+    } else { // because the socket will for some reason emit 'request reports' before checking athentication, this else statement is needed
+      // Request reports from the server
+      this.socket.emit('request reports');
 
-    // Request reports from the server
-    this.socket.emit('request reports');
+      // Receive the reports and update the data and column arrays
+      this.socket.on('receive reports', data => {
+        this.data = data.reports;
+        this.columns = data.gridColumns;
+      });
 
-    // Receive the reports and update the data and column arrays
-    this.socket.on('receive reports', data => {
-      this.data = data.reports;
-      this.columns = data.gridColumns;
-    });
-
-    if (this.columns) {
-      let sortOrders = {};
-      this.columns.forEach(function (key) {
-        sortOrders[key] = 1;
-      })
-      this.sortOrders = sortOrders;
+      if (this.columns) {
+        let sortOrders = {};
+        this.columns.forEach(function (key) {
+          sortOrders[key] = 1;
+        })
+        this.sortOrders = sortOrders;
+      }
     }
   }
 }

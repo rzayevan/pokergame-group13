@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import io from "socket.io-client";
 import UserNavbar from "./navbars/UserNavbar";
 
 export default {
@@ -42,13 +41,9 @@ export default {
     components: {
         UserNavbar
     },
-    props: ['authenticated', 'userID'],
-    created() {
-        this.socket = io("http://localhost:3000");
-    },
+    props: ['authenticated', 'socket', 'userID'],
     data() {
         return {
-            socket: {},
             rooms: [],
         };
     },
@@ -56,24 +51,53 @@ export default {
         if(!this.authenticated){
             this.$router.replace({ name: "Login" }); // send client back to login page
         }
-        this.socket.emit('serveRoomList'); // send request for the list of rooms
+        else {
+            // when navigating to this component several times we need to clear the listeners
+            this.socket.removeListener("receiveRoomList");
+            this.socket.removeListener("dailyBonus");
+            this.socket.removeListener("acountChips");
+            this.socket.removeListener('joinRoom');
 
-        //Receive the current rooms available and store into rooms array 
-        this.socket.on("receiveRoomList", rooms => {
-            this.rooms = rooms;
-        });
+            this.socket.emit('serveRoomList'); // send request for the list of rooms
 
-        this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
-            this.$router.push({ name: 'Poker', params: {
-                authenticated: true,
-                socket: this.socket,
-                userID: this.userID,
-                roomID: msg.roomID,
-                seatID: msg.seatID,
-                tableName: msg.tableName,
-                bigBlind: msg.bigBlind,
-            }});
-        });
+            //Receive the current rooms available and store into rooms array 
+            this.socket.on("receiveRoomList", rooms => {
+                this.rooms = rooms;
+            });
+
+            this.socket.on("dailyBonus", dailyBonusObject => {
+                console.log('thanks for logging in, your bonus for today is: ' + dailyBonusObject.dailyBonus);
+                // TODO: update navbar's chip count
+                // first update with account chips, then upon popup exit, update with dailybonus added
+                /*  daily bonus object is of the format
+                    dailyBonusObject = {
+                        accountChips: user.chips,
+                        dailyBonus: UserUtils.getDailyBonusValue(),
+                    }
+                */
+            });
+
+            this.socket.on("acountChips", chips => {
+                // TODO: update navbar's chip count
+                console.log('your chips: ' + chips);
+            });
+
+            this.socket.on('joinRoom', msg => { // each player upon joining a room will receive the id of the seat they are to sit at
+                this.$router.replace({ name: 'Poker', params: {
+                    authenticated: true,
+                    socket: this.socket,
+                    userID: this.userID,
+                    roomID: msg.roomID,
+                    seatID: msg.seatID,
+                    tableName: msg.tableName,
+                    bigBlind: msg.bigBlind,
+                }});
+            });
+
+            this.socket.on('cannotJoinRoom', response => {
+                alert('cannot join room, reason: ' + response.reason);
+            });
+        }
     },
     methods: {
         //Function to handle room joining

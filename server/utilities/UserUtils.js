@@ -1,5 +1,6 @@
 const DataAccessLayer = require('../controllers/DataAccessLayer.js');
 const NUMBER_OF_ICONS = 16;
+const DAILY_BONUS_VALUE = 100;
 
 /**
  * Checks if the provided credentials match the ones stored in the application
@@ -8,14 +9,16 @@ exports.credentialsMatch = function(user) {
     let users = DataAccessLayer.GetCachedUsers();
     let matchFound = false;
     let userID = -1;
+    let banned = false;
     users.forEach(existingUser => {
         if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
             matchFound = true;
             userID = existingUser.id;
+            banned = existingUser.banned;
         }
     });
 
-    return {matchFound: matchFound, userID: userID};
+    return {matchFound: matchFound, userID: userID, banned: banned};
 }
 
 /**
@@ -61,4 +64,8 @@ exports.createUserIcon = function(number) {
     else{
         return 'player_icon_' + Math.floor(Math.random()*NUMBER_OF_ICONS+1).toString();
     }
+}
+
+exports.getDailyBonusValue = function() {
+    return DAILY_BONUS_VALUE;
 }
