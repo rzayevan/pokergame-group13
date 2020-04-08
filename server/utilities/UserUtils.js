@@ -8,29 +8,17 @@ const DAILY_BONUS_VALUE = 100;
 exports.credentialsMatch = function(user) {
     let users = DataAccessLayer.GetCachedUsers();
     let matchFound = false;
-<<<<<<< HEAD
     let userData = {};
-    users.forEach(existingUser => {
-        if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
-            matchFound = true;
-            userData = existingUser;
-        }
-    });
-
-    return {matchFound: matchFound, userData: userData};
-=======
-    let userID = -1;
     let banned = false;
     users.forEach(existingUser => {
         if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
             matchFound = true;
-            userID = existingUser.id;
+            userData = existingUser;
             banned = existingUser.banned;
         }
     });
 
-    return {matchFound: matchFound, userID: userID, banned: banned};
->>>>>>> 1451cc0a3dc3c037a0a860bdb32c895ae0a06e06
+    return {matchFound: matchFound, userData: userData, banned: banned};
 }
 
 /**
