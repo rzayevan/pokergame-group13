@@ -47,6 +47,19 @@ exports.setUserLogInStatus = function(user,loggedIn) {
     return this.getUserById(user.id);
 }
 
+/**
+ * Returns complete user data based on the data provided from client
+ */
+exports.getUserFromClientData = function(clientData) {
+    let users = DataAccessLayer.GetCachedUsers();
+    
+    let matchingUser = users.find(user => {
+        return clientData.email.toLowerCase() === user.email.toLowerCase() && clientData.password === user.password;
+    });
+
+    return matchingUser;
+}
+
 exports.getUserById = function(id) {
     let users = DataAccessLayer.GetCachedUsers();
 

@@ -75,7 +75,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('log out user', function(user) {
-        UserUtils.setUserLogInStatus(user, false);
+        let existingUser = UserUtils.getUserFromClientData(user);
+        UserUtils.setUserLogInStatus(existingUser, false);
         console.log(user.username + " has logged out.");   
     });
 
