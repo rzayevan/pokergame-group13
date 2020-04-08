@@ -241,7 +241,8 @@ export default {
             }
             else {
                 // Send a filled report to the parent for submission to server
-                this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId);
+                let submittingUser = this.$parent.userData.id;
+                this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId, submittingUser);
             }
         },
         // Display or hide selection warning
