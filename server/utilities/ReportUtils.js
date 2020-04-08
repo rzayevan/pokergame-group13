@@ -17,9 +17,9 @@ exports.submitReport = function(reportData) {
         chatMessages.push({ username: "mack", message: "Idiot"});
     
         // TODO: Replace with the username of the offending user 
-        let offendingUser = UserUtils.getUserByUsername("mack");
+        let offendingUser = UserUtils.getUserByUsername(reportData.offenderUsername);
         // TODO: Replace with the username of the submitting user 
-        let submittingUser = UserUtils.getUserByUsername("Jim");
+        let submittingUser = UserUtils.getUserById(reportData.reportingUser);
         
         // Create and save the new report
         let report = new Report();
