@@ -42,7 +42,7 @@ exports.emailExists = function(user) {
  * Returns data belonging to the updated user
  */
 exports.setUserLogInStatus = function(user,loggedIn) {
-    user.loggedIn = loggedIn;
+    user.isLoggedIn = loggedIn;
     DataAccessLayer.UpdateUser(user);
     return this.getUserById(user.id);
 }
