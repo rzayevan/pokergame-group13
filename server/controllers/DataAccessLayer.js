@@ -201,6 +201,7 @@ exports.ReadReportsFile = function() {
     while (line = liner.next()) {
         // Convert the buffer recieved to an ascii string
         let lineString = line.toString('ascii');
+        
         // Split the string by three |
         // This allows for almost anything to be in the chat logs and not cause issues
         let splitLine = lineString.split('|||');
@@ -226,11 +227,12 @@ exports.ReadReportsFile = function() {
         // For each chat message
         for (let i = 0; i < chatMessages.length; i++) {
             // Filter and grab the username and message
-            let username = chatMessages[i].split(/,(.+)/)[0]
+            let userID = chatMessages[i].split(/,(.+)/)[0];
+            let user = cachedUsers.find(x => x.id === userID);
             let message = chatMessages[i].split(/,(.+)/)[1];
 
             // Create a ChatMessage object
-            messages.push(new ChatMessage(username, message));
+            messages.push(new ChatMessage("", user, message));
         }
 
         // Add the chat logs to the report
@@ -249,7 +251,7 @@ exports.AddReportToFile = function(report) {
     // Gets the formatted string containing the chat logs
     let chatLogString = GetChatLogString(report.chatLogs);
     // Gets a new date for the lastUpdatedDate
-    let newLastUpdatedDate = new Date()
+    let newLastUpdatedDate = new Date();
     // Create a string to store in the text file as a Report
     let reportString = report.id + "|||" + report.offendingUserId + "|||" + 
                      report.submittingUserId + "|||" + report.reportType + "|||" + 
@@ -267,8 +269,6 @@ exports.AddReportToFile = function(report) {
     catch (error) {
         return false;
     }
-
- 
 }
 
 /**
@@ -330,7 +330,7 @@ GetChatLogString = function(chatMessages) {
     // For each ChatMessage in the given Report's chatLog
     for (let i = 0; i < chatMessages.length; i++) {
         // Create a unique string for the message
-        let chatMessageString = "{" + chatMessages[i].username + "," + chatMessages[i].message + "}";
+        let chatMessageString = "{" + chatMessages[i].userID + "," + chatMessages[i].message + "}";
         // Append the string to the chatLogString
         chatLogString += chatMessageString;
     }

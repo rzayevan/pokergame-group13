@@ -254,7 +254,8 @@ export default {
                 reportComment: message,
                 offenderUsername: report_OffenderName,
                 chatMessageId: report_OffenderMessageId,
-                reportingUser: submittingUser
+                reportingUser: submittingUser,
+                roomID: this.roomID
             };
 
             this.socket.emit("submit report", reportData);

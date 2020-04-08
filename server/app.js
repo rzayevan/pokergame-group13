@@ -7,6 +7,7 @@ const { v1: uuid } = require('uuid');
 
 let PokerController = require("./controllers/PokerController.js");
 let ReportController = require("./controllers/ReportController.js");
+let ChatMessage = require("./model/ChatMessage.js")
 let pokerController, reportController;
 
 const DataAccessLayer = require('./controllers/DataAccessLayer.js');
