@@ -104,12 +104,20 @@
       });
 
       // Navigate to tables page if authentication was successful
-      this.socket.on("authenticatedUser", userID => {
-        this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: userID}});
-      });
+      this.socket.on("authenticated", userData => {
+        // if the user is banned, navigate to banned page
+        this.socket.on("banned", () => {
+          this.$router.replace({ name: "Banned", params: {authenticated: true}});
+        });
+        
+        // navigate to reports page if the user is an admin
+        if(userData.isAdmin) {
+          this.$router.push({ name: "Reports", params: {authenticated: true, socket: this.socket, userData: userData}});
+          return;
+        }
 
-      this.socket.on("banned", () => {
-        this.$router.replace({ name: "Banned", params: {authenticated: true}});
+        // otherwise, navigate to tables page
+        this.$router.push({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: userData}});
       });
 
       // display error message sent from server

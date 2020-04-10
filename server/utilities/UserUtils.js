@@ -8,17 +8,17 @@ const DAILY_BONUS_VALUE = 100;
 exports.credentialsMatch = function(user) {
     let users = DataAccessLayer.GetCachedUsers();
     let matchFound = false;
-    let userID = -1;
+    let userData = {};
     let banned = false;
     users.forEach(existingUser => {
         if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
             matchFound = true;
-            userID = existingUser.id;
+            userData = existingUser;
             banned = existingUser.banned;
         }
     });
 
-    return {matchFound: matchFound, userID: userID, banned: banned};
+    return {matchFound: matchFound, userData: userData, banned: banned};
 }
 
 /**
@@ -35,6 +35,29 @@ exports.emailExists = function(user) {
     });
 
     return emailExists;
+}
+
+/**
+ * Will set supplied user's loggedIn status to the boolean value provided
+ * Returns data belonging to the updated user
+ */
+exports.setUserLogInStatus = function(user,loggedIn) {
+    user.isLoggedIn = loggedIn;
+    DataAccessLayer.UpdateUser(user);
+    return this.getUserById(user.id);
+}
+
+/**
+ * Returns complete user data based on the data provided from client
+ */
+exports.getUserFromClientData = function(clientData) {
+    let users = DataAccessLayer.GetCachedUsers();
+    
+    let matchingUser = users.find(user => {
+        return clientData.email.toLowerCase() === user.email.toLowerCase() && clientData.password === user.password;
+    });
+
+    return matchingUser;
 }
 
 exports.getUserById = function(id) {

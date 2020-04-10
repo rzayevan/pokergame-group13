@@ -70,7 +70,7 @@
         data() {
             return {
                 tableName: this.$parent.tableName,
-                userID: this.$parent.userID,
+                userData: this.$parent.userData,
                 socket: this.$parent.socket,
                 message: '',
                 items: [],
@@ -79,7 +79,7 @@
         mounted: function() {
             let self = this;
             this.socket.on('messageSentSuccessful', function(msg){
-                let you = msg.senderID === self.$parent.userID;
+                let you = msg.senderID === self.$parent.userData.id;
                 self.addMessage({
                     id: msg.id, 
                     senderID: msg.senderID, 
@@ -100,7 +100,7 @@
                 event.preventDefault(); // prevent page reload
                 if (this.message !== "" && this.message.trim() !== "") {
                     this.$parent.socket.emit("userSentMessage", {
-                        userID: this.$parent.userID,
+                        userID: this.$parent.userData.id,
                         roomID: this.$parent.roomID,
                         message: this.message
                     });

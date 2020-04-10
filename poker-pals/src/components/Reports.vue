@@ -1,6 +1,6 @@
 <template>
   <div id="reports-page">
-    <AdminNavbar class="navbar-section"/>
+    <AdminNavbar :userData=userData class="navbar-section"/>
     <div class="wrapper">
       <ReportModal
         :reportData=reportData
@@ -42,13 +42,7 @@
 
   export default {
   name: "report-grid",
-  props: {
-    data: Array,
-    columns: Array,
-    authenticated: Boolean, 
-    socket: Object, // now using the provided socket
-    userID: String,
-  },
+  props: ['authenticated', 'socket', 'userData'],
   components: {
       ReportModal,
       AdminNavbar
@@ -56,6 +50,8 @@
   data(){
     // Empty report data to pass to ReportModal. Updated when a row is clicked  
     return {
+      data: Array,
+      columns: Array,
       searchQuery: '',
       sortKey: '',
       sortOrders: {},
@@ -133,7 +129,7 @@
       }
     }
   },
-  mounted(){ // switched to mounted, props are not yet set in beforeCreate(), 
+  mounted() { // switched to mounted, props are not yet set in beforeCreate(), 
     if(!this.authenticated){
         this.$router.replace({ name: "Login" });
     } else { // because the socket will for some reason emit 'request reports' before checking athentication, this else statement is needed
