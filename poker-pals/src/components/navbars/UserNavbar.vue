@@ -8,13 +8,13 @@
                 <b-navbar-nav class="ml-auto mx-3">
                     <b-nav-item class="mx-2">
                         <img class="mr-2 img-fluid" :src="require('../../images/ImageFiles').getImage('chip').src" alt="Poker Chip"/>
-                        <span class="b-nav-text">{{userData.chips}}</span>
+                        <span userData="userData" class="b-nav-text">{{userData.chips}}</span>
                     </b-nav-item>
                     <b-nav-item to="profile">
-                        <img class="img-fluid" v-bind:src="userData.playerIcon.src" alt="User Profile Image"/>
+                        <img class="img-fluid" v-bind:src="playerIcon.src" alt="User Profile Image"/>
                     </b-nav-item>
                     <b-nav-item to="/">
-                        <b-nav-text class="material-icons"> logout </b-nav-text>
+                        <b-nav-text class="material-icons" @click="logOut()"> logout </b-nav-text>
                     </b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
@@ -53,15 +53,23 @@
 
 </style>
 <script>
+    import io from "socket.io-client";
+
     export default {
         name: "UserNavbar.vue",
-        data: function() {
-            return {
-                userData : {
-                    chips: 1200450,
-                    playerIcon: require("../../images/ImageFiles").getImage('player_icon_1')
-                }
+        props: ['userData'],
+        created() {
+            this.socket = io("http://localhost:3000"); // connect to our server
+        },
+        methods: {
+            logOut: function() {
+                this.socket.emit('log out user', this.userData);
             }
         },
+        data() {
+            return {
+                playerIcon: require("../../images/ImageFiles").getImage(this.userData.icon)
+            }
+        }
     };
 </script>

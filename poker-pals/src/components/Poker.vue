@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <UserNavbar class="w-100"/>
+        <UserNavbar class="w-100" :userData=userData />
         <div class="row flex-grow-1 no-gutters">
             <div class="col-9">
                 <TableLayout
@@ -16,7 +16,7 @@
             <div class="col-3">
                 <Chat v-bind:class="{ chatHalf: !chatFull}"
                       v-bind:tableName="tableName"
-                      v-bind:userID="userID"
+                      v-bind:userData="userData"
                 />
                 <ReportPocket v-show="!chatFull"
                     v-bind:report_OffenderName="report_OffenderName"
@@ -72,7 +72,7 @@ export default {
         TableLayout,
         Display,
     },
-    props: ['authenticated', 'socket', 'userID', 'roomID', 'seatID', 'tableName', 'bigBlind'],
+    props: ['authenticated', 'socket', 'userData', 'roomID', 'seatID', 'tableName', 'bigBlind'],
     data() {
         return {
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
@@ -223,7 +223,7 @@ export default {
         // define all of the socket.emit methods here,
         makeDecision(action){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
             this.socket.emit("turnDecision", {
-                userID: this.userID,
+                userID: this.userData.id,
                 roomID: this.roomID,
                 seatID: this.seatID,
                 action: action,
@@ -237,7 +237,7 @@ export default {
         },
         exitTable(){ // allows a player to leave the table, player will forfeit any chips in the pot
             this.socket.emit("exitRoomRequest", {
-                userID: this.userID,
+                userID: this.userData.id,
                 roomID: this.roomID,
                 seatID: this.seatID,
             });

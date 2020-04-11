@@ -5,6 +5,8 @@ class User {
     constructor() {
          // The uuid of the user
          this.id;
+         // A boolean stating whether the user is logged in or not
+         this.isLoggedIn;
          // A boolean stating whether the user is an Admin or not
          this.isAdmin;
          // The username of the user
@@ -37,6 +39,8 @@ class User {
     CreateNewUser(username, password, email, icon, isAdmin = false) {
         // The uuid of the user
         this.id = uuid();
+        // A boolean stating whether the user is logged in or not
+        this.isLoggedIn = false;
         // A boolean stating whether the user is an Admin or not
         this.isAdmin = isAdmin;
         // The username of the user
@@ -72,6 +76,8 @@ class User {
     CopyUser(userToCopy) {
         // The id of the user
         this.id = userToCopy.id;
+        // A boolean stating whether the user is logged in or not
+        this.isLoggedIn = userToCopy.isLoggedIn;
         // A boolean stating whether the user is an Admin or not
         this.isAdmin = userToCopy.isAdmin;
         // The username of the user

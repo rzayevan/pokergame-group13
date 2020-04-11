@@ -32,27 +32,34 @@ io.on('connection', (socket) => {
     console.log("Client connected.");          
     socket.emit("connected", "Hello from server");
 
-    socket.on('add-new-user', function(user) {
+    socket.on('add-new-user', function(clientData) {
         // create a new user if the email provided is unique
-        if (!UserUtils.emailExists(user)) {
+        if (!UserUtils.emailExists(clientData)) {
             let newUser = new User();
-            newUser.CreateNewUser(user.username, user.password, user.email, UserUtils.createUserIcon());
+            newUser.CreateNewUser(clientData.username, clientData.password, clientData.email, UserUtils.createUserIcon());
             DataAccessLayer.AddUserToFile(newUser);
             socket.emit("alert text", "Successfully signed up!");
+            console.log(clientData.username + " has signed up.");
         } else {
             socket.emit("alert text", "Email provided already exists. Please try again.");
         }
     });
 
-    socket.on('authenticate user', function(user) {
+    socket.on('authenticate user', function(clientData) {
         // authenticate the user if the credentials provided exist in the stored data
-        let result = UserUtils.credentialsMatch(user);
-        if (result.matchFound) {
+        let result = UserUtils.credentialsMatch(clientData);
+        if (result.matchFound && result.userData.isLoggedIn) {
+            socket.emit("alert text", "You've already loggen in. Please sign out of other sessions before trying again.");
+        } else if (result.matchFound) {
             if(result.banned){
                 socket.emit("banned");
             } else {
-                socket.emit("authenticatedUser", result.userID);
-                let loggedInResult = DataAccessLayer.UserLoggedIn(result.userID);
+                // log the user in and notify the client
+                let updatedUser = UserUtils.setUserLogInStatus(result.userData, true);
+                socket.emit("authenticated", updatedUser);
+                console.log(result.userData.username + " has logged in.");  
+
+                let loggedInResult = DataAccessLayer.UserLoggedIn(result.userData.id);
                 // at this moment the user's funds have already been updated we want to send a visual effect
                 // so send back the user's funds - bonus, and the bonus, the user will click and their displayed funds is updated
                 if(loggedInResult.dailyBonus !== 0){
@@ -66,6 +73,12 @@ io.on('connection', (socket) => {
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");
         }
+    });
+
+    socket.on('log out user', function(clientData) {
+        let user = UserUtils.getUserFromClientData(clientData);
+        UserUtils.setUserLogInStatus(user, false);
+        console.log(user.username + " has logged out.");   
     });
 
     socket.on('disconnect', function () {
