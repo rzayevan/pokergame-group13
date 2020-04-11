@@ -124,7 +124,7 @@
     }
     .reportHeader{
         font-size: 1.5vw;
-        font-weight: 1000;
+        font-weight: 900;
         color: black;
     }
     .buttonXOuter{
@@ -203,7 +203,7 @@
         background: #0199bb;
     }
     .extraBold{
-        font-weight: 1000;
+        font-weight: 900;
     }
     .centerText{
         display : flex;
@@ -241,7 +241,8 @@ export default {
             }
             else {
                 // Send a filled report to the parent for submission to server
-                this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId);
+                let submittingUser = this.$parent.userID;
+                this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId, submittingUser);
             }
         },
         // Display or hide selection warning

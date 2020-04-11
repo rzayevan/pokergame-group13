@@ -9,6 +9,7 @@
                         v-bind:players="players"
                         v-bind:cardReveal="cardReveal"
                         v-bind:bigBlind="bigBlind"
+                        v-bind:timerReset="timerReset"
                 />
                 <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
             </div>
@@ -76,12 +77,12 @@ export default {
         return {
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
             raiseToValue: 0,
-
+            timerReset: true, // use this as a toggle, when the value changes, all timers reset (doesn't matter if its true or false)
             // right now the chat calls back to the poker page to send a report, might want to have the chat run with its own socket
             report_OffenderName: '',
             report_OffenderMessageId: '',
             // the image resource files for the card images
-            imageFiles: require("../images/ImageFiles").imageFiles,
+            imageFiles: require("../images/ImageFiles"),
             chatFull: true, // indicates whether the chat is in full view or half view (half view when report box is open)
             submittedSuccessfully: false,
             showForm: true,
@@ -107,6 +108,15 @@ export default {
             this.$router.replace({ name: "Login" });
         }
         else{
+            // when navigating to this component several times we need to clear the listeners
+            this.socket.removeListener("tableState");
+            this.socket.removeListener("leaveRoom");
+            this.socket.removeListener("beginTheGame");
+            this.socket.removeListener('showdown');
+            this.socket.removeListener("winner");
+            this.socket.removeListener('badMove');
+            this.socket.removeListener("reset");
+            this.socket.removeListener("submitReportResponse");
             // define all of the socket.on methods here
             this.socket.on('tableState', msgJSON => { // on a state update the UI is updated with all relavent info that can change, this simplifies socket calls by not having a unique socket call for each type of element update
                 let msg = JSON.parse(msgJSON);
@@ -120,10 +130,10 @@ export default {
                     this.players[i].chipTotal = seatStates[i].chips;
                     this.players[i].action = seatStates[i].action;
                     this.players[i].timer = seatStates[i].turn;
-                    this.players[i].accountImage.src = this.imageFiles.find(file => file.name === seatStates[i].icon).src;
+                    this.players[i].accountImage.src = this.imageFiles.getImage(seatStates[i].icon).src;
                 }
                 for(let i = 0; i < receivedCommunityCards.length; i++){
-                    this.communityCards[i].src = this.imageFiles.find(file => file.name === receivedCommunityCards[i]).src;
+                    this.communityCards[i].src = this.imageFiles.getImage(receivedCommunityCards[i]).src;
                 }
                 this.potTotal = msg.potTotal;
                 // on each tablestate update, this code will run to see if: the player is seated, it is the players turn, the check/fold is toggled
@@ -133,6 +143,7 @@ export default {
                     // the player wants to check, if can't then fold
                     this.makeDecision('CHECK/FOLD');
                 }
+                this.timerReset = !this.timerReset;
             });
             this.socket.on('leaveRoom', () => { // each player upon joining a table will receive the id of the seat they are to sit at
                 for(let i = 0; i < this.players.length; i++){
@@ -142,27 +153,25 @@ export default {
                     player.cards = {card1: {src: null}, card2: {src: null}};
                     player.bet = 0;
                     player.accountName = "";
-                    player.accountImage.src = this.imageFiles.find(file => file.name === 'invisible').src;
+                    player.accountImage.src = null;
                     player.chipTotal = "";
                     player.action = "WAITING";
                     player.youTag = false;
                     player.timer = false;
                 }
-                this.$router.push({ name: "Tables", params: {authenticated: true, userID: this.userID} });
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
             });
-
-            this.socket.on('beginTheGame', msgJSON => { // each player receives their two personal cards upon the game starting
-                let msg = JSON.parse(msgJSON);
-                this.myCards[0].src = this.imageFiles.find(file => file.name === msg[0]).src;
-                this.myCards[1].src = this.imageFiles.find(file => file.name === msg[1]).src;
+            this.socket.on('beginTheGame', cardsJSON => { // each player receives their two personal cards upon the game starting
+                let cards = JSON.parse(cardsJSON);
+                this.myCards[0].src = this.imageFiles.getImage(cards[0]).src;
+                this.myCards[1].src = this.imageFiles.getImage(cards[1]).src;
             });
-
-            this.socket.on('showdown', msgJSON => { // the showdown has begun, now all player cards are being shown
-                let msg = JSON.parse(msgJSON);
+            this.socket.on('showdown', cardsJSON => { // the showdown has begun, now all player cards are being shown
+                let cards = JSON.parse(cardsJSON);
                 for(let i = 0; i < this.players.length; i++){
                     this.players[i].cards = {
-                        card1: {src: this.imageFiles.find(file => file.name === msg[i][0]).src},
-                        card2: {src: this.imageFiles.find(file => file.name === msg[i][1]).src}
+                        card1: {src: this.imageFiles.getImage(cards[i][0]).src},
+                        card2: {src: this.imageFiles.getImage(cards[i][1]).src}
                     };
                 }
                 this.setPlayerCardsVisibility(true); // TODO: move this to a separate socket call, it only needs to execute once
@@ -178,12 +187,12 @@ export default {
 
             this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
                 // each player will reset the ui for a new game
-                this.myCards = [{src: this.imageFiles.find(file => file.name === 'card_empty').src}, {src: this.imageFiles.find(file => file.name === 'card_empty').src}];
+                this.myCards = [{src: this.imageFiles.getImage('card_empty').src}, {src: this.imageFiles.getImage('card_empty').src}];
                 for(let i = 0; i < this.players.length; i++){
-                    this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'card_back').src}, card2: {src: this.imageFiles.find(file => file.name === 'card_back').src}};
+                    this.players[i].cards = {card1: {src: this.imageFiles.getImage('card_back').src}, card2: {src: this.imageFiles.getImage('card_back').src}};
                 }
                 for(let i = 0; i < this.communityCards.length; i++){
-                    this.communityCards[i].src = this.imageFiles.find(file => file.name === 'card_empty').src
+                    this.communityCards[i].src = this.imageFiles.getImage('card_empty').src
                 }
                 this.setPlayerCardsVisibility(false); // all player cards in the table view are now hidden, (note these are just card_back images, they do not show the table players real cards)
             });
@@ -198,13 +207,13 @@ export default {
             // end of socket.on functions
             // asign the standard card_back image to each of player cards inititally
             // later the server will send the true cards at the show down
-            this.myCards = [{src: this.imageFiles.find(file => file.name === 'card_empty').src}, {src: this.imageFiles.find(file => file.name === 'card_empty').src}];
+            this.myCards = [{src: this.imageFiles.getImage('card_empty').src}, {src: this.imageFiles.getImage('card_empty').src}];
             for(let i = 0; i < this.players.length; i++){
-                this.players[i].accountImage.src = this.imageFiles.find(file => file.name === 'invisible').src;
-                this.players[i].cards = {card1: {src: this.imageFiles.find(file => file.name === 'invisible').src}, card2: {src: this.imageFiles.find(file => file.name === 'invisible').src}};
+                this.players[i].accountImage.src = this.imageFiles.getImage('invisible').src;
+                this.players[i].cards = {card1: {src: this.imageFiles.getImage('invisible').src}, card2: {src: this.imageFiles.getImage('invisible').src}};
             }
             for(let i = 0; i < this.communityCards.length; i++){
-                this.communityCards[i].src = this.imageFiles.find(file => file.name === 'card_empty').src;
+                this.communityCards[i].src = this.imageFiles.getImage( 'card_empty').src;
             }
             this.raiseToValue = this.bigBlind;
             this.players[this.seatID].youTag = true;
@@ -239,12 +248,14 @@ export default {
         setPlayerCardsVisibility(visible){
             this.cardReveal = visible;
         },
-        submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
+        submitReport(selected, message, report_OffenderName, report_OffenderMessageId, submittingUser){
             let reportData = {
                 reportType: selected,
                 reportComment: message,
                 offenderUsername: report_OffenderName,
-                chatMessageId: report_OffenderMessageId
+                chatMessageId: report_OffenderMessageId,
+                reportingUser: submittingUser,
+                roomID: this.roomID
             };
 
             this.socket.emit("submit report", reportData);

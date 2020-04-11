@@ -47,6 +47,7 @@
                     v-bind:action="player.action"
                     v-bind:youTag="player.youTag"
                     v-bind:timer="player.timer"
+                    v-bind:timerReset="timerReset"
                 />
             </div>
         </div>
@@ -171,7 +172,7 @@
         margin: 49.2% 0% 0% 80%;
         font-size: 1vw;
         text-align: center;
-        font-weight: 1000;
+        font-weight: 900;
     }
     img{
         width: 100%;
@@ -188,7 +189,7 @@ export default {
         PlayerSeat,
     },
     props: [
-        'potTotal', 'communityCards', 'players', 'cardReveal', 'bigBlind',
+        'potTotal', 'communityCards', 'players', 'cardReveal', 'bigBlind', 'timerReset',
     ],
 };
 </script>
