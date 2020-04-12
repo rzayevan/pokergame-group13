@@ -112,12 +112,12 @@
         
         // navigate to reports page if the user is an admin
         if(userData.isAdmin) {
-          this.$router.push({ name: "Reports", params: {authenticated: true, socket: this.socket, userData: userData}});
+          this.$router.replace({ name: "Reports", params: {authenticated: true, socket: this.socket, userData: userData}});
           return;
         }
 
         // otherwise, navigate to tables page
-        this.$router.push({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: userData}});
+        this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: userData}});
       });
 
       // display error message sent from server
