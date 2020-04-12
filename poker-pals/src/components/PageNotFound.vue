@@ -1,5 +1,5 @@
 <template>
-  <div id="login-page">
+  <div>
     <Navbar class="navbar-section"/>
     <div class="row">
       <div class="col">
