@@ -89,6 +89,12 @@ io.on('connection', (socket) => {
     // Attempt to submit the report and return the result of the attempt
     socket.on('submit report', function(reportData) {
         let submitReportSuccess = ReportUtils.submitReport(reportData);
+
+        // If a report was successfully submitted, update the table for admins
+        if (submitReportSuccess) {
+            io.emit('update reports', ReportUtils.getReports());
+        }
+
         socket.emit("submitReportResponse", submitReportSuccess);
     })
 
