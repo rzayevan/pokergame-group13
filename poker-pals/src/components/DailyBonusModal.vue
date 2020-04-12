@@ -34,13 +34,9 @@
 </template>
 
 <script>
-import io from "socket.io-client";
 export default {
     name: 'DailyBonusModal',
     props: ['dailyBonusAmount'],
-    mounted() {
-      this.socket = io("http://localhost:3000");
-    },
     methods: {
       // Hide modal
       hide: function() {
