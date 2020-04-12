@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
         // authenticate the user if the credentials provided exist in the stored data
         let result = UserUtils.credentialsMatch(clientData);
         if (result.matchFound && result.userData.isLoggedIn) {
-            socket.emit("alert text", "You've already loggen in. Please sign out of other sessions before trying again.");
+            socket.emit("alert text", "You've already logged in. Please sign out of other sessions before trying again.");
         } else if (result.matchFound) {
             if(result.banned){
                 socket.emit("banned");
