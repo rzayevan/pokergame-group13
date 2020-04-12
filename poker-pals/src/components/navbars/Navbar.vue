@@ -1,7 +1,7 @@
 <template>
     <nav>
         <b-navbar>
-            <b-navbar-brand to="/" class="mx-3">Poker Pals</b-navbar-brand>
+            <b-navbar-brand to="/login" class="mx-3">Poker Pals</b-navbar-brand>
         </b-navbar>
     </nav>
 </template>
