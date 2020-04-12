@@ -111,6 +111,14 @@ io.on('connection', (socket) => {
         pokerController.joinRoom(io, socket, msg);
     });
 
+    // Add daily bonus to user's chips value
+    socket.on('addDailyBonus', function(userId) {
+        let bonusAdded = DataAccessLayer.AddUserDailyBonus(userId);
+        if (bonusAdded !== 0) {
+            socket.emit('updateUserChips', bonusAdded);
+        }
+    }),
+
     // each player will send a message upon a game play button click, this will check whether or not it is the player's turn and if the move is valid
     socket.on('turnDecision', function(msg){
         pokerController.turnDecision(io, socket, msg);
