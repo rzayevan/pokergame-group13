@@ -142,6 +142,11 @@
         this.columns = data.gridColumns;
       });
 
+      // Receive new reports and update the data
+      this.socket.on('update reports', data => {
+        this.data = data;
+      });
+
       if (this.columns) {
         let sortOrders = {};
         this.columns.forEach(function (key) {
