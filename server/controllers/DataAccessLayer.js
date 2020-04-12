@@ -184,9 +184,7 @@ exports.AddUserDailyBonus = function(userId) {
         this.UpdateUser(user);
         return dailyBonus;
     }
-    else {
-        return 0;
-    }
+    return 0;   
 }
 
 /*
