@@ -1,57 +1,64 @@
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid poker-container">
         <UserNavbar class="w-100" :userData=userData />
-        <div class="row flex-grow-1 no-gutters">
-            <div class="col-9">
-                <TableLayout
-                        v-bind:potTotal="potTotal"
-                        v-bind:communityCards="communityCards"
-                        v-bind:players="players"
-                        v-bind:cardReveal="cardReveal"
-                        v-bind:bigBlind="bigBlind"
-                        v-bind:timerReset="timerReset"
-                />
-                <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
-            </div>
-            <div class="col-3">
+        <b-row class="row flex-grow-1" no-gutters>
+            <b-col cols="12" class="col-lg-9">
+                <b-row class="table-container m-0 p-0">
+                    <TableLayout
+                            v-bind:potTotal="potTotal"
+                            v-bind:communityCards="communityCards"
+                            v-bind:players="players"
+                            v-bind:cardReveal="cardReveal"
+                            v-bind:bigBlind="bigBlind"
+                            v-bind:timerReset="timerReset"
+                    />
+                </b-row>
+                <b-row class="display-container" no-gutters>
+                    <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
+                </b-row>
+            </b-col>
+            <b-col cols="3" class="d-none d-lg-block" >
                 <Chat v-bind:class="{ chatHalf: !chatFull}"
                       v-bind:tableName="tableName"
                       v-bind:userData="userData"
                 />
                 <ReportPocket v-show="!chatFull"
-                    v-bind:report_OffenderName="report_OffenderName"
-                    v-bind:report_OffenderMessageId="report_OffenderMessageId"
-                    v-bind:showForm="showForm"
-                    v-bind:submittedSuccessfully="submittedSuccessfully"
+                              v-bind:report_OffenderName="report_OffenderName"
+                              v-bind:report_OffenderMessageId="report_OffenderMessageId"
+                              v-bind:showForm="showForm"
+                              v-bind:submittedSuccessfully="submittedSuccessfully"
                 />
-            </div>
-        </div>
+            </b-col>
+        </b-row>
     </div>
 </template>
 
 <style scoped>
     .container-fluid {
+        padding: 0;
+        margin: 0;
+    }
+
+    .poker-container {
         display: flex;
         flex-direction: column;
+        width: 100%;
         height: 100%;
-        padding: 0;
-        overflow: hidden;
     }
 
-    .tableLayout {
+    .table-container {
         height: 60%;
-        max-height: 60%;
+        display: flex;
     }
 
-    .display {
+    .display-container {
         height: 40%;
-        max-height: 40%;
+        display: block;
     }
 
     .chatHalf {
         height: 46.5% !important;
     }
-
 
 
 </style>
@@ -159,7 +166,7 @@ export default {
                     player.youTag = false;
                     player.timer = false;
                 }
-                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} });
             });
             this.socket.on('beginTheGame', cardsJSON => { // each player receives their two personal cards upon the game starting
                 let cards = JSON.parse(cardsJSON);
