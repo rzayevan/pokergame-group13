@@ -21,7 +21,7 @@
 </template>
 
 <style scoped>
-    .player-inputs .btn, .player-inputs .switch {
+    .player-inputs .btn  {
         font-size: min(12px, 5vmin);
     }
 </style>
