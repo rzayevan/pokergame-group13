@@ -15,7 +15,7 @@
                 </div>
             </b-col>
         </b-row>
-        <form class="row p-2 no-gutters" v-on:submit="sendMessage">
+        <form class="row no-gutters" v-on:submit="sendMessage">
             <input type="text" class="input col-8 p-2" v-model="message" placeholder="Type a message">
             <button type="submit" class="btn col-4">SEND</button>
         </form>
@@ -55,8 +55,9 @@
     }
 
     form {
-        background: white;
         height: 10%;
+        max-height: 10%;
+        background: white;
     }
 
     .input {
@@ -68,7 +69,6 @@
     .btn {
         background-color: #01B0D9;
         color: white;
-
         max-width: 100%;
         max-height: 100%;
         font-size: 2vmin;

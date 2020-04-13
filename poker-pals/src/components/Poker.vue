@@ -23,10 +23,11 @@
                       v-bind:userData="userData"
                 />
                 <ReportPocket v-show="!chatFull"
-                              v-bind:report_OffenderName="report_OffenderName"
-                              v-bind:report_OffenderMessageId="report_OffenderMessageId"
-                              v-bind:showForm="showForm"
-                              v-bind:submittedSuccessfully="submittedSuccessfully"
+                      class="chatHalf"
+                      v-bind:report_OffenderName="report_OffenderName"
+                      v-bind:report_OffenderMessageId="report_OffenderMessageId"
+                      v-bind:showForm="showForm"
+                      v-bind:submittedSuccessfully="submittedSuccessfully"
                 />
             </b-col>
         </b-row>
@@ -57,7 +58,7 @@
     }
 
     .chatHalf {
-        height: 46.5% !important;
+        height: 50% !important;
     }
 
 
