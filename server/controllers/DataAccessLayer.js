@@ -163,7 +163,6 @@ exports.UserLoggedIn = function(userID){
             accountChips: user.chips,
             dailyBonus: UserUtils.getDailyBonusValue(),
         }
-        user.chips += UserUtils.getDailyBonusValue();
     }
     else{
         result = {
@@ -174,6 +173,18 @@ exports.UserLoggedIn = function(userID){
     user.lastLoggedInDate = currentDate;
     this.UpdateUser(user);
     return result;
+}
+
+// Add daily bonus to user's chip value 
+exports.AddUserDailyBonus = function(userId) {
+    let user = UserUtils.getUserById(userId);
+    if (user) {
+        let dailyBonus = UserUtils.getDailyBonusValue()
+        user.chips += dailyBonus;
+        this.UpdateUser(user);
+        return dailyBonus;
+    }
+    return 0;   
 }
 
 /*

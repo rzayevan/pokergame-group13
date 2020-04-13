@@ -8,7 +8,7 @@
                 <b-navbar-nav class="ml-auto mx-3">
                     <b-nav-item class="mx-2">
                         <img class="mr-2 img-fluid" :src="require('../../images/ImageFiles').getImage('chip').src" alt="Poker Chip"/>
-                        <span userData="userData" class="b-nav-text">{{userData.chips}}</span>
+                        <span class="b-nav-text">{{user.chips}}</span>
                     </b-nav-item>
                     <b-nav-item to="profile">
                         <img class="img-fluid" v-bind:src="playerIcon.src" alt="User Profile Image"/>
@@ -68,6 +68,7 @@
         },
         data() {
             return {
+                user: this.userData,
                 playerIcon: require("../../images/ImageFiles").getImage(this.userData.icon)
             }
         }

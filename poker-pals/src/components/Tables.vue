@@ -2,6 +2,7 @@
 <!-- Table list div --> 
   <div class = "table-list">
     <UserNavbar :userData=userData class="navbar-section"/>
+    <DailyBonusModal :dailyBonusAmount=dailyBonusAmount />
     <ul>
     <!-- Loop through tables and display --> 
     <li v-for="room in rooms" :key="room.roomID">
@@ -35,16 +36,19 @@
 
 <script>
 import UserNavbar from "./navbars/UserNavbar";
+import DailyBonusModal from "./DailyBonusModal";
 
 export default {
     name: 'Tables',
     components: {
-        UserNavbar
+        UserNavbar,
+        DailyBonusModal
     },
     props: ['authenticated', 'socket', 'userData'],
     data() {
         return {
             rooms: [],
+            dailyBonusAmount: 0
         };
     },
     mounted() {
@@ -65,16 +69,10 @@ export default {
                 this.rooms = rooms;
             });
 
+            // Open the daily bonus modal
             this.socket.on("dailyBonus", dailyBonusObject => {
-                console.log('thanks for logging in, your bonus for today is: ' + dailyBonusObject.dailyBonus);
-                // TODO: update navbar's chip count
-                // first update with account chips, then upon popup exit, update with dailybonus added
-                /*  daily bonus object is of the format
-                    dailyBonusObject = {
-                        accountChips: user.chips,
-                        dailyBonus: UserUtils.getDailyBonusValue(),
-                    }
-                */
+                this.dailyBonusAmount = dailyBonusObject.dailyBonus;
+                this.$bvModal.show("daily-bonus-modal");
             });
 
             this.socket.on("acountChips", chips => {
@@ -97,6 +95,11 @@ export default {
             this.socket.on('cannotJoinRoom', response => {
                 alert('cannot join room, reason: ' + response.reason);
             });
+
+            // After use has dismissed the daily bonus modal, update the userData object with the new chips value
+            this.socket.on('updateUserChips', (newChips) => {                
+                this.userData.chips += newChips;
+            });
         }
     },
     methods: {
@@ -106,6 +109,9 @@ export default {
                 userID: this.userData.id,
                 roomID: room.roomID, // the room the player wants to join
             });
+        },
+        addDailyBonus: function() {
+            this.socket.emit("addDailyBonus", this.userData.id);
         }
     }
 }

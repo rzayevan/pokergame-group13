@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
         // authenticate the user if the credentials provided exist in the stored data
         let result = UserUtils.credentialsMatch(clientData);
         if (result.matchFound && result.userData.isLoggedIn) {
-            socket.emit("alert text", "You've already loggen in. Please sign out of other sessions before trying again.");
+            socket.emit("alert text", "You've already logged in. Please sign out of other sessions before trying again.");
         } else if (result.matchFound) {
             if(result.banned){
                 socket.emit("banned");
@@ -89,6 +89,12 @@ io.on('connection', (socket) => {
     // Attempt to submit the report and return the result of the attempt
     socket.on('submit report', function(reportData) {
         let submitReportSuccess = ReportUtils.submitReport(reportData);
+
+        // If a report was successfully submitted, update the table for admins
+        if (submitReportSuccess) {
+            io.emit('update reports', ReportUtils.getReports());
+        }
+
         socket.emit("submitReportResponse", submitReportSuccess);
     })
 
@@ -110,6 +116,14 @@ io.on('connection', (socket) => {
     socket.on('joinRoomRequest', function(msg){ // a user wishes to join a room/table
         pokerController.joinRoom(io, socket, msg);
     });
+
+    // Add daily bonus to user's chips value
+    socket.on('addDailyBonus', function(userId) {
+        let bonusAdded = DataAccessLayer.AddUserDailyBonus(userId);
+        if (bonusAdded !== 0) {
+            socket.emit('updateUserChips', bonusAdded);
+        }
+    }),
 
     // each player will send a message upon a game play button click, this will check whether or not it is the player's turn and if the move is valid
     socket.on('turnDecision', function(msg){
