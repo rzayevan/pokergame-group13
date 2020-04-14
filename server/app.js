@@ -32,6 +32,11 @@ io.on('connection', (socket) => {
     console.log("Client connected.");          
     socket.emit("connected", "Hello from server");
 
+    socket.on('disconnect', function () {
+        console.log('Client disconnected.');
+        pokerController.disconnectFromTable(io, socket);
+    });
+
     socket.on('add-new-user', function(clientData) {
         // create a new user if the email provided is unique
         if (!UserUtils.emailExists(clientData)) {
@@ -78,12 +83,8 @@ io.on('connection', (socket) => {
     socket.on('log out user', function(clientData) {
         let user = UserUtils.getUserFromClientData(clientData);
         UserUtils.setUserLogInStatus(user, false);
-        console.log(user.username + " has logged out.");   
-    });
-
-    socket.on('disconnect', function () {
-        console.log('disconnected');
         pokerController.disconnectFromTable(io, socket);
+        console.log(user.username + " has logged out.");   
     });
 
     // Attempt to submit the report and return the result of the attempt

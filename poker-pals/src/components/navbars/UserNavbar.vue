@@ -53,14 +53,9 @@
 
 </style>
 <script>
-    import io from "socket.io-client";
-
     export default {
         name: "UserNavbar.vue",
-        props: ['userData'],
-        created() {
-            this.socket = io("http://localhost:3000"); // connect to our server
-        },
+        props: ['socket', 'userData'],
         methods: {
             logOut: function() {
                 this.socket.emit('log out user', this.userData);
