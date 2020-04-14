@@ -1,7 +1,7 @@
 /**
  * The number of seats at a table
  */
-const NUM_OF_TABLE_SEATS = 6;
+const NUM_OF_TABLE_SEATS = 1;
 /**
  * The high value for an ace
  */

@@ -34,6 +34,7 @@ class PokerController {
                 numberOfTableSeats: PokerUtils.GetNumberOfTableSeats()
             });
         }
+
         return list;
     }
 
@@ -102,6 +103,33 @@ class PokerController {
                 bigBlind: result.bigBlind,
             });
             io.to(roomToJoin.id).emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the updated table state in this room
+
+            //if joining the game results in a full table, add a table with same specs into room list 
+            if (table.isTableFull()) {
+                let copies = 0;
+                let tableSplit = null;
+                let tableOrigin = table.tableName;
+
+                if (table.tableName.includes(" ")) {
+                    tableSplit = String(table.tableName).split(" ");
+                    tableOrigin = tableSplit[0];
+                }
+
+                for (let i = 0; i < this.rooms.length; i++) {
+                    let room = this.rooms[i];
+                    if (room.table.tableName.includes(tableOrigin)) {
+                        copies++;
+                    }
+                }
+
+                let room = {
+                    id: uuid(),
+                    table: new PokerTable({ name: tableOrigin + " " + copies, bigBlind: table.bigBlind, buyIn: table.buyIn }),
+                }
+                this.rooms.push(room);
+            }
+
+
             io.emit("receiveRoomList", this.getRoomList()); // update the room list
             if (table.canAGameBegin() && !table.tableActive) { // check if we can begin a game
                 table.tableActive = true; // the table is now active
