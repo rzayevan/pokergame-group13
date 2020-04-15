@@ -76,7 +76,6 @@
         <b-row class="info" no-gutters>
             <b-col cols="4" offset="7" class="align-self-center">
                 Blinds: {{ bigBlind/2 }}/{{ bigBlind }}
-                <!--TODO later bind it to a variable-->
             </b-col>
         </b-row>
     </div>

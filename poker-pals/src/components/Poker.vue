@@ -14,7 +14,7 @@
                     />
                 </b-row>
                 <b-row class="display-container" no-gutters>
-                    <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
+                    <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind" v-bind:maxBet="players[seatID].chipTotal"/>
                 </b-row>
             </b-col>
             <b-col cols="3" class="d-none d-lg-block" >

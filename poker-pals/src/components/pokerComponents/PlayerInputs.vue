@@ -8,8 +8,7 @@
             </b-form-checkbox>
         </b-row>
         <b-row no-gutters class="my-1">
-            <!--  TODO: Limit max by the amount the user has left at this table. Handle Raise-->
-            <input id="raiseValue" class="col-8" type="number" :value="raise" :min="bigBlind"/>
+            <input id="raiseValue" class="col-8" type="number" :value="raise" :min="bigBlind" :step="bigBlind" :max="maxBet"/>
             <b-button class="col" variant="dark" v-on:click="makeDecision()">RAISE</b-button>
         </b-row>
         <b-row no-gutters class="my-1">
@@ -32,7 +31,7 @@
         components: {
         },
         props: [
-            'bigBlind',
+            'bigBlind', 'maxBet'
         ],
         data() {
             return {

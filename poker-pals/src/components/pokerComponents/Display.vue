@@ -18,7 +18,7 @@
                 </div>
             </b-col>
             <b-col cols="6" class="actions col-lg-4">
-                <PlayerInputs v-bind:bigBlind="bigBlind"/>
+                <PlayerInputs v-bind:bigBlind="bigBlind" v-bind:maxBet="maxBet"/>
             </b-col>
         </b-row>
 </template>
@@ -51,7 +51,7 @@
             PlayerInputs,
         },
         props: [
-            'myCards', 'bigBlind',
+            'myCards', 'bigBlind', 'maxBet'
         ],
         data() {
             return {
