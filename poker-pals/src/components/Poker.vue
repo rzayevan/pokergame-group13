@@ -229,13 +229,13 @@ export default {
     },
     methods:{
         // define all of the socket.emit methods here,
-        makeDecision(action){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
+        makeDecision(action, raise){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
             this.socket.emit("turnDecision", {
                 userID: this.userData.id,
                 roomID: this.roomID,
                 seatID: this.seatID,
                 action: action,
-                raiseToValue: this.raiseToValue, // only used if player is raising
+                raiseToValue: raise, // only used if player is raising
             });
             this.checkFold = false;
         },

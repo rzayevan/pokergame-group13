@@ -62,8 +62,8 @@
             toggleCheatSheet(){
                 this.cheatSheetOpen = !this.cheatSheetOpen;
             },
-            makeDecision(action){
-                this.$parent.makeDecision(action);
+            makeDecision(action, raise){
+                this.$parent.makeDecision(action, raise);
             },
             toggleCheckFoldButton(checkFold){
                 this.$parent.toggleCheckFoldButton(checkFold);
