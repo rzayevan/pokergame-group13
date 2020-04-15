@@ -42,6 +42,9 @@ exports.emailExists = function(user) {
  * Returns the updated user data
  */
 exports.updateUserLoginInfo = function(user, loggedIn, socketID) {
+    if (!user) {
+        return; // don't do anything if the user object is null
+    }
     user.socketID = socketID;
     user.isLoggedIn = loggedIn;
     DataAccessLayer.UpdateUser(user);
