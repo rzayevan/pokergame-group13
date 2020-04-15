@@ -1,6 +1,6 @@
 <template>
     <div class="outerFrame"> <!--the outer container of the entire page, used to define its size-->
-        <UserNavbar :userData=userData /> <!-- the naviagation bar-->
+        <UserNavbar :socket=socket :userData=userData :hideLogOut=true /> <!-- the naviagation bar-->
         <div class="tableLayoutAndDisplay"> <!--a container to separate the table and inputs from the chat-->
             <TableLayout
                 v-bind:potTotal="potTotal"

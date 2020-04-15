@@ -1,7 +1,7 @@
 <template>
 <!-- Table list div --> 
   <div class = "table-list">
-    <UserNavbar :userData=userData class="navbar-section"/>
+    <UserNavbar :socket=socket :userData=userData :hideLogOut=false class="navbar-section"/>
     <DailyBonusModal :dailyBonusAmount=dailyBonusAmount />
     <ul>
     <!-- Loop through tables and display --> 

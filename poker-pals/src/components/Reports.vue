@@ -1,6 +1,6 @@
 <template>
   <div id="reports-page">
-    <AdminNavbar :userData=userData class="navbar-section"/>
+    <AdminNavbar :socket=socket :userData=userData class="navbar-section"/>
     <div class="wrapper">
       <ReportModal
         :reportData=reportData

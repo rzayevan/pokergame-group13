@@ -38,10 +38,11 @@ exports.emailExists = function(user) {
 }
 
 /**
- * Will set supplied user's loggedIn status to the boolean value provided
- * Returns data belonging to the updated user
+ * Will set the loggedIn status and socketID of the supplied user
+ * Returns the updated user data
  */
-exports.setUserLogInStatus = function(user,loggedIn) {
+exports.updateUserLoginInfo = function(user, loggedIn, socketID) {
+    user.socketID = socketID;
     user.isLoggedIn = loggedIn;
     DataAccessLayer.UpdateUser(user);
     return this.getUserById(user.id);
@@ -60,6 +61,9 @@ exports.getUserFromClientData = function(clientData) {
     return matchingUser;
 }
 
+/**
+ * Returns user data from id provided
+ */
 exports.getUserById = function(id) {
     let users = DataAccessLayer.GetCachedUsers();
 
@@ -70,6 +74,22 @@ exports.getUserById = function(id) {
     return matchingUser;
 }
 
+/**
+ * Returns user data from socketID provided
+ */
+exports.getUserBySocketId = function(socketID) {
+    let users = DataAccessLayer.GetCachedUsers();
+
+    let matchingUser = users.find(user => {
+        return user.socketID === socketID;
+    });
+
+    return matchingUser;
+}
+
+/**
+ * Returns user data from username provided
+ */
 exports.getUserByUsername = function(username) {
     let users = DataAccessLayer.GetCachedUsers();
 
@@ -80,15 +100,20 @@ exports.getUserByUsername = function(username) {
     return matchingUser;
 }
 
+/**
+ * Returns the name of a new user icon
+ */
 exports.createUserIcon = function(number) {
-    if(number !== undefined && !Number.isNaN(number)){
+    if (number !== undefined && !Number.isNaN(number)) {
         return 'player_icon_' + number.toString();
     }
-    else{
-        return 'player_icon_' + Math.floor(Math.random()*NUMBER_OF_ICONS+1).toString();
-    }
+
+    return 'player_icon_' + Math.floor(Math.random()*NUMBER_OF_ICONS+1).toString();
 }
 
+/**
+ * Returns the daily bonus value
+ */
 exports.getDailyBonusValue = function() {
     return DAILY_BONUS_VALUE;
 }
