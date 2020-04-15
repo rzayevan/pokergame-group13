@@ -33,8 +33,12 @@ io.on('connection', (socket) => {
     socket.emit("connected", "Hello from server");
 
     socket.on('disconnect', function () {
-        console.log('Client disconnected.');
+        // find the user based on socket id
+        let user = UserUtils.getUserBySocketId(socket.id);
+        // disconnect the user from the system
+        UserUtils.updateUserLoginInfo(user, false, "null");
         pokerController.disconnectFromTable(io, socket);
+        console.log('Client disconnected.');
     });
 
     socket.on('add-new-user', function(clientData) {
