@@ -59,7 +59,7 @@ io.on('connection', (socket) => {
             socket.emit("banned");
         } else if (result.matchFound && !result.banned) {
             // log the user in and notify the client
-            let updatedUser = UserUtils.setUserLogInStatus(result.userData, true);
+            let updatedUser = UserUtils.updateUserLoginInfo(result.userData, true, socket.id);
             socket.emit("authenticated", updatedUser);
             console.log(result.userData.username + " has logged in.");  
 
@@ -79,7 +79,7 @@ io.on('connection', (socket) => {
 
     socket.on('log out user', function(clientData) {
         let user = UserUtils.getUserFromClientData(clientData);
-        UserUtils.setUserLogInStatus(user, false);
+        UserUtils.updateUserLoginInfo(user, false, "null");
         pokerController.disconnectFromTable(io, socket);
         console.log(user.username + " has logged out.");   
     });
