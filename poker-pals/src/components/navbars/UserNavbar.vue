@@ -13,7 +13,7 @@
                     <b-nav-item to="profile">
                         <img class="img-fluid" v-bind:src="playerIcon.src" alt="User Profile Image"/>
                     </b-nav-item>
-                    <b-nav-item to="/">
+                    <b-nav-item v-if="!hideLogOut" to="/">
                         <b-nav-text class="material-icons" @click="logOut()"> logout </b-nav-text>
                     </b-nav-item>
                 </b-navbar-nav>
@@ -53,14 +53,9 @@
 
 </style>
 <script>
-    import io from "socket.io-client";
-
     export default {
         name: "UserNavbar.vue",
-        props: ['userData'],
-        created() {
-            this.socket = io("http://localhost:3000"); // connect to our server
-        },
+        props: ['socket', 'userData', 'hideLogOut'],
         methods: {
             logOut: function() {
                 this.socket.emit('log out user', this.userData);

@@ -3,42 +3,46 @@ const { v1: uuid } = require('uuid');
 class User {
     // Creates an empty user
     constructor() {
-         // The uuid of the user
-         this.id;
-         // A boolean stating whether the user is logged in or not
-         this.isLoggedIn;
-         // A boolean stating whether the user is an Admin or not
-         this.isAdmin;
-         // The username of the user
-         this.username;
-         // The password of the user
-         this.password;
-         // The email of the user
-         this.email;
-         // The number of chips the user has
-         this.chips;
-         // The image icon name of the user
-         this.icon;
-         // The number of hands the user has won
-         this.handsWon;
-         // The number of hands the user has lost
-         this.handsLost;
-         // The number of hands the user has played
-         this.handsPlayed;
-         // The last time this entry was updated
-         this.lastUpdatedDate;
-         // The last time this entry was logged in
-         this.lastLoggedInDate;
-         // The time this entry was created
-         this.createdDate;
-         // Wether or not the user is banned
-         this.banned;
+        // The uuid of the user
+        this.id;
+        // The socketID of the user
+        this.socketID;
+        // A boolean stating whether the user is logged in or not
+        this.isLoggedIn;
+        // A boolean stating whether the user is an Admin or not
+        this.isAdmin;
+        // The username of the user
+        this.username;
+        // The password of the user
+        this.password;
+        // The email of the user
+        this.email;
+        // The number of chips the user has
+        this.chips;
+        // The image icon name of the user
+        this.icon;
+        // The number of hands the user has won
+        this.handsWon;
+        // The number of hands the user has lost
+        this.handsLost;
+        // The number of hands the user has played
+        this.handsPlayed;
+        // The last time this entry was updated
+        this.lastUpdatedDate;
+        // The last time this entry was logged in
+        this.lastLoggedInDate;
+        // The time this entry was created
+        this.createdDate;
+        // Wether or not the user is banned
+        this.banned;
     }
 
     // Populates the fields of a newly created User object
     CreateNewUser(username, password, email, icon, isAdmin = false) {
         // The uuid of the user
         this.id = uuid();
+        // The socketID of the user
+        this.socketID = "";
         // A boolean stating whether the user is logged in or not
         this.isLoggedIn = false;
         // A boolean stating whether the user is an Admin or not
@@ -76,6 +80,8 @@ class User {
     CopyUser(userToCopy) {
         // The id of the user
         this.id = userToCopy.id;
+        // The socketID of the user
+        this.socketID = userToCopy.socketID;
         // A boolean stating whether the user is logged in or not
         this.isLoggedIn = userToCopy.isLoggedIn;
         // A boolean stating whether the user is an Admin or not

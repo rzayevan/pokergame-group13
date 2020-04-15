@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid poker-container">
-        <UserNavbar class="w-100" :userData=userData />
+        <UserNavbar class="w-100" :socket=socket :userData=userData :hideLogOut=true /> <!-- the naviagation bar-->
         <b-row class="row flex-grow-1" no-gutters>
             <b-col cols="12" class="col-lg-9">
                 <b-row class="table-container m-0 p-0">
@@ -22,7 +22,7 @@
                       v-bind:tableName="tableName"
                       v-bind:userData="userData"
                 />
-                <ReportPocket v-show="!chatFull"
+                <ReportPocket v-if="!chatFull"
                       class="chatHalf"
                       v-bind:report_OffenderName="report_OffenderName"
                       v-bind:report_OffenderMessageId="report_OffenderMessageId"
@@ -60,8 +60,6 @@
     .chatHalf {
         height: 50% !important;
     }
-
-
 </style>
 
 <script>

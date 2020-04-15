@@ -32,6 +32,15 @@ io.on('connection', (socket) => {
     console.log("Client connected.");          
     socket.emit("connected", "Hello from server");
 
+    socket.on('disconnect', function () {
+        // find the user based on socket id
+        let user = UserUtils.getUserBySocketId(socket.id);
+        // disconnect the user from the system
+        UserUtils.updateUserLoginInfo(user, false, "null");
+        pokerController.disconnectFromTable(io, socket);
+        console.log('Client disconnected.');
+    });
+
     socket.on('add-new-user', function(clientData) {
         // create a new user if the email provided is unique
         if (!UserUtils.emailExists(clientData)) {
@@ -50,25 +59,22 @@ io.on('connection', (socket) => {
         let result = UserUtils.credentialsMatch(clientData);
         if (result.matchFound && result.userData.isLoggedIn) {
             socket.emit("alert text", "You've already logged in. Please sign out of other sessions before trying again.");
-        } else if (result.matchFound) {
-            if(result.banned){
-                socket.emit("banned");
-            } else {
-                // log the user in and notify the client
-                let updatedUser = UserUtils.setUserLogInStatus(result.userData, true);
-                socket.emit("authenticated", updatedUser);
-                console.log(result.userData.username + " has logged in.");  
+        } else if (result.matchFound && result.banned) {
+            socket.emit("banned");
+        } else if (result.matchFound && !result.banned) {
+            // log the user in and notify the client
+            let updatedUser = UserUtils.updateUserLoginInfo(result.userData, true, socket.id);
+            socket.emit("authenticated", updatedUser);
+            console.log(result.userData.username + " has logged in.");  
 
-                let loggedInResult = DataAccessLayer.UserLoggedIn(result.userData.id);
-                // at this moment the user's funds have already been updated we want to send a visual effect
-                // so send back the user's funds - bonus, and the bonus, the user will click and their displayed funds is updated
-                if(loggedInResult.dailyBonus !== 0){
-                    // we want the bonus to show up after the table list has, set a timeout function
-                    setTimeout(function(){ socket.emit("dailyBonus", loggedInResult) }, 1000); // 1 second seems fair
-                }
-                else{
-                    socket.emit("acountChips", loggedInResult.accountChips);
-                }
+            let loggedInResult = DataAccessLayer.UserLoggedIn(result.userData.id);
+            // at this moment the user's funds have already been updated we want to send a visual effect
+            // so send back the user's funds - bonus, and the bonus, the user will click and their displayed funds is updated
+            if(loggedInResult.dailyBonus !== 0){
+                // we want the bonus to show up after the table list has, set a timeout function
+                setTimeout(function(){ socket.emit("dailyBonus", loggedInResult) }, 1000); // 1 second seems fair
+            } else {
+                socket.emit("acountChips", loggedInResult.accountChips);
             }
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");
@@ -77,13 +83,9 @@ io.on('connection', (socket) => {
 
     socket.on('log out user', function(clientData) {
         let user = UserUtils.getUserFromClientData(clientData);
-        UserUtils.setUserLogInStatus(user, false);
-        console.log(user.username + " has logged out.");   
-    });
-
-    socket.on('disconnect', function () {
-        console.log('disconnected');
+        UserUtils.updateUserLoginInfo(user, false, "null");
         pokerController.disconnectFromTable(io, socket);
+        console.log(user.username + " has logged out.");   
     });
 
     // Attempt to submit the report and return the result of the attempt

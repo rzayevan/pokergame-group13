@@ -1,6 +1,6 @@
 <template>
   <div id="reports-page">
-    <AdminNavbar :userData=userData class="navbar-section"/>
+    <AdminNavbar :socket=socket :userData=userData class="navbar-section"/>
     <div class="wrapper">
       <ReportModal
         :reportData=reportData
@@ -160,14 +160,73 @@
 </script>
 
 <style scoped>
+  @media (min-width: 300px) {
+    #reports-grid {
+      display: flex;
+      display: -webkit-flex;
+      flex-direction: column;
+      -webkit-flex-direction: column;
+      width: inherit;
+      margin: auto;
+      height: 100%;
+    } 
+
+    th, td {
+      width: 25%;
+      padding: 10px 20px;
+      font-size: 3vw;
+    }
+
+    form {
+      font-size: 4vw;
+    }
+
+    .form-control {
+      width: 80%;
+      margin-left: 5%;
+      font-size: 3.5vw;
+    }
+  }
+
+  @media (min-width: 768px) {
+    #reports-grid {
+      display: flex;
+      display: -webkit-flex;
+      flex-direction: column;
+      -webkit-flex-direction: column;
+      width: 80%;
+      max-width: 80%;
+      margin: auto;
+      height: 100%;
+    }
+
+    th, td {
+      width: 25%;
+      padding: 10px 20px;
+      font-size: 1.25vw;
+    }
+
+    form {
+      font-size: 1.25vw;
+    }
+
+    .form-control {
+      width: 80%;
+      margin-left: 5%;
+      font-size: 1.25vw;
+      height: calc(1.5em + 0.75rem + 2px); 
+    }
+  }
+
   form {
-    padding-bottom: 15px;
+    padding-bottom: 1.5%;
   }
 
   body {
     font-family: Helvetica Neue, Arial, sans-serif;
     font-size: 14px;
     color: #555;
+    width: 100%;
   }
 
   #search {
@@ -176,14 +235,11 @@
     justify-content: center;
   }
 
-  .form-control {
-    width: 80%;
-    margin-left: 5%;
-  }
-
   table {
     border-spacing: 0;
     width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
   }
 
   th {
@@ -240,15 +296,5 @@
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     border-top: 4px solid white;
-  }
-
-  #reports-grid {
-    display: flex;
-    display: -webkit-flex;
-    flex-direction: column;
-    -webkit-flex-direction: column;
-    width: 80%;
-    margin: auto;
-    height: 100%;
   }
 </style>
