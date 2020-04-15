@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
         let user = UserUtils.getUserBySocketId(socket.id);
         // log the user out from the system
         UserUtils.updateUserLoginInfo(user, false, "null");
-        socket.emit("user disconnect");
+        pokerController.disconnectFromTable(io, socket);
         console.log('Client disconnected.');
     });
 
