@@ -139,7 +139,6 @@
         
         // send a request to the server
         this.socket.emit('authenticate user', {
-          socket: this.socket,
           email: this.loginData.email,
           password: this.loginData.password
         });
