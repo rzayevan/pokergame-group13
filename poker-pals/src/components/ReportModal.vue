@@ -75,7 +75,6 @@ export default {
     .control-btn {
       font-size: 4.5vw !important;
     }
-
   }
 
   @media (min-width: 768px) {
