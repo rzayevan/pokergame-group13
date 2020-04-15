@@ -35,9 +35,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', function () {
         // find the user based on socket id
         let user = UserUtils.getUserBySocketId(socket.id);
-        // disconnect the user from the system
+        // log the user out from the system
         UserUtils.updateUserLoginInfo(user, false, "null");
-        pokerController.disconnectFromTable(io, socket);
+        socket.emit("user disconnect");
         console.log('Client disconnected.');
     });
 
@@ -88,7 +88,7 @@ io.on('connection', (socket) => {
         console.log(user.username + " has logged out.");   
     });
 
-    socket.on('diconnect from table', function(clientData) {
+    socket.on('diconnect from table', function() {
         pokerController.disconnectFromTable(io, socket);
     });
 

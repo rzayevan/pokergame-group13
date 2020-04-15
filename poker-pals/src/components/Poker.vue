@@ -120,7 +120,11 @@ export default {
             this.socket.removeListener('badMove');
             this.socket.removeListener("reset");
             this.socket.removeListener("submitReportResponse");
+            this.socket.removeListener("diconnect from table");
             // define all of the socket.on methods here
+            this.socket.on('user disconnect', () => {
+                this.socket.emit('diconnect from table');
+            });
             this.socket.on('tableState', msgJSON => { // on a state update the UI is updated with all relavent info that can change, this simplifies socket calls by not having a unique socket call for each type of element update
                 let msg = JSON.parse(msgJSON);
                 let seatStates = msg.seatStates;
