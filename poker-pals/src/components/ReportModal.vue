@@ -28,10 +28,10 @@
       
       <!-- Modal footer template -->
       <template v-slot:modal-footer>
-        <b-button reportData="reportData" variant="primary" @click="dismiss()" :disabled="reportData.isReviewed">
+        <b-button class="control-btn" reportData="reportData" variant="primary" @click="dismiss()" :disabled="reportData.isReviewed">
           Dismiss
         </b-button>
-        <b-button reportData="reportData" variant="danger" @click="ban()" :disabled="reportData.isReviewed">
+        <b-button class="control-btn" reportData="reportData" variant="danger" @click="ban()" :disabled="reportData.isReviewed">
           Ban
         </b-button>
       </template>
@@ -67,6 +67,27 @@ export default {
 </script>
 
 <style scoped>
+  @media (min-width: 300px) {
+    p {
+      font-size: 4vw;
+    }
+
+    .control-btn {
+      font-size: 4.5vw !important;
+    }
+
+  }
+
+  @media (min-width: 768px) {
+    p {
+      font-size: 1.25vw;
+    }
+
+    .control-btn {
+      font-size: 1.25vw !important;
+    }
+  }
+
   body {
     height: 100%;
   }
@@ -76,10 +97,6 @@ export default {
   }
 
   .modal-container {
-    height: 100%;
-  }
-
-  #report-modal {
     height: 100%;
   }
 
