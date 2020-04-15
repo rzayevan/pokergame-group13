@@ -43,6 +43,7 @@ exports.emailExists = function(user) {
  */
 exports.updateUserLoginInfo = function(user, loggedIn, socketID) {
     if (!user) {
+        console.log("User was not found. Disconnecting..");
         return; // don't do anything if the user object is null
     }
     user.socketID = socketID;
