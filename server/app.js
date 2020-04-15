@@ -88,6 +88,10 @@ io.on('connection', (socket) => {
         console.log(user.username + " has logged out.");   
     });
 
+    socket.on('diconnect from table', function(clientData) {
+        pokerController.disconnectFromTable(io, socket);
+    });
+
     // Attempt to submit the report and return the result of the attempt
     socket.on('submit report', function(reportData) {
         let submitReportSuccess = ReportUtils.submitReport(reportData);
