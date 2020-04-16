@@ -1,61 +1,69 @@
 <template>
-    <div class="outerFrame"> <!--the outer container of the entire page, used to define its size-->
-        <UserNavbar /> <!-- the naviagation bar-->
-        <div class="tableLayoutAndDisplay"> <!--a container to separate the table and inputs from the chat-->
-            <TableLayout
-                v-bind:potTotal="potTotal"
-                v-bind:communityCards="communityCards"
-                v-bind:players="players"
-                v-bind:cardReveal="cardReveal"
-                v-bind:bigBlind="bigBlind"
-                v-bind:timerReset="timerReset"
-            />
-            <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
-        </div>
-
-        <div id="chatContainer"  v-bind:class="{ chatHalf: !chatFull}">
-            <Chat v-bind:tableName="tableName" v-bind:userID="userID"/>
-        </div>
-
-        <ReportPocket v-if="!chatFull"
-              v-bind:report_OffenderName="report_OffenderName"
-              v-bind:report_OffenderMessageId="report_OffenderMessageId"
-              v-bind:showForm="showForm"
-              v-bind:submittedSuccessfully="submittedSuccessfully"
-        /> <!--the report box that shows up upon a player requesting to report another player, takes half of the space alotted to the chat-->
+    <div class="container-fluid poker-container">
+        <UserNavbar class="w-100" :socket=socket :userData=userData :hideLogOut=true /> <!-- the naviagation bar-->
+        <b-row class="row flex-grow-1" no-gutters>
+            <b-col cols="12" class="col-lg-9">
+                <b-row class="table-container m-0 p-0">
+                    <TableLayout
+                            v-bind:potTotal="potTotal"
+                            v-bind:communityCards="communityCards"
+                            v-bind:players="players"
+                            v-bind:cardReveal="cardReveal"
+                            v-bind:bigBlind="bigBlind"
+                            v-bind:timerReset="timerReset"
+                    />
+                </b-row>
+                <b-row class="display-container" no-gutters>
+                    <Display
+                            v-bind:myCards="myCards"
+                            v-bind:bigBlind="bigBlind"
+                            v-bind:maxBet="players[seatID].chipTotal"
+                            v-bind:turnOptions="turnOptions"
+                    />
+                </b-row>
+            </b-col>
+            <b-col cols="3" class="d-none d-lg-block" >
+                <Chat v-bind:class="{ chatHalf: !chatFull}"
+                      v-bind:tableName="tableName"
+                      v-bind:userData="userData"
+                />
+                <ReportPocket v-if="!chatFull"
+                      class="chatHalf"
+                      v-bind:report_OffenderName="report_OffenderName"
+                      v-bind:report_OffenderMessageId="report_OffenderMessageId"
+                      v-bind:showForm="showForm"
+                      v-bind:submittedSuccessfully="submittedSuccessfully"
+                />
+            </b-col>
+        </b-row>
     </div>
 </template>
 
 <style scoped>
-    /* because borders do not accept percentages, they interfere with the scaling calculations, 
-    the solution is to surround elements with an outer div with a back ground and then put another
-    div inside with the elements, this simulates a black border*/
-
-    /* Limit the chat's size*/
-    #chatContainer {
-        float: left;
-        width: 30%;
-        height: 93%;
+    .container-fluid {
+        padding: 0;
+        margin: 0;
     }
 
-     .chatHalf {
-        height: 46.5% !important;
-    }
-
-    .outerFrame{
-        width: 80vw;
-        height: 45vw;
-    }
-    .tableLayoutAndDisplay{
-        position: relative;
-        float: left;
-        width: 70%;
-        height: 93%;
-    }
-
-    img{
+    .poker-container {
+        display: flex;
+        flex-direction: column;
         width: 100%;
         height: 100%;
+    }
+
+    .table-container {
+        height: 60%;
+        display: flex;
+    }
+
+    .display-container {
+        height: 40%;
+        display: block;
+    }
+
+    .chatHalf {
+        height: 50% !important;
     }
 </style>
 
@@ -75,7 +83,7 @@ export default {
         TableLayout,
         Display,
     },
-    props: ['authenticated', 'socket', 'userID', 'roomID', 'seatID', 'tableName', 'bigBlind'],
+    props: ['authenticated', 'socket', 'userData', 'roomID', 'seatID', 'tableName', 'bigBlind'],
     data() {
         return {
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
@@ -104,6 +112,13 @@ export default {
                 {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: {src: null}, chipTotal: "", action: "WAITING", youTag: false, timer: false},
             ],
             communityCards: [{src:null},{src:null},{src:null},{src:null},{src:null}], // community cards revealed at any given time
+            turnOptions: {
+                check: false,
+                call: false,
+                fold: false,
+                raise: false,
+                allIn: false,
+            }
         };
     },
     mounted(){
@@ -147,6 +162,23 @@ export default {
                     this.makeDecision('CHECK/FOLD');
                 }
                 this.timerReset = !this.timerReset;
+
+                if(seatStates[this.seatID].turn){ // it is your turn
+                    this.turnOptions = msg.turnOptions; // right now display is accepting these with v-bind but does not have them as props
+                    // TODO: for front end, set the respective buttons based on the values sent, format of turnOptions is shown in 'else' below
+                    // after expand-poker is merged this will be adressed
+                    console.log(JSON.stringify(this.turnOptions));
+                }
+                else{ // all buttons except for check/fold toggle are disabled
+                    this.turnOptions = {
+                        check: false,
+                        call: false,
+                        fold: false,
+                        raise: false,
+                        allIn: false,
+                        // note: check/fold button is available regardless of turn status
+                    }
+                }
             });
             this.socket.on('leaveRoom', () => { // each player upon joining a table will receive the id of the seat they are to sit at
                 for(let i = 0; i < this.players.length; i++){
@@ -162,7 +194,7 @@ export default {
                     player.youTag = false;
                     player.timer = false;
                 }
-                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userID: this.userID} });
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} });
             });
             this.socket.on('beginTheGame', cardsJSON => { // each player receives their two personal cards upon the game starting
                 let cards = JSON.parse(cardsJSON);
@@ -179,12 +211,15 @@ export default {
                 }
                 this.setPlayerCardsVisibility(true); // TODO: move this to a separate socket call, it only needs to execute once
             });
+
             this.socket.on('winner', () => { // later add some animation to indicate that they won
                 // TODO: winner animation goes here
             });
+
             this.socket.on('badMove', () => { // later add some animation to indicate that they won
                 alert('bad move');
             });
+
             this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
                 // each player will reset the ui for a new game
                 this.myCards = [{src: this.imageFiles.getImage('card_empty').src}, {src: this.imageFiles.getImage('card_empty').src}];
@@ -221,13 +256,13 @@ export default {
     },
     methods:{
         // define all of the socket.emit methods here,
-        makeDecision(action){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
+        makeDecision(action, raise){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
             this.socket.emit("turnDecision", {
-                userID: this.userID,
+                userID: this.userData.id,
                 roomID: this.roomID,
                 seatID: this.seatID,
                 action: action,
-                raiseToValue: this.raiseToValue, // only used if player is raising
+                raiseToValue: raise, // only used if player is raising
             });
             this.checkFold = false;
         },
@@ -237,7 +272,7 @@ export default {
         },
         exitTable(){ // allows a player to leave the table, player will forfeit any chips in the pot
             this.socket.emit("exitRoomRequest", {
-                userID: this.userID,
+                userID: this.userData.id,
                 roomID: this.roomID,
                 seatID: this.seatID,
             });
@@ -248,12 +283,14 @@ export default {
         setPlayerCardsVisibility(visible){
             this.cardReveal = visible;
         },
-        submitReport(selected, message, report_OffenderName, report_OffenderMessageId){
+        submitReport(selected, message, report_OffenderName, report_OffenderMessageId, submittingUser){
             let reportData = {
                 reportType: selected,
                 reportComment: message,
                 offenderUsername: report_OffenderName,
-                chatMessageId: report_OffenderMessageId
+                chatMessageId: report_OffenderMessageId,
+                reportingUser: submittingUser,
+                roomID: this.roomID
             };
 
             this.socket.emit("submit report", reportData);

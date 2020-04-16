@@ -7,6 +7,7 @@ const { v1: uuid } = require('uuid');
 
 let PokerController = require("./controllers/PokerController.js");
 let ReportController = require("./controllers/ReportController.js");
+let ChatMessage = require("./model/ChatMessage.js")
 let pokerController, reportController;
 
 const DataAccessLayer = require('./controllers/DataAccessLayer.js');
@@ -31,50 +32,78 @@ io.on('connection', (socket) => {
     console.log("Client connected.");
     socket.emit("connected", "Hello from server");
 
-    socket.on('add-new-user', function(user) {
+    socket.on('disconnect', function () {
+        // find the user based on socket id
+        let user = UserUtils.getUserBySocketId(socket.id);
+        // disconnect the user from the system
+        UserUtils.updateUserLoginInfo(user, false, "null");
+        pokerController.disconnectFromTable(io, socket);
+        console.log('Client disconnected.');
+    });
+
+    socket.on('add-new-user', function(clientData) {
         // create a new user if the email provided is unique
-        if (!UserUtils.emailExists(user)) {
+        if (!UserUtils.emailExists(clientData)) {
             let newUser = new User();
-            newUser.CreateNewUser(user.username, user.password, user.email, UserUtils.createUserIcon());
+            newUser.CreateNewUser(clientData.username, clientData.password, clientData.email, UserUtils.createUserIcon());
             DataAccessLayer.AddUserToFile(newUser);
             socket.emit("alert text", "Successfully signed up!");
+            console.log(clientData.username + " has signed up.");
         } else {
             socket.emit("alert text", "Email provided already exists. Please try again.");
         }
     });
 
-    socket.on('authenticate user', function(user) {
+    socket.on('authenticate user', function(clientData) {
         // authenticate the user if the credentials provided exist in the stored data
-        let result = UserUtils.credentialsMatch(user);
-        if (result.matchFound) {
-            if(result.banned){
-                socket.emit("banned");
+        let result = UserUtils.credentialsMatch(clientData);
+        if (result.matchFound && result.userData.isLoggedIn) {
+            socket.emit("alert text", "You've already logged in. Please sign out of other sessions before trying again.");
+        } else if (result.matchFound && result.banned) {
+            let updatedUser = UserUtils.updateUserLoginInfo(result.userData, true, socket.id);
+            socket.emit("authenticated", updatedUser);
+            console.log('banned');
+        } else if (result.matchFound && !result.banned) {
+            // log the user in and notify the client
+            let updatedUser = UserUtils.updateUserLoginInfo(result.userData, true, socket.id);
+            socket.emit("authenticated", updatedUser);
+            console.log(result.userData.username + " has logged in.");  
+
+            let loggedInResult = DataAccessLayer.UserLoggedIn(result.userData.id);
+            // at this moment the user's funds have already been updated we want to send a visual effect
+            // so send back the user's funds - bonus, and the bonus, the user will click and their displayed funds is updated
+            if(loggedInResult.dailyBonus !== 0){
+                // we want the bonus to show up after the table list has, set a timeout function
+                setTimeout(function(){ socket.emit("dailyBonus", loggedInResult) }, 1000); // 1 second seems fair
             } else {
-                socket.emit("authenticatedUser", result.userID);
-                let loggedInResult = DataAccessLayer.UserLoggedIn(result.userID);
-                // at this moment the user's funds have already been updated we want to send a visual effect
-                // so send back the user's funds - bonus, and the bonus, the user will click and their displayed funds is updated
-                if(loggedInResult.dailyBonus !== 0){
-                    // we want the bonus to show up after the table list has, set a timeout function
-                    setTimeout(function(){ socket.emit("dailyBonus", loggedInResult) }, 1000); // 1 second seems fair
-                }
-                else{
-                    socket.emit("acountChips", loggedInResult.accountChips);
-                }
+                socket.emit("acountChips", loggedInResult.accountChips);
             }
         } else {
             socket.emit("alert text", "Authentication failed. Please try again.");
         }
     });
 
-    socket.on('disconnect', function() {
-        console.log('disconnected');
+    socket.on('log out user', function(clientData) {
+        let user = UserUtils.getUserFromClientData(clientData);
+        UserUtils.updateUserLoginInfo(user, false, "null");
+        pokerController.disconnectFromTable(io, socket);
+        console.log(user.username + " has logged out.");   
+    });
+
+    socket.on('diconnect from table', function() {
+  
         pokerController.disconnectFromTable(io, socket);
     });
 
     // Attempt to submit the report and return the result of the attempt
     socket.on('submit report', function(reportData) {
         let submitReportSuccess = ReportUtils.submitReport(reportData);
+
+        // If a report was successfully submitted, update the table for admins
+        if (submitReportSuccess) {
+            io.emit('update reports', ReportUtils.getReports());
+        }
+
         socket.emit("submitReportResponse", submitReportSuccess);
     })
 
@@ -96,6 +125,14 @@ io.on('connection', (socket) => {
     socket.on('joinRoomRequest', function(msg) { // a user wishes to join a room/table
         pokerController.joinRoom(io, socket, msg);
     });
+
+    // Add daily bonus to user's chips value
+    socket.on('addDailyBonus', function(userId) {
+        let bonusAdded = DataAccessLayer.AddUserDailyBonus(userId);
+        if (bonusAdded !== 0) {
+            socket.emit('updateUserChips', bonusAdded);
+        }
+    }),
 
     // each player will send a message upon a game play button click, this will check whether or not it is the player's turn and if the move is valid
     socket.on('turnDecision', function(msg) {

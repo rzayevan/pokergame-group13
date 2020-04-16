@@ -54,19 +54,21 @@ exports.ReadUsersFile = function() {
         let user = new User();
 
         user.id = splitLine[0];
-        user.isAdmin = (splitLine[1] === 'true');
-        user.username = splitLine[2];
-        user.password = splitLine[3];
-        user.email = splitLine[4];
-        user.chips = parseInt(splitLine[5]);
-        user.icon = splitLine[6];
-        user.handsWon = parseInt(splitLine[7]);
-        user.handsPlayed = parseInt(splitLine[8]);
+        user.socketID = splitLine[1];
+        user.isLoggedIn = (splitLine[2] === 'true');
+        user.isAdmin = (splitLine[3] === 'true');
+        user.username = splitLine[4];
+        user.password = splitLine[5];
+        user.email = splitLine[6];
+        user.chips = parseInt(splitLine[7]);
+        user.icon = splitLine[8];
+        user.handsWon = parseInt(splitLine[9]);
+        user.handsPlayed = parseInt(splitLine[10]);
         user.handsLost = user.handsPlayed - user.handsWon;
-        user.lastUpdatedDate = new Date(splitLine[9]);
-        user.lastLoggedInDate = new Date(splitLine[10]);
-        user.createdDate = new Date(splitLine[11]);
-        user.banned = (splitLine[12] === 'true');
+        user.lastUpdatedDate = new Date(splitLine[11]);
+        user.lastLoggedInDate = new Date(splitLine[12]);
+        user.createdDate = new Date(splitLine[13]);
+        user.banned = (splitLine[14] === 'true');
 
         // Add the user object to the cachedUsers array
         cachedUsers.push(user);
@@ -80,7 +82,8 @@ exports.ReadUsersFile = function() {
  */
 exports.AddUserToFile = function(user) {
     // Create a string to store in the text file as a user
-    let userString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
+    let userString = user.id + "," + user.socketID + "," + (user.isLoggedIn ? "true" : "false") + "," +
+                    (user.isAdmin ? "true" : "false") + "," +
                      user.username + "," + user.password + "," + 
                      user.email + "," + user.chips + "," + user.icon + "," +
                      user.handsWon + "," + user.handsPlayed + "," + user.lastUpdatedDate.toISOString() + "," +
@@ -101,7 +104,6 @@ exports.UpdateUser = function(user) {
     let index = cachedUsers.findIndex(x => x.id === user.id);
     // Get a pointer to the original User object
     let originalUser = cachedUsers[index];
-
     // Create a string that will be searched for within the text file
     let originalUserStringRegex = ".*" + originalUser.id + ".*";
 
@@ -109,7 +111,8 @@ exports.UpdateUser = function(user) {
     let newLastUpdatedDate = new Date();
 
     // Create a new string to update the file to
-    let newUserString = user.id + "," + (user.isAdmin ? "true" : "false") + "," +
+    let newUserString = user.id + "," + user.socketID + "," + (user.isLoggedIn ? "true" : "false") + "," +
+                        (user.isAdmin ? "true" : "false") + "," +
                         user.username + "," + user.password + "," + 
                         user.email + "," + user.chips + "," + user.icon + "," +
                         user.handsWon + "," + user.handsPlayed + "," + newLastUpdatedDate.toISOString() + "," +
@@ -161,7 +164,6 @@ exports.UserLoggedIn = function(userID){
             accountChips: user.chips,
             dailyBonus: UserUtils.getDailyBonusValue(),
         }
-        user.chips += UserUtils.getDailyBonusValue();
     }
     else{
         result = {
@@ -172,6 +174,18 @@ exports.UserLoggedIn = function(userID){
     user.lastLoggedInDate = currentDate;
     this.UpdateUser(user);
     return result;
+}
+
+// Add daily bonus to user's chip value 
+exports.AddUserDailyBonus = function(userId) {
+    let user = UserUtils.getUserById(userId);
+    if (user) {
+        let dailyBonus = UserUtils.getDailyBonusValue()
+        user.chips += dailyBonus;
+        this.UpdateUser(user);
+        return dailyBonus;
+    }
+    return 0;   
 }
 
 /*
@@ -201,6 +215,7 @@ exports.ReadReportsFile = function() {
     while (line = liner.next()) {
         // Convert the buffer recieved to an ascii string
         let lineString = line.toString('ascii');
+
         // Split the string by three |
         // This allows for almost anything to be in the chat logs and not cause issues
         let splitLine = lineString.split('|||');
@@ -226,11 +241,12 @@ exports.ReadReportsFile = function() {
         // For each chat message
         for (let i = 0; i < chatMessages.length; i++) {
             // Filter and grab the username and message
-            let username = chatMessages[i].split(/,(.+)/)[0]
+            let userID = chatMessages[i].split(/,(.+)/)[0];
+            let user = cachedUsers.find(x => x.id === userID);
             let message = chatMessages[i].split(/,(.+)/)[1];
 
-            // Create a ChatMessage object
-            messages.push(new ChatMessage(username, message));
+            // Create a ChatMessage object with an empty tableID
+            messages.push(new ChatMessage("", user, message));
         }
 
         // Add the chat logs to the report
@@ -249,7 +265,7 @@ exports.AddReportToFile = function(report) {
     // Gets the formatted string containing the chat logs
     let chatLogString = GetChatLogString(report.chatLogs);
     // Gets a new date for the lastUpdatedDate
-    let newLastUpdatedDate = new Date()
+    let newLastUpdatedDate = new Date();
     // Create a string to store in the text file as a Report
     let reportString = report.id + "|||" + report.offendingUserId + "|||" + 
                      report.submittingUserId + "|||" + report.reportType + "|||" + 
@@ -267,8 +283,6 @@ exports.AddReportToFile = function(report) {
     catch (error) {
         return false;
     }
-
- 
 }
 
 /**
@@ -330,7 +344,7 @@ GetChatLogString = function(chatMessages) {
     // For each ChatMessage in the given Report's chatLog
     for (let i = 0; i < chatMessages.length; i++) {
         // Create a unique string for the message
-        let chatMessageString = "{" + chatMessages[i].username + "," + chatMessages[i].message + "}";
+        let chatMessageString = "{" + chatMessages[i].userID + "," + chatMessages[i].message + "}";
         // Append the string to the chatLogString
         chatLogString += chatMessageString;
     }

@@ -1,5 +1,5 @@
 <template>
-    <div class="reportBoxBorder"> <!--the report box that is toggled in and out of view when a report is requested-->
+    <div class="reportBoxBorder p-2"> <!--the report box that is toggled in and out of view when a report is requested-->
         <div class="submit-message" v-if="!showForm && submittedSuccessfully">
             <div class="message-container">
                 <b-row class="report-message">
@@ -26,24 +26,26 @@
         </div>
         <div class="reportBox" v-if="showForm">
             <b-row class="row d-flex justify-content-between">
-                <div class="reportHeader">Report</div>
-                <b-button class="close" @click="closeReport()">&times;</b-button>
+                <div class="reportHeader col-10 p-0">Report</div>
+                <b-button class="close mx-1 col-1" @click="closeReport()">&times;</b-button>
             </b-row>
             <b-row class="row">
                 <div class="offending-user-header">File a report against <strong class="extraBold">{{ report_OffenderName }}</strong></div>
             </b-row>
             <b-row class="row">
-                <div class="prompt">Did you witness any of the following?</div>
+                <div class="prompt">What type of behaviour did you witness?</div>
                 <select class="type-dropdown" v-model="selected">
                     <option disabled value="">Select an option</option>
-                    <option>option 1</option>
-                    <option>option 2</option>
-                    <option>option 3</option>
+                    <option>Harassment</option>
+                    <option>Swearing</option>
+                    <option>Spam</option>
+                    <option>Offensive username</option>  
+                    <option>Other</option>         
                 </select>
-                <div id="option-warning" class="warning" v-show="showSelectionWarning">Please select an option.</div>
+                <div id="option-warning" class="warning" v-show="showSelectionWarning">Please select an option</div>
             </b-row>
             <b-row>
-                <div class="prompt">Please describe the reason for reporting.</div>
+                <div class="prompt">Please describe the offensive behaviour</div>
                 <b-form-textarea
                     id="textarea"
                     class="inputTextBox"
@@ -53,7 +55,7 @@
                     max-rows="2"
                     >
                 </b-form-textarea>
-                <div id="reason-warning" class="warning" v-show="showMesssageWarning">Please enter a reason.</div>
+                <div id="reason-warning" class="warning" v-show="showMesssageWarning">Please enter a reason</div>
             </b-row>
             <b-row class="d-flex justify-content-end">
                  <b-button class="report-button centerText" variant="light" @click="closeReport()">Cancel</b-button>
@@ -70,10 +72,9 @@
     }
     .reportBoxBorder{
         float: left;
-        width: 30%;
+        width: 100%;
         height: 46.5%;
         background: #f2f3f5;
-        padding: 1.5% 1%;
     }
     .submit-message {
         display: flex;
@@ -124,8 +125,9 @@
     }
     .reportHeader{
         font-size: 1.5vw;
-        font-weight: 1000;
+        font-weight: 900;
         color: black;
+        text-align: left;
     }
     .buttonXOuter{
         float: left;
@@ -203,7 +205,7 @@
         background: #0199bb;
     }
     .extraBold{
-        font-weight: 1000;
+        font-weight: 900;
     }
     .centerText{
         display : flex;
@@ -241,7 +243,8 @@ export default {
             }
             else {
                 // Send a filled report to the parent for submission to server
-                this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId);
+                let submittingUser = this.$parent.userData.id;
+                this.$parent.submitReport(this.selected, this.message, this.report_OffenderName, this.report_OffenderMessageId, submittingUser);
             }
         },
         // Display or hide selection warning

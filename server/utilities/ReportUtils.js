@@ -1,7 +1,7 @@
 let Report = require("../model/Report.js");
-
 const DataAccessLayer = require('../controllers/DataAccessLayer.js');
 const UserUtils = require('./UserUtils.js');
+const NUM_OF_MESSAGES = 5;
 
 // If the report is valid, save it 
 // Return true if the report was saved, false otherwise 
@@ -10,16 +10,25 @@ exports.submitReport = function(reportData) {
     try {
         // TODO: Delete and replace with function to grab relevant chat data from the table
         let chatMessages = [];
-        chatMessages.push({ username: "mack", message: "Jim you suck"});
-        chatMessages.push({ username: "Jim", message: "Leave me alone"});
-        chatMessages.push({ username: "mack", message: "No you suck"});
-        chatMessages.push({ username: "mack", message: "You're a loser"});
-        chatMessages.push({ username: "mack", message: "Idiot"});
-    
+        let chatMessageCache = DataAccessLayer.GetCachedMessages();
+        let tableMessages = chatMessageCache.filter(x => x.tableID == reportData.roomID);
+
+        // Sort tableMessages by descending sentDate
+        tableMessages.sort(function(a, b) {
+            a = new Date(a.sentDate);
+            b = new Date(b.sentDate);
+            return a > b ? -1 : a < b ? 1 : 0;
+        });
+
+        // Add the relevant tableMessages to chatMessages in the order they were sent
+        for (let i = NUM_OF_MESSAGES - 1; i >= 0; i--) {
+            chatMessages.push(tableMessages[i]);
+        }
+
         // TODO: Replace with the username of the offending user 
-        let offendingUser = UserUtils.getUserByUsername("mack");
+        let offendingUser = UserUtils.getUserByUsername(reportData.offenderUsername);
         // TODO: Replace with the username of the submitting user 
-        let submittingUser = UserUtils.getUserByUsername("Jim");
+        let submittingUser = UserUtils.getUserById(reportData.reportingUser);
         
         // Create and save the new report
         let report = new Report();

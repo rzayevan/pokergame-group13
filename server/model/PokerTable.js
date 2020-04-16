@@ -81,7 +81,8 @@ class PokerTable {
             seatStates: seatStates, // all the table seat states
             communityCards: this.assistant.getCommunityCards(), // the community cards that have been shown 
             currentBet: this.currentBet, // the current bet of the table
-            potTotal: potTotal
+            potTotal: potTotal,
+            turnOptions: (this.gameInPlay) ? this.assistant.getPlayerTurnOptions() : null, // note: if it is null then it is nobody's turn, thus poker.vue will never read it
         };
     }
 

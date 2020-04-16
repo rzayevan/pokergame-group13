@@ -1,10 +1,10 @@
 <template>
     <nav>
         <b-navbar toggleable="sm">
-            <b-navbar-brand to="reports" class="mx-3">Poker Pals <span class="p-1">admin</span> </b-navbar-brand>
+            <b-navbar-brand class="mx-3">Poker Pals <span class="p-1">admin</span> </b-navbar-brand>
             <b-navbar-nav class="ml-auto mx-3">
                 <b-nav-item to="/">
-                    <b-nav-text class="material-icons"> logout </b-nav-text>
+                    <b-nav-text class="material-icons" @click="logOut()"> logout </b-nav-text>
                 </b-nav-item>
             </b-navbar-nav>
         </b-navbar>
@@ -40,5 +40,11 @@
 <script>
     export default {
         name: "AdminNavbar.vue",
+        props: ['socket', 'userData'],
+        methods: {
+            logOut: function() {
+                this.socket.emit('log out user', this.userData);
+            }
+        }
     };
 </script>

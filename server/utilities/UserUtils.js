@@ -8,17 +8,17 @@ const DAILY_BONUS_VALUE = 100;
 exports.credentialsMatch = function(user) {
     let users = DataAccessLayer.GetCachedUsers();
     let matchFound = false;
-    let userID = -1;
+    let userData = {};
     let banned = false;
     users.forEach(existingUser => {
         if (user.email.toLowerCase() === existingUser.email.toLowerCase() && user.password === existingUser.password) {
             matchFound = true;
-            userID = existingUser.id;
+            userData = existingUser;
             banned = existingUser.banned;
         }
     });
 
-    return {matchFound: matchFound, userID: userID, banned: banned};
+    return {matchFound: matchFound, userData: userData, banned: banned};
 }
 
 /**
@@ -37,6 +37,37 @@ exports.emailExists = function(user) {
     return emailExists;
 }
 
+/**
+ * Will set the loggedIn status and socketID of the supplied user
+ * Returns the updated user data
+ */
+exports.updateUserLoginInfo = function(user, loggedIn, socketID) {
+    if (!user) {
+        console.log("User was not found. Not updating login information..");
+        return; // don't do anything if the user object is null
+    }
+    user.socketID = socketID;
+    user.isLoggedIn = loggedIn;
+    DataAccessLayer.UpdateUser(user);
+    return this.getUserById(user.id);
+}
+
+/**
+ * Returns complete user data based on the data provided from client
+ */
+exports.getUserFromClientData = function(clientData) {
+    let users = DataAccessLayer.GetCachedUsers();
+    
+    let matchingUser = users.find(user => {
+        return clientData.email.toLowerCase() === user.email.toLowerCase() && clientData.password === user.password;
+    });
+
+    return matchingUser;
+}
+
+/**
+ * Returns user data from id provided
+ */
 exports.getUserById = function(id) {
     let users = DataAccessLayer.GetCachedUsers();
 
@@ -47,6 +78,22 @@ exports.getUserById = function(id) {
     return matchingUser;
 }
 
+/**
+ * Returns user data from socketID provided
+ */
+exports.getUserBySocketId = function(socketID) {
+    let users = DataAccessLayer.GetCachedUsers();
+
+    let matchingUser = users.find(user => {
+        return user.socketID === socketID;
+    });
+
+    return matchingUser;
+}
+
+/**
+ * Returns user data from username provided
+ */
 exports.getUserByUsername = function(username) {
     let users = DataAccessLayer.GetCachedUsers();
 
@@ -57,15 +104,20 @@ exports.getUserByUsername = function(username) {
     return matchingUser;
 }
 
+/**
+ * Returns the name of a new user icon
+ */
 exports.createUserIcon = function(number) {
-    if(number !== undefined && !Number.isNaN(number)){
+    if (number !== undefined && !Number.isNaN(number)) {
         return 'player_icon_' + number.toString();
     }
-    else{
-        return 'player_icon_' + Math.floor(Math.random()*NUMBER_OF_ICONS+1).toString();
-    }
+
+    return 'player_icon_' + Math.floor(Math.random()*NUMBER_OF_ICONS+1).toString();
 }
 
+/**
+ * Returns the daily bonus value
+ */
 exports.getDailyBonusValue = function() {
     return DAILY_BONUS_VALUE;
 }

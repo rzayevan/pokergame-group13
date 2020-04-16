@@ -18,6 +18,8 @@ class ChatMessage {
         this.username = user.username;
         // The message that was sent by the User
         this.message = message;
+        // The date the message was sent
+        this.sentDate = new Date();
     }
 }
 module.exports = ChatMessage;

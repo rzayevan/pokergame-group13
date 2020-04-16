@@ -1,20 +1,20 @@
 <template>
     <nav>
         <b-navbar toggleable="sm">
-            <b-navbar-brand to="tables" class="mx-3">Poker Pals</b-navbar-brand>
+            <b-navbar-brand class="mx-3" @click="navigateToTables()">Poker Pals</b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             <b-collapse id="nav-collapse" is-nav>
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto mx-3">
                     <b-nav-item class="mx-2">
                         <img class="mr-2 img-fluid" :src="require('../../images/ImageFiles').getImage('chip').src" alt="Poker Chip"/>
-                        <span class="b-nav-text">{{userData.chips}}</span>
+                        <span class="b-nav-text">{{user.chips}}</span>
                     </b-nav-item>
                     <b-nav-item to="profile">
-                        <img class="img-fluid" v-bind:src="userData.playerIcon.src" alt="User Profile Image"/>
+                        <img class="img-fluid" v-bind:src="playerIcon.src" alt="User Profile Image"/>
                     </b-nav-item>
-                    <b-nav-item to="/">
-                        <b-nav-text class="material-icons"> logout </b-nav-text>
+                    <b-nav-item v-if="!hideLogOut" to="/">
+                        <b-nav-text class="material-icons" @click="logOut()"> logout </b-nav-text>
                     </b-nav-item>
                 </b-navbar-nav>
             </b-collapse>
@@ -55,13 +55,21 @@
 <script>
     export default {
         name: "UserNavbar.vue",
-        data: function() {
-            return {
-                userData : {
-                    chips: 1200450,
-                    playerIcon: require("../../images/ImageFiles").getImage('player_icon_1')
-                }
+        props: ['socket', 'userData', 'hideLogOut'],
+        methods: {
+            navigateToTables: function() {
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} });
+                this.socket.emit('diconnect from table');
+            },
+            logOut: function() {
+                this.socket.emit('log out user', this.userData);
             }
         },
+        data() {
+            return {
+                user: this.userData,
+                playerIcon: require("../../images/ImageFiles").getImage(this.userData.icon)
+            }
+        }
     };
 </script>

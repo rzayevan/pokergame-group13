@@ -1,6 +1,6 @@
 <template>
   <div id="reports-page">
-    <AdminNavbar class="navbar-section"/>
+    <AdminNavbar :socket=socket :userData=userData class="navbar-section"/>
     <div class="wrapper">
       <ReportModal
         :reportData=reportData
@@ -42,13 +42,7 @@
 
   export default {
   name: "report-grid",
-  props: {
-    data: Array,
-    columns: Array,
-    authenticated: Boolean, 
-    socket: Object, // now using the provided socket
-    userID: String,
-  },
+  props: ['authenticated', 'socket', 'userData'],
   components: {
       ReportModal,
       AdminNavbar
@@ -56,6 +50,8 @@
   data(){
     // Empty report data to pass to ReportModal. Updated when a row is clicked  
     return {
+      data: Array,
+      columns: Array,
       searchQuery: '',
       sortKey: '',
       sortOrders: {},
@@ -133,7 +129,7 @@
       }
     }
   },
-  mounted(){ // switched to mounted, props are not yet set in beforeCreate(), 
+  mounted() { // switched to mounted, props are not yet set in beforeCreate(), 
     if(!this.authenticated){
         this.$router.replace({ name: "Login" });
     } else { // because the socket will for some reason emit 'request reports' before checking athentication, this else statement is needed
@@ -144,6 +140,11 @@
       this.socket.on('receive reports', data => {
         this.data = data.reports;
         this.columns = data.gridColumns;
+      });
+
+      // Receive new reports and update the data
+      this.socket.on('update reports', data => {
+        this.data = data;
       });
 
       if (this.columns) {
@@ -159,14 +160,73 @@
 </script>
 
 <style scoped>
+  @media (min-width: 300px) {
+    #reports-grid {
+      display: flex;
+      display: -webkit-flex;
+      flex-direction: column;
+      -webkit-flex-direction: column;
+      width: inherit;
+      margin: auto;
+      height: 100%;
+    } 
+
+    th, td {
+      width: 25%;
+      padding: 10px 20px;
+      font-size: 3vw;
+    }
+
+    form {
+      font-size: 4vw;
+    }
+
+    .form-control {
+      width: 80%;
+      margin-left: 5%;
+      font-size: 3.5vw;
+    }
+  }
+
+  @media (min-width: 768px) {
+    #reports-grid {
+      display: flex;
+      display: -webkit-flex;
+      flex-direction: column;
+      -webkit-flex-direction: column;
+      width: 80%;
+      max-width: 80%;
+      margin: auto;
+      height: 100%;
+    }
+
+    th, td {
+      width: 25%;
+      padding: 10px 20px;
+      font-size: 1.25vw;
+    }
+
+    form {
+      font-size: 1.25vw;
+    }
+
+    .form-control {
+      width: 80%;
+      margin-left: 5%;
+      font-size: 1.25vw;
+      height: calc(1.5em + 0.75rem + 2px); 
+    }
+  }
+
   form {
-    padding-bottom: 15px;
+    padding-bottom: 1.5%;
   }
 
   body {
     font-family: Helvetica Neue, Arial, sans-serif;
     font-size: 14px;
     color: #555;
+    width: 100%;
   }
 
   #search {
@@ -175,14 +235,11 @@
     justify-content: center;
   }
 
-  .form-control {
-    width: 80%;
-    margin-left: 5%;
-  }
-
   table {
     border-spacing: 0;
     width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
   }
 
   th {
@@ -239,15 +296,5 @@
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     border-top: 4px solid white;
-  }
-
-  #reports-grid {
-    display: flex;
-    display: -webkit-flex;
-    flex-direction: column;
-    -webkit-flex-direction: column;
-    width: 80%;
-    margin: auto;
-    height: 100%;
   }
 </style>
