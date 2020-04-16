@@ -10,7 +10,7 @@
                 v-bind:bigBlind="bigBlind"
                 v-bind:timerReset="timerReset"
             />
-            <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind"/>
+            <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind" v-bind:turnOptions="turnOptions"/>
         </div>
 
         <div id="chatContainer"  v-bind:class="{ chatHalf: !chatFull}">
@@ -104,6 +104,13 @@ export default {
                 {occupied: false, classes: {betBox: 'betBoxB', youTag: 'youTagB', playerCards: 'playerCardsB'}, divID: 'playerSeat6', dealerStatus: false, cards: {card1: {src: null}, card2: {src: null}}, bet: 0, accountName: "", accountImage: {src: null}, chipTotal: "", action: "WAITING", youTag: false, timer: false},
             ],
             communityCards: [{src:null},{src:null},{src:null},{src:null},{src:null}], // community cards revealed at any given time
+            turnOptions: {
+                check: false,
+                call: false,
+                fold: false,
+                raise: false,
+                allIn: false,
+            }
         };
     },
     mounted(){
@@ -147,6 +154,23 @@ export default {
                     this.makeDecision('CHECK/FOLD');
                 }
                 this.timerReset = !this.timerReset;
+                
+                if(seatStates[this.seatID].turn){ // it is your turn
+                    this.turnOptions = msg.turnOptions; // right now display is accepting these with v-bind but does not have them as props
+                    // TODO: for front end, set the respective buttons based on the values sent, format of turnOptions is shown in 'else' below
+                    // after expand-poker is merged this will be adressed
+                    console.log(JSON.stringify(this.turnOptions));
+                }
+                else{ // all buttons except for check/fold toggle are disabled
+                    this.turnOptions = {
+                        check: false,
+                        call: false,
+                        fold: false,
+                        raise: false,
+                        allIn: false,
+                        // note: check/fold button is available regardless of turn status
+                    }
+                }
             });
             this.socket.on('leaveRoom', () => { // each player upon joining a table will receive the id of the seat they are to sit at
                 for(let i = 0; i < this.players.length; i++){

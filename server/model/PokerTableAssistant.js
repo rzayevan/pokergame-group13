@@ -88,6 +88,10 @@ module.exports = class PokerTableAssistant {
         this.tableSeats[this.seatTurnID].action = 'THINKING';
     }
 
+    getPlayerTurnOptions() { // for the current player's turn get list of options available
+        return this.tableSeats[this.seatTurnID].getTurnOptions(this.currentBet, this.bigBlind);
+    }
+
     wasItTheirTurn(userID){
         if(this.seatTurnID === -1){ // the game hasn't even started
             return false;
