@@ -1,7 +1,7 @@
 <template>
     <nav>
         <b-navbar>
-            <b-navbar-brand to="/login" class="mx-3">Poker Pals</b-navbar-brand>
+            <b-navbar-brand to="/login" class="mx-3" id="brand">Poker Pals</b-navbar-brand>
         </b-navbar>
     </nav>
 </template>
@@ -13,10 +13,15 @@
         padding: 0;
     }
 
-    .navbar-brand {
+    #brand {
         font-family: 'Pacifico', sans-serif;
         color: white;
         font-size: 28px;
+    }
+
+    #brand:hover {
+        cursor: default;
+        color: white;
     }
 </style>
 <script>
