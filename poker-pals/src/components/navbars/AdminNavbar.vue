@@ -1,7 +1,7 @@
 <template>
     <nav>
         <b-navbar toggleable="sm">
-            <b-navbar-brand class="mx-3">Poker Pals <span class="p-1">admin</span> </b-navbar-brand>
+            <b-navbar-brand class="mx-3" id="brand" > Poker Pals <span class="p-1">admin</span> </b-navbar-brand>
             <b-navbar-nav class="ml-auto mx-3">
                 <b-nav-item to="/">
                     <b-nav-text class="material-icons" @click="logOut()"> logout </b-nav-text>
@@ -18,12 +18,16 @@
         padding: 0;
     }
 
-    .navbar-brand {
+    #brand {
         font-family: 'Pacifico', sans-serif;
         color: white;
         font-size: 28px;
     }
 
+    #brand:hover {
+        cursor: default;
+        color: white;
+    }
 
     .navbar-brand span {
         background-color: #bf214b;
