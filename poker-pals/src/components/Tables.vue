@@ -7,7 +7,7 @@
     <!-- Loop through tables and display --> 
     <li v-for="room in rooms" :key="room.roomID">
       <!-- Join room on click --> 
-      <div class="table" id = "table-click" v-on:click="joinRoom(room)">
+      <div class="table" id = "table-click" v-if="room.numberOfFullSeats !== room.numberOfTableSeats" v-on:click="joinRoom(room)">
         <!-- Display table's buyin and blinds --> 
         <div class="table-description">
             <div class = "table-stakes">
@@ -24,7 +24,23 @@
                 <p> {{room.tableName}}</p>
             </div>
             <div class = "seats" id = "seatsId">
-            <!-- TODO: Update seat availability as seats fill up.--> 
+                <p> {{room.numberOfFullSeats}}/{{room.numberOfTableSeats}}</p>
+            </div>
+        </div>
+      </div>
+      <!-- Display full table --> 
+        <!-- Join room on click --> 
+      <div class="table-full" id = "table-click" v-else v-on:click="joinRoom(room)">
+        <!-- Display table's buyin and blinds --> 
+        <div class="table-description-full">
+            <p>FULL</p> 
+        </div> 
+        <!-- Display table's name and seat availability --> 
+        <div class="table-details-full">
+            <div class = "table-name">
+                <p> {{room.tableName}}</p>
+            </div>
+            <div class = "seats" id = "seatsId">
                 <p> {{room.numberOfFullSeats}}/{{room.numberOfTableSeats}}</p>
             </div>
         </div>
@@ -126,10 +142,24 @@ ul {
 
 li {
   display: inline-block; 
+  cursor: pointer;
 }
 
 .table {
     background: #348c44;
+    border-radius: 25px 25px 5px 5px;
+    border: 2px solid; 
+    border-color: #595959;
+    width: 15em;
+    height: 10em;
+    position: relative; 
+    text-align: center;
+    margin: 20px; 
+}
+
+
+.table-full {
+    background: #666666ff;
     border-radius: 25px 25px 5px 5px;
     border: 2px solid; 
     border-color: #595959;
@@ -145,6 +175,21 @@ li {
     height: 50px;
     position: absolute; 
     bottom: 50%; 
+}
+
+.table-description-full {
+    width: 100%;
+    height: 50px;
+    position: absolute; 
+    bottom: 50%; 
+}
+
+.table-description-full p {
+    position: relative; 
+    text-align: center;
+    font-size: 2em; 
+    font-weight: bold;
+    color: white; 
 }
 
 .chips-pic{
@@ -209,6 +254,49 @@ li {
 }
 
 .table-details .seats p {
+   position: relative;
+    top: 25%; 
+}
+
+
+.table-details-full {
+    background: white;
+    border-radius: 0px 0px 5px 5px;
+    border-top: 2px solid; 
+    border-color: #595959;
+    width: 100%;
+    height: 50px;
+    position: absolute; 
+    bottom: 0; 
+}
+
+.table-details-full .table-name {
+    position: relative; 
+    height: 50px; 
+    width: 50%;  
+    text-align: center;
+    float: left; 
+    font-size: 1em; 
+    font-weight: bold;
+    color: #999999;
+}
+
+.table-details-full .table-name p {
+    position: relative;
+    top: 25%; 
+}
+
+.table-details-full .seats {
+    position: relative; 
+    height: 50px; 
+    width: 30%;  
+    text-align: center;
+    float: right; 
+    font-weight: bolder; 
+    color: #999999;
+}
+
+.table-details-full .seats p {
    position: relative;
     top: 25%; 
 }
