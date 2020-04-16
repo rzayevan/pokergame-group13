@@ -177,7 +177,7 @@ export default {
                     }
                 }
             });
-            this.socket.on('leaveRoom', () => { // each player upon joining a table will receive the id of the seat they are to sit at
+            this.socket.on('leaveRoom', msg => { // each player upon joining a table will receive the id of the seat they are to sit at
                 for(let i = 0; i < this.players.length; i++){
                     let player = this.players[i];
                     player.occupied = false;
@@ -191,6 +191,7 @@ export default {
                     player.youTag = false;
                     player.timer = false;
                 }
+                this.userData.chips += msg.chipValueChangeBy;
                 this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} });
             });
             this.socket.on('beginTheGame', cardsJSON => { // each player receives their two personal cards upon the game starting

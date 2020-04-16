@@ -101,6 +101,7 @@ class PokerController {
                 tableName: result.tableName, // used only for the chat title
                 roomID: roomToJoin.id, // used for further communication
                 bigBlind: result.bigBlind,
+                chipValueChangeBy: table.buyIn,
             });
             io.to(roomToJoin.id).emit('tableState', JSON.stringify(table.getTableState())); // send to everyone the updated table state in this room
 
@@ -249,7 +250,7 @@ class PokerController {
         DataAccessLayer.UpdateUser(user);
         socket.emit("acountChips", user.chips);
         socket.leave(room.id);
-        socket.emit('leaveRoom');
+        socket.emit('leaveRoom', { chipValueChangeBy: result.chips });
         io.to(room.id).emit('tableState', JSON.stringify(table.getTableState()));
         io.emit("receiveRoomList", this.getRoomList()); // update the room list
         if (result.newTimeout) { table.receiveTimeout(self.createDecisionTimeout(io, room, self)); }
