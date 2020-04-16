@@ -6,11 +6,11 @@
             <b-collapse id="nav-collapse" is-nav>
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto mx-3">
-                    <b-nav-item class="mx-2">
+                    <b-nav-item class="mx-2" disabled>
                         <img class="mr-2 img-fluid" :src="require('../../images/ImageFiles').getImage('chip').src" alt="Poker Chip"/>
                         <span class="b-nav-text">{{user.chips}}</span>
                     </b-nav-item>
-                    <b-nav-item to="profile">
+                    <b-nav-item disabled>
                         <img class="img-fluid" v-bind:src="playerIcon.src" alt="User Profile Image"/>
                     </b-nav-item>
                     <b-nav-item v-if="!hideLogOut" to="/">
