@@ -33,6 +33,7 @@
         font-family: 'Pacifico', sans-serif;
         color: white;
         font-size: 28px;
+        cursor: pointer;
     }
 
     .navbar-collapse {
