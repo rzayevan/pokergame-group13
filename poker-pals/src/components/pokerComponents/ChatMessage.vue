@@ -28,9 +28,9 @@
         max-width: 70%;
         border-radius: 1em;
         padding: 6px 10px;
-
         text-align: left;
         font-size: 14px;
+        word-wrap: break-word;
     }
 
     .sent {

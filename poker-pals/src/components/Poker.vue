@@ -1,61 +1,69 @@
 <template>
-    <div class="outerFrame"> <!--the outer container of the entire page, used to define its size-->
-        <UserNavbar :socket=socket :userData=userData :hideLogOut=true /> <!-- the naviagation bar-->
-        <div class="tableLayoutAndDisplay"> <!--a container to separate the table and inputs from the chat-->
-            <TableLayout
-                v-bind:potTotal="potTotal"
-                v-bind:communityCards="communityCards"
-                v-bind:players="players"
-                v-bind:cardReveal="cardReveal"
-                v-bind:bigBlind="bigBlind"
-                v-bind:timerReset="timerReset"
-            />
-            <Display v-bind:myCards="myCards" v-bind:bigBlind="bigBlind" v-bind:turnOptions="turnOptions"/>
-        </div>
-
-        <div id="chatContainer"  v-bind:class="{ chatHalf: !chatFull}">
-            <Chat v-bind:tableName="tableName" v-bind:userData="userData"/>
-        </div>
-
-        <ReportPocket v-if="!chatFull"
-              v-bind:report_OffenderName="report_OffenderName"
-              v-bind:report_OffenderMessageId="report_OffenderMessageId"
-              v-bind:showForm="showForm"
-              v-bind:submittedSuccessfully="submittedSuccessfully"
-        /> <!--the report box that shows up upon a player requesting to report another player, takes half of the space alotted to the chat-->
+    <div class="container-fluid poker-container">
+        <UserNavbar class="w-100" :socket=socket :userData=userData :hideLogOut=true /> <!-- the naviagation bar-->
+        <b-row class="row flex-grow-1" no-gutters>
+            <b-col cols="12" class="col-lg-9">
+                <b-row class="table-container m-0 p-0">
+                    <TableLayout
+                            v-bind:potTotal="potTotal"
+                            v-bind:communityCards="communityCards"
+                            v-bind:players="players"
+                            v-bind:cardReveal="cardReveal"
+                            v-bind:bigBlind="bigBlind"
+                            v-bind:timerReset="timerReset"
+                    />
+                </b-row>
+                <b-row class="display-container" no-gutters>
+                    <Display
+                            v-bind:myCards="myCards"
+                            v-bind:bigBlind="bigBlind"
+                            v-bind:maxBet="players[seatID].chipTotal"
+                            v-bind:turnOptions="turnOptions"
+                    />
+                </b-row>
+            </b-col>
+            <b-col cols="3" class="d-none d-lg-block" >
+                <Chat v-bind:class="{ chatHalf: !chatFull}"
+                      v-bind:tableName="tableName"
+                      v-bind:userData="userData"
+                />
+                <ReportPocket v-if="!chatFull"
+                      class="chatHalf"
+                      v-bind:report_OffenderName="report_OffenderName"
+                      v-bind:report_OffenderMessageId="report_OffenderMessageId"
+                      v-bind:showForm="showForm"
+                      v-bind:submittedSuccessfully="submittedSuccessfully"
+                />
+            </b-col>
+        </b-row>
     </div>
 </template>
 
 <style scoped>
-    /* because borders do not accept percentages, they interfere with the scaling calculations, 
-    the solution is to surround elements with an outer div with a back ground and then put another
-    div inside with the elements, this simulates a black border*/
-
-    /* Limit the chat's size*/
-    #chatContainer {
-        float: left;
-        width: 30%;
-        height: 93%;
+    .container-fluid {
+        padding: 0;
+        margin: 0;
     }
 
-     .chatHalf {
-        height: 46.5% !important;
-    }
-
-    .outerFrame{
-        width: 80vw;
-        height: 45vw;
-    }
-    .tableLayoutAndDisplay{
-        position: relative;
-        float: left;
-        width: 70%;
-        height: 93%;
-    }
-
-    img{
+    .poker-container {
+        display: flex;
+        flex-direction: column;
         width: 100%;
         height: 100%;
+    }
+
+    .table-container {
+        height: 60%;
+        display: flex;
+    }
+
+    .display-container {
+        height: 40%;
+        display: block;
+    }
+
+    .chatHalf {
+        height: 50% !important;
     }
 </style>
 
@@ -154,7 +162,7 @@ export default {
                     this.makeDecision('CHECK/FOLD');
                 }
                 this.timerReset = !this.timerReset;
-                
+
                 if(seatStates[this.seatID].turn){ // it is your turn
                     this.turnOptions = msg.turnOptions; // right now display is accepting these with v-bind but does not have them as props
                     // TODO: for front end, set the respective buttons based on the values sent, format of turnOptions is shown in 'else' below
@@ -203,12 +211,15 @@ export default {
                 }
                 this.setPlayerCardsVisibility(true); // TODO: move this to a separate socket call, it only needs to execute once
             });
+
             this.socket.on('winner', () => { // later add some animation to indicate that they won
                 // TODO: winner animation goes here
             });
+
             this.socket.on('badMove', () => { // later add some animation to indicate that they won
                 alert('bad move');
             });
+
             this.socket.on('reset', () => { // after a round a new game will begin shortly, reset the table to a state that is ready for a new round
                 // each player will reset the ui for a new game
                 this.myCards = [{src: this.imageFiles.getImage('card_empty').src}, {src: this.imageFiles.getImage('card_empty').src}];
@@ -245,13 +256,13 @@ export default {
     },
     methods:{
         // define all of the socket.emit methods here,
-        makeDecision(action){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
+        makeDecision(action, raise){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
             this.socket.emit("turnDecision", {
                 userID: this.userData.id,
                 roomID: this.roomID,
                 seatID: this.seatID,
                 action: action,
-                raiseToValue: this.raiseToValue, // only used if player is raising
+                raiseToValue: raise, // only used if player is raising
             });
             this.checkFold = false;
         },

@@ -1,5 +1,5 @@
 <template>
-    <div class="reportBoxBorder"> <!--the report box that is toggled in and out of view when a report is requested-->
+    <div class="reportBoxBorder p-2"> <!--the report box that is toggled in and out of view when a report is requested-->
         <div class="submit-message" v-if="!showForm && submittedSuccessfully">
             <div class="message-container">
                 <b-row class="report-message">
@@ -26,8 +26,8 @@
         </div>
         <div class="reportBox" v-if="showForm">
             <b-row class="row d-flex justify-content-between">
-                <div class="reportHeader">Report</div>
-                <b-button class="close" @click="closeReport()">&times;</b-button>
+                <div class="reportHeader col-10 p-0">Report</div>
+                <b-button class="close mx-1 col-1" @click="closeReport()">&times;</b-button>
             </b-row>
             <b-row class="row">
                 <div class="offending-user-header">File a report against <strong class="extraBold">{{ report_OffenderName }}</strong></div>
@@ -72,10 +72,9 @@
     }
     .reportBoxBorder{
         float: left;
-        width: 30%;
+        width: 100%;
         height: 46.5%;
         background: #f2f3f5;
-        padding: 1.5% 1%;
     }
     .submit-message {
         display: flex;
@@ -126,8 +125,9 @@
     }
     .reportHeader{
         font-size: 1.5vw;
-        font-weight: 1000;
+        font-weight: 900;
         color: black;
+        text-align: left;
     }
     .buttonXOuter{
         float: left;
@@ -205,7 +205,7 @@
         background: #0199bb;
     }
     .extraBold{
-        font-weight: 1000;
+        font-weight: 900;
     }
     .centerText{
         display : flex;

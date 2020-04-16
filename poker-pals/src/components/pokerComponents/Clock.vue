@@ -15,20 +15,17 @@
         width: 30%;
         height: 58%;
         background: transparent;
-        margin: -16% 0% 0% -18%;
     }
     .clock img{
         position: absolute;
         width: 100%;
         height: 100%;
-        margin: 0% 0% 0% -50%;
-    }                
+    }
     .clock_pointer{
         position: absolute;
         width: 100%;
         height: 100%;
         background: transparent;
-        margin: 10% 0% 0% 0%;
     }
     .clock_pointer img{
         width: 100%;
