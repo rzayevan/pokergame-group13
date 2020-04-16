@@ -1,7 +1,7 @@
 <template>
     <nav>
         <b-navbar toggleable="sm">
-            <b-navbar-brand to="tables" class="mx-3">Poker Pals</b-navbar-brand>
+            <b-navbar-brand class="mx-3" @click="navigateToTables()">Poker Pals</b-navbar-brand>
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
             <b-collapse id="nav-collapse" is-nav>
                 <!-- Right aligned nav items -->
@@ -57,6 +57,10 @@
         name: "UserNavbar.vue",
         props: ['socket', 'userData', 'hideLogOut'],
         methods: {
+            navigateToTables: function() {
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} });
+                this.socket.emit('diconnect from table');
+            },
             logOut: function() {
                 this.socket.emit('log out user', this.userData);
             }

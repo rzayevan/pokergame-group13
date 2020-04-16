@@ -91,6 +91,20 @@ class PokerPlayerSeat {
     }
 
     /**
+     * gets a list of options (buttons) that are allowed for this turn
+     */
+    getTurnOptions(currentBet, bigBlind){
+        // note: check/fold is not turn specific, all players can toggle that button at any time
+        return {
+            check: (this.bet === currentBet) ? true : false,
+            call: (this.bet === currentBet || this.chips < currentBet - this.bet) ? false : true,
+            fold: true, // they always have the option to fold
+            raise: (this.chips + this.bet < currentBet + bigBlind) ? false : true,
+            allIn: (this.chips > 0) ? true: false,
+        }
+    }
+
+    /**
      * Assesses whether or not a move is valid and returns a corresponding boolean
      * @param {String} action The action attempting to be performed
      * @param {int} currentBet The current bet of the table

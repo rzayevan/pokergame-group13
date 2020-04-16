@@ -213,7 +213,7 @@ class PokerController {
         let room = this.rooms.find(room => room.id === msg.roomID);
         if(room === undefined){ return; }
         let table = room.table;
-        let user = DataAccessLayer.ReadUsersFile().find(user => user.id === msg.userID);
+        let user = DataAccessLayer.GetCachedUsers().find(user => user.id === msg.userID);
         if(user === undefined){ return; }
         let alreadyInShowdown = table.assistant.showdown; // if a showdown is occuring at this stage then we don't need to call another showdown
         let result = table.bootPlayer(user.id, io, room); // boot the player and return any chips they had (not including pot)
