@@ -60,7 +60,9 @@ io.on('connection', (socket) => {
         if (result.matchFound && result.userData.isLoggedIn) {
             socket.emit("alert text", "You've already logged in. Please sign out of other sessions before trying again.");
         } else if (result.matchFound && result.banned) {
-            socket.emit("banned");
+            let updatedUser = UserUtils.updateUserLoginInfo(result.userData, true, socket.id);
+            socket.emit("authenticated", updatedUser);
+            console.log('banned');
         } else if (result.matchFound && !result.banned) {
             // log the user in and notify the client
             let updatedUser = UserUtils.updateUserLoginInfo(result.userData, true, socket.id);
