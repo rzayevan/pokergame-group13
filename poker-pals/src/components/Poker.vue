@@ -164,10 +164,7 @@ export default {
                 this.timerReset = !this.timerReset;
 
                 if(seatStates[this.seatID].turn){ // it is your turn
-                    this.turnOptions = msg.turnOptions; // right now display is accepting these with v-bind but does not have them as props
-                    // TODO: for front end, set the respective buttons based on the values sent, format of turnOptions is shown in 'else' below
-                    // after expand-poker is merged this will be adressed
-                    console.log(JSON.stringify(this.turnOptions));
+                    this.turnOptions = msg.turnOptions;
                 }
                 else{ // all buttons except for check/fold toggle are disabled
                     this.turnOptions = {
