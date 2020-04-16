@@ -217,7 +217,7 @@ class PokerTable {
             let seat = this.tableSeats[i];
             if (!seat.seatOpen && seat.chips === 0) {
                 io.sockets.connected[this.tableSeats[i].socketID].leave(room.id);
-                io.sockets.connected[this.tableSeats[i].socketID].emit('leaveRoom');
+                io.sockets.connected[this.tableSeats[i].socketID].emit('leaveRoom', { chipValueChangeBy: 0 });
                 this.tableSeats[i].resetSeat();
             }
         }
