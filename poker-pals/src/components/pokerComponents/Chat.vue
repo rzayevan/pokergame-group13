@@ -15,7 +15,7 @@
                 </div>
             </b-col>
         </b-row>
-        <form class="row no-gutters" v-on:submit="sendMessage">
+        <form class="row no-gutters" v-on:submit="sendMessage" >
             <input type="text" class="input col-8 p-2" v-model="message" placeholder="Type a message">
             <button type="submit" class="btn col-4">SEND</button>
         </form>
@@ -45,13 +45,17 @@
         width: 100%;
         background-color: white;
         height: 80%;
-        overflow-y: auto;
-        overflow-x: hidden;
+        position: relative;
+        overflow: none; 
     }
 
     #messages {
+        overflow-y: auto;
+        overflow-x: hidden;
         width: 100%;
         position: absolute;
+        bottom: 0; 
+        max-height: 100%;
     }
 
     form {
@@ -124,7 +128,13 @@
             },
             addMessage: function (msg) {
                 this.items.push(msg);
-            }
+                setTimeout(this.updateScroll,100);
+            },
+            
+            updateScroll: function(){
+                var element = document.getElementById("messages");
+                element.scrollTop = element.scrollHeight;
+            },
         }
-    };
+    }   
 </script>
