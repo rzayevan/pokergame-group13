@@ -154,10 +154,6 @@
       this.socket.on('update reports', data => {
         this.data = data;
       });
-
-      console.log(this.columns);
-
-
     }
   }
 }
