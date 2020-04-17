@@ -17,7 +17,8 @@
                     <Display
                             v-bind:myCards="myCards"
                             v-bind:bigBlind="bigBlind"
-                            v-bind:maxBet="players[seatID].chipTotal"
+                            v-bind:chipTotal="players[seatID].chipTotal"
+                            v-bind:bet="players[seatID].bet"
                             v-bind:turnOptions="turnOptions"
                     />
                 </b-row>
