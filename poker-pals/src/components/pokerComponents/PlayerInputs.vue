@@ -8,7 +8,7 @@
             </b-form-checkbox>
         </b-row>
         <b-row no-gutters class="my-1">
-            <input id="raiseValue" class="col-8" type="number" :value="raise" :min="bigBlind" :step="bigBlind" :max="maxBet"/>
+            <input id="raiseValue" class="col-8" type="number" :value="raise" :min="bigBlind" :step="bigBlind" :max="chipTotal + bet"/>
             <b-button :disabled="!turnOptions.raise" class="col" variant="dark" v-on:click="makeDecision()">RAISE</b-button>
         </b-row>
         <b-row no-gutters class="my-1">
@@ -31,7 +31,7 @@
         components: {
         },
         props: [
-            'bigBlind', 'maxBet', 'turnOptions',
+            'bigBlind', 'chipTotal', 'bet', 'turnOptions',
         ],
         data() {
             return {
