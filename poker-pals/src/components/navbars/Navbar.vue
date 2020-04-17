@@ -1,7 +1,7 @@
 <template>
     <nav>
         <b-navbar>
-            <b-navbar-brand to="/login" class="mx-3" id="brand">Poker Pals</b-navbar-brand>
+            <b-navbar-brand class="mx-3" id="brand" @click="navigateToLogin()">Poker Pals</b-navbar-brand>
         </b-navbar>
     </nav>
 </template>
@@ -27,5 +27,11 @@
 <script>
     export default {
         name: "Navbar.vue",
+        methods: {
+            navigateToLogin: function() {
+                this.$router.replace({ name: "Login" });
+                location.reload();
+            }
+        }
     };
 </script>
