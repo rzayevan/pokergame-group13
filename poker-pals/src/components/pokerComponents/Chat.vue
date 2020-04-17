@@ -45,13 +45,17 @@
         width: 100%;
         background-color: white;
         height: 80%;
-        overflow-y: auto;
-        overflow-x: hidden;
+        position: relative;
+        overflow: none; 
     }
 
     #messages {
+        overflow-y: auto;
+        overflow-x: hidden;
         width: 100%;
         position: absolute;
+        bottom: 0; 
+        max-height: 100%;
     }
 
     form {
@@ -128,7 +132,7 @@
             },
             
             updateScroll: function(){
-                var element = document.getElementById("chatBox");
+                var element = document.getElementById("messages");
                 element.scrollTop = element.scrollHeight;
             },
         }
