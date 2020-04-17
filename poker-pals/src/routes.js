@@ -1,6 +1,6 @@
 import Login from './components/Login.vue';
 import Poker from './components/Poker.vue';
-import Reports from './components/Reports.vue';
+import Reports from './components/Reports/Reports.vue';
 import Tables from './components/Tables.vue';
 import PageNotFound from './components/PageNotFound.vue';
 import Banned from './components/Banned.vue';
