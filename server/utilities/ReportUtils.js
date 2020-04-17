@@ -20,8 +20,11 @@ exports.submitReport = function(reportData) {
             return a > b ? -1 : a < b ? 1 : 0;
         });
 
+        // If their are less than NUM_OF_MESSAGES at the table before the report use the number of messages, else use the constant
+        let messagesToAdd = (tableMessages.length < NUM_OF_MESSAGES) ? tableMessages.length - 1 : NUM_OF_MESSAGES - 1;
+
         // Add the relevant tableMessages to chatMessages in the order they were sent
-        for (let i = NUM_OF_MESSAGES - 1; i >= 0; i--) {
+        for (let i = messagesToAdd; i >= 0; i--) {
             chatMessages.push(tableMessages[i]);
         }
 
