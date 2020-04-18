@@ -136,11 +136,12 @@ class PokerController {
                     table.tableActive = true; // the table is now active
                     this.beginTheGame(io, roomToJoin);
                 }
-            } else {
-                socket.emit('cannotJoinRoom', response);
             }
-            return response;
         }
+        else {
+            socket.emit('cannotJoinRoom', response);
+        }
+        return response;
     }
 
     createDecisionTimeout(io, room, self) { // if after the timeout the next player does not response they are auto folded
