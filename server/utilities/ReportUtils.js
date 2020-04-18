@@ -83,7 +83,7 @@ exports.getReports = function() {
 
 // Dismisses or bans a report, and updates the text file 
 exports.reviewReport = async function(updateData) {    
-    let report = getReport(updateData.id);
+    let report = this.getReport(updateData.id);
     report.status = updateData.newStatus;
 
     await DataAccessLayer.UpdateReport(report);
@@ -112,7 +112,7 @@ isReviewed = function(status) {
 }
 
 // Parses the report cache and returns the report with an ID matching the passed value 
-getReport = function(id) {
+exports.getReport = function(id) {
     let reports = DataAccessLayer.getCachedReports();
 
     let matchingReport = reports.find(report => {
