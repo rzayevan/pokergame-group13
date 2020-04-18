@@ -240,7 +240,6 @@ class PokerTable {
             let itWasTheirTurn = false;
             if (this.assistant.wasItTheirTurn(userID)) { itWasTheirTurn = true; } // it was their turn
             seat.resetSeat();
-            //let newTimeout = false;
             if (itWasTheirTurn) { // it was their turn, find the next one
                 clearTimeout(this.timeout); // player made an action, stop the timeout
                 this.assistant.playerFoldFinish(); // because it was their turn we can treat it like a fold
