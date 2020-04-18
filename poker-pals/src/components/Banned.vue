@@ -7,7 +7,7 @@
             </span>
             <h1>You've been banned.</h1>
             <p>Looks like we’re not poker pals anymore :/ <br>
-                Want to talk about it? <a href="javascript:void(0)">contact@pokerpals.ca</a>
+                Want to talk about it? <a href="mailto:contact@pokerpals.ca">contact@pokerpals.ca</a>
             </p>
         </div>
     </div>
