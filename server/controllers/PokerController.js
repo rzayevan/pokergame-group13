@@ -130,18 +130,18 @@ class PokerController {
 
                 this.rooms.push(room);
                 this.rooms.sort(function(a, b) { return a.table.bigBlind - b.table.bigBlind })
-
-                io.emit("receiveRoomList", this.getRoomList()); // update the room list
-                if (table.canAGameBegin() && !table.tableActive) { // check if we can begin a game
-                    table.tableActive = true; // the table is now active
-                    this.beginTheGame(io, roomToJoin);
-                }
-            } else {
-                socket.emit('cannotJoinRoom', response);
             }
-            return response;
+            io.emit("receiveRoomList", this.getRoomList()); // update the room list
+            if (table.canAGameBegin() && !table.tableActive) { // check if we can begin a game
+                table.tableActive = true; // the table is now active
+                this.beginTheGame(io, roomToJoin);
+            }
+        } else {
+            socket.emit('cannotJoinRoom', response);
         }
+        return response;
     }
+
 
     createDecisionTimeout(io, room, self) { // if after the timeout the next player does not response they are auto folded
         return setTimeout(function() { self.turnDecisionTimeOut(io, room) }, PokerUtils.GetPokerTableTimeout());
