@@ -205,7 +205,7 @@ exports.BanOffender = function(reportId) {
 
 /*
  * Adds the supplied ChatMessage object to the cache
- * @param message The ChatMessage object to be added to the cache
+ * @param {ChatMessage} message The ChatMessage object to be added to the cache
  */
 exports.AddMessageToCache = function(message) {
     cachedMessages.push(message);
@@ -215,6 +215,16 @@ exports.AddMessageToCache = function(message) {
         cachedMessages.shift();
     }
 }
+
+/**
+ * Removes chat logs related to the supplied room id
+ * @param {String} roomID The room id to remove all chat logs from
+ */
+exports.resetChatCache = function(roomID) {
+    let newCache = cachedMessages.filter(x => x.tableID !== roomID);
+    cachedMessages = newCache;
+}
+
 
 /**
  * Returns the array of user objects that are stored in the local text file
