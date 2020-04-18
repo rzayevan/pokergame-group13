@@ -189,6 +189,9 @@ exports.AddUserDailyBonus = function(userId) {
     return 0;   
 }
 
+/**
+ * Ban the offending user from a report
+ */
 exports.BanOffender = function(reportId) {
     let report = ReportUtils.getReport(reportId);
     if (report) {
