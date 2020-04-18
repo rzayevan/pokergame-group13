@@ -107,7 +107,7 @@ class PokerController {
 
             //if joining the game results in a full table, add a table with same specs into room list 
             if (table.isTableFull()) {
-                let copies = 0;
+                let copies = 1;
                 let tableSplit = null;
                 let tableOrigin = table.tableName;
 
@@ -127,16 +127,18 @@ class PokerController {
                     id: uuid(),
                     table: new PokerTable({ name: tableOrigin + " " + copies, bigBlind: table.bigBlind, buyIn: table.buyIn }),
                 }
+
                 this.rooms.push(room);
-            }
+                this.rooms.sort(function(a, b) { return a.table.bigBlind - b.table.bigBlind })
 
-
-            io.emit("receiveRoomList", this.getRoomList()); // update the room list
-            if (table.canAGameBegin() && !table.tableActive) { // check if we can begin a game
-                table.tableActive = true; // the table is now active
-                this.beginTheGame(io, roomToJoin);
+                io.emit("receiveRoomList", this.getRoomList()); // update the room list
+                if (table.canAGameBegin() && !table.tableActive) { // check if we can begin a game
+                    table.tableActive = true; // the table is now active
+                    this.beginTheGame(io, roomToJoin);
+                }
             }
-        } else {
+        }
+        else {
             socket.emit('cannotJoinRoom', response);
         }
         return response;
@@ -242,7 +244,7 @@ class PokerController {
         let table = room.table;
 
         let user = DataAccessLayer.GetCachedUsers().find(user => user.id === msg.userID);
-        if(user === undefined){ return; }
+        if (user === undefined) { return; }
 
         let alreadyInShowdown = table.assistant.showdown; // if a showdown is occuring at this stage then we don't need to call another showdown
         let result = table.bootPlayer(user.id, io, room); // boot the player and return any chips they had (not including pot)

@@ -9,7 +9,6 @@
                 </p>
             </div>
             <div v-show="showOptions" class="material-icons ml-1">
-                <button id="block" class="ml-1 p-1" @click="block">block</button>
                 <button id="report" class="ml-1 p-1" @click="report">report</button>
             </div>
         </b-col>
@@ -75,18 +74,12 @@
         },
         methods:{
             /**
-             *  Toggle the visibility of  block and report options associated with this message.
+             *  Toggle the visibility of report option associated with this message.
              */
             toggleOptions(){
                 this.showOptions = !this.showOptions;
             },
 
-            /**
-             *  Mute the user who sent this message.
-             */
-            block() {
-                // TODO: Implement block/mute
-            },
 
             /**
              *  Report the user who sent this message.

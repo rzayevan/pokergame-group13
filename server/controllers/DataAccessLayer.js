@@ -56,7 +56,7 @@ exports.ReadUsersFile = function() {
 
         user.id = splitLine[0];
         user.socketID = splitLine[1];
-        user.isLoggedIn = (splitLine[2] === 'true');
+        user.isLoggedIn = false;
         user.isAdmin = (splitLine[3] === 'true');
         user.username = splitLine[4];
         user.password = splitLine[5];

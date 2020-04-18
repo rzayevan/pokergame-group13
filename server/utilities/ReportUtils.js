@@ -62,6 +62,7 @@ exports.getReports = function() {
     let formattedReports = [];
 
     let reports = DataAccessLayer.getCachedReports();
+    reports = orderReports(reports);
     reports.forEach(report => {
         let formattedReport = {
             id: report.id,
@@ -87,6 +88,27 @@ exports.reviewReport = async function(updateData) {
     report.status = updateData.newStatus;
 
     await DataAccessLayer.UpdateReport(report);
+}
+
+/**
+ * Orders reports by review status, then by submission date
+ */
+orderReports = function(reports) {
+    let unreviewedReports = [];
+    let reviewedReports = [];
+
+    reports = reports.sort((reportA, reportB) => reportA.dateSubmitted - reportB.dateSubmitted);
+
+    reports.forEach(report => {
+        if (isReviewed(report.status)) {
+            reviewedReports.push(report);
+        }
+        else {
+            unreviewedReports.push(report);
+        }
+    });
+
+    return unreviewedReports.concat(reviewedReports);
 }
 
 // Convert a Date object into a short date string, in the format MM/DD/YY
