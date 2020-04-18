@@ -18,7 +18,13 @@
                 </div>
             </b-col>
             <b-col cols="6" class="actions col-lg-4">
-                <PlayerInputs v-bind:bigBlind="bigBlind" v-bind:chipTotal="chipTotal" v-bind:bet="bet" v-bind:turnOptions="turnOptions"/>
+                <PlayerInputs 
+                    v-bind:bigBlind="bigBlind" 
+                    v-bind:chipTotal="chipTotal" 
+                    v-bind:bet="bet" 
+                    v-bind:turnOptions="turnOptions"
+                    v-bind:flipCheckFold="flipCheckFold"
+                />
             </b-col>
         </b-row>
 </template>
@@ -51,7 +57,7 @@
             PlayerInputs,
         },
         props: [
-            'myCards', 'bigBlind', 'chipTotal', 'bet', 'turnOptions',
+            'myCards', 'bigBlind', 'chipTotal', 'bet', 'turnOptions', 'flipCheckFold'
         ],
         data() {
             return {

@@ -20,6 +20,7 @@
                             v-bind:chipTotal="players[seatID].chipTotal"
                             v-bind:bet="players[seatID].bet"
                             v-bind:turnOptions="turnOptions"
+                            v-bind:flipCheckFold="flipCheckFold"
                     />
                 </b-row>
             </b-col>
@@ -88,6 +89,7 @@ export default {
     data() {
         return {
             checkFold: false, // a toggle that will automatically make a turn decision for you when it is your turn, first see if the player can check, if not then fold
+            flipCheckFold: false, // the value doesn't matter, player inputs is only checking if this variable changes, if so then reset checkfold
             raiseToValue: 0,
             timerReset: true, // use this as a toggle, when the value changes, all timers reset (doesn't matter if its true or false)
             // right now the chat calls back to the poker page to send a report, might want to have the chat run with its own socket
@@ -161,6 +163,7 @@ export default {
                 if(this.seatID !== '' && this.players[this.seatID].timer === true && this.checkFold){
                     // the player wants to check, if can't then fold
                     this.makeDecision('CHECK/FOLD');
+                    this.flipCheckFold = !this.flipCheckFold;
                 }
                 this.timerReset = !this.timerReset;
 
