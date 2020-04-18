@@ -38,7 +38,7 @@
 
 <script>
   import ReportModal from './ReportModal.vue';
-  import AdminNavbar from "./navbars/AdminNavbar";
+  import AdminNavbar from "../navbars/AdminNavbar";
 
   export default {
   name: "report-grid",
@@ -140,20 +140,20 @@
       this.socket.on('receive reports', data => {
         this.data = data.reports;
         this.columns = data.gridColumns;
+
+        if (this.columns) {
+          let sortOrders = {};
+          this.columns.forEach(function (key) {
+            sortOrders[key] = 1;
+          })
+          this.sortOrders = sortOrders;
+        }
       });
 
       // Receive new reports and update the data
       this.socket.on('update reports', data => {
         this.data = data;
       });
-
-      if (this.columns) {
-        let sortOrders = {};
-        this.columns.forEach(function (key) {
-          sortOrders[key] = 1;
-        })
-        this.sortOrders = sortOrders;
-      }
     }
   }
 }
@@ -179,10 +179,12 @@
 
     form {
       font-size: 4vw;
+      padding-bottom: 5%;
+      width: 100%;
     }
 
     .form-control {
-      width: 80%;
+      width: 70%;
       margin-left: 5%;
       font-size: 3.5vw;
     }
@@ -203,11 +205,13 @@
     th, td {
       width: 25%;
       padding: 10px 20px;
-      font-size: 1.25vw;
+      font-size: 1.1vw;
     }
 
     form {
       font-size: 1.25vw;
+      padding-bottom: 1.5%;
+      width: 40%;
     }
 
     .form-control {
@@ -216,10 +220,6 @@
       font-size: 1.25vw;
       height: calc(1.5em + 0.75rem + 2px); 
     }
-  }
-
-  form {
-    padding-bottom: 1.5%;
   }
 
   body {
