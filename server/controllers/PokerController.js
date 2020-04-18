@@ -127,7 +127,6 @@ class PokerController {
                     id: uuid(),
                     table: new PokerTable({ name: tableOrigin + " " + copies, bigBlind: table.bigBlind, buyIn: table.buyIn }),
                 }
-
                 this.rooms.push(room);
                 this.rooms.sort(function(a, b) { return a.table.bigBlind - b.table.bigBlind })
             }

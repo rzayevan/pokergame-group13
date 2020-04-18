@@ -8,6 +8,7 @@ let ChatMessage = require("../model/ChatMessage.js");
 let ServerUtils = require("../utilities/ServerUtils.js");
 
 const UserUtils = require('../utilities/UserUtils.js');
+const ReportUtils = require('../utilities/ReportUtils.js');
 
 let cachedUsers = [];
 let cachedReports = [];
@@ -186,6 +187,20 @@ exports.AddUserDailyBonus = function(userId) {
         return dailyBonus;
     }
     return 0;   
+}
+
+/**
+ * Ban the offending user from a report
+ */
+exports.BanOffender = function(reportId) {
+    let report = ReportUtils.getReport(reportId);
+    if (report) {
+        let user = UserUtils.getUserById(report.offendingUserId);
+        if (user) {
+            user.banned = true;
+            this.UpdateUser(user);
+        }
+    } 
 }
 
 /*

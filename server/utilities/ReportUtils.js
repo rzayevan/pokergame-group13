@@ -62,6 +62,7 @@ exports.getReports = function() {
     let formattedReports = [];
 
     let reports = DataAccessLayer.getCachedReports();
+    reports = orderReports(reports);
     reports.forEach(report => {
         let formattedReport = {
             id: report.id,
@@ -83,10 +84,31 @@ exports.getReports = function() {
 
 // Dismisses or bans a report, and updates the text file 
 exports.reviewReport = async function(updateData) {    
-    let report = getReport(updateData.id);
+    let report = this.getReport(updateData.id);
     report.status = updateData.newStatus;
 
     await DataAccessLayer.UpdateReport(report);
+}
+
+/**
+ * Orders reports by review status, then by submission date
+ */
+orderReports = function(reports) {
+    let unreviewedReports = [];
+    let reviewedReports = [];
+
+    reports = reports.sort((reportA, reportB) => reportA.dateSubmitted - reportB.dateSubmitted);
+
+    reports.forEach(report => {
+        if (isReviewed(report.status)) {
+            reviewedReports.push(report);
+        }
+        else {
+            unreviewedReports.push(report);
+        }
+    });
+
+    return unreviewedReports.concat(reviewedReports);
 }
 
 // Convert a Date object into a short date string, in the format MM/DD/YY
@@ -112,7 +134,7 @@ isReviewed = function(status) {
 }
 
 // Parses the report cache and returns the report with an ID matching the passed value 
-getReport = function(id) {
+exports.getReport = function(id) {
     let reports = DataAccessLayer.getCachedReports();
 
     let matchingReport = reports.find(report => {

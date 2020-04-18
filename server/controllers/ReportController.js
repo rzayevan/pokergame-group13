@@ -6,7 +6,7 @@ class ReportController {
     retrieveReports(socket, isUpdate) {
         let reportData = {
             reports: ReportUtils.getReports(),
-            gridColumns: ["Offending User", "Submitted", "Offense", "Reported By"], 
+            gridColumns: ["Offending User", "Offense", "Submitted", "Reported By"], 
         };
 
         if (isUpdate) {
