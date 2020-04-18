@@ -12,6 +12,7 @@
                     </b-nav-item>
                     <b-nav-item disabled>
                         <img class="img-fluid" v-bind:src="playerIcon.src" alt="User Profile Image"/>
+                        <span class="b-nav-name">{{user.username}}</span>
                     </b-nav-item>
                     <b-nav-item v-if="!hideLogOut" to="/">
                         <b-nav-text class="material-icons" @click="logOut()"> logout </b-nav-text>
@@ -42,6 +43,11 @@
 
     .b-nav-text {
         color: white;
+    }
+
+    .b-nav-name {
+        color: white;
+        padding:5px; 
     }
 
     img {

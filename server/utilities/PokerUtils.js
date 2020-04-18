@@ -30,7 +30,6 @@ const NUMBER_OF_SUITS = 4;
  * An array of poker table stats
  */
 const POKER_TABLE_STATS = [
-    { name: 'Frugal', bigBlind: 1, buyIn: 10 },
     { name: 'Greenhorn', bigBlind: 2, buyIn: 20 }, // stolen from a poker website
     { name: 'Beginner', bigBlind: 10, buyIn: 100 },
     { name: 'Guppy', bigBlind: 15, buyIn: 200 },

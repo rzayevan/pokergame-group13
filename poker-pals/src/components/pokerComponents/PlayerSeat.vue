@@ -7,7 +7,6 @@
             <b-col cols="8">
                 <p>{{action}}</p>
             </b-col>
-            <div class="col-2" :style="{visibility: youTag ? 'visible' : 'hidden'}"> YOU </div>
         </b-row>
         <b-row class="userInfo text-left" no-gutters>
             <div class="ml-1 col-1">
@@ -88,7 +87,7 @@
         },
         props: [
             'occupied', 'classes', 'dealerStatus', 'cards', 'cardReveal', 'betValue', 'accountName',
-            'accountImage', 'chipTotal', 'action', 'youTag', 'timer', 'timerReset'
+            'accountImage', 'chipTotal', 'action', 'timer', 'timerReset'
         ],
     }
 </script>
