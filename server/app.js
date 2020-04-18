@@ -142,6 +142,11 @@ io.on('connection', (socket) => {
 
     socket.on('exitRoomRequest', function(msg) {
         pokerController.exitRoomRequest(io, socket, msg);
+
+        let numberOfConnections = io.nsps['/'].adapter.rooms[msg.roomID];
+        if (numberOfConnections === undefined) {
+            DataAccessLayer.resetChatCache(msg.roomID);
+        }
     });
 
     socket.on('userSentMessage', function(msg) {
