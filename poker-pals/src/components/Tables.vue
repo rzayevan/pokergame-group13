@@ -139,6 +139,7 @@ export default {
 
 ul {
   overflow-x:hidden;
+  padding: 0;
 }
 
 li {
