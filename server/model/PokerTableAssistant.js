@@ -292,11 +292,12 @@ module.exports = class PokerTableAssistant {
     playerRaiseFinish(raiseToValue){
         this.currentBet = raiseToValue;
         // we don't check for next card reveal because now all decisions are to be reset
+
         for(let i = 0; i < this.tableSeats.length; i++){
             this.tableSeats[i].madeDecision = false;
         }
         this.tableSeats[this.seatTurnID].madeDecision = true; // all but the raiser have had their decisions reset
-        if(this.getNumberOfPlayersAbleToAct() < this.minimumNumberOfPlayersNeededToContinue){ // even though they raised, they could still be the last person able to act (thus raising rather than calling is pointless)
+        if(this.getNumberOfPlayersAbleToAct() < this.minimumNumberOfPlayersNeededToContinue && this.allAblePlayersMadeDecision()){ // even though they raised, they could still be the last person able to act (thus raising rather than calling is pointless)
             this.beginTheShowDown();
         }
         else{
