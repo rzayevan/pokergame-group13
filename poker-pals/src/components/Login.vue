@@ -2,7 +2,7 @@
   <div id="login-page">
     <Navbar class="navbar-section"/>
     <div v-cloak class="container">
-      <div class="row">
+      <div class="row pb-3">
         <div class="col">
           <h1>Poker Pals</h1>
           <h3>Play poker with your pals</h3>
@@ -28,7 +28,7 @@
               <input class="form-control" type="password" id="loginPassword" v-model="loginData.password" required/>
             </div>
 
-            <div class="form-group row justify-content-between" v-if="showLogin">
+            <div class="form-group row justify-content-between mx-0" v-if="showLogin">
               <a class="col-4 button-text" @click="toggleForm()">Create account</a>
               <input class="col-4 btn" type="submit"  value="Sign In">
             </div>
@@ -56,7 +56,7 @@
               <input class="form-control" type="password" id="signUpConfirmPassword" v-model="signUpData.confirm_password" required/>
             </div>
 
-            <div class="form-group row justify-content-between">
+            <div class="form-group row justify-content-between mx-0">
               <a class="col-4 button-text" @click="toggleForm()">Sign in</a>
               <input class="col-4 btn" type="submit" value="Sign Up">
             </div>
@@ -190,7 +190,12 @@
   }
 
   .button-text {
+    text-align: left;
     color: #01B0D9;
+  }
+
+  .button-text:hover {
+      cursor: pointer;
   }
 
  
