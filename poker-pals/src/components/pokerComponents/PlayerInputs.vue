@@ -2,7 +2,7 @@
     <b-container fluid class="player-inputs">
         <b-row no-gutters class="my-1">
             <b-button :disabled="!turnOptions.allIn" class="col mr-1" variant="dark" v-on:click="$parent.makeDecision('ALL IN', 0)">ALL IN</b-button>
-            <b-form-checkbox class="offset-2 col-6" switch v-model="checkFold" @change="toggleCheckFoldButton()">
+            <b-form-checkbox id="checkFoldButton" class="offset-2 col-6" switch v-model="checkFold" @change="toggleCheckFoldButton()">
                 <span class="d-none d-sm-block">CHECK/FOLD</span>
                 <span class="d-block d-sm-none">C/F</span>
             </b-form-checkbox>
@@ -31,13 +31,19 @@
         components: {
         },
         props: [
-            'bigBlind', 'chipTotal', 'bet', 'turnOptions',
+            'bigBlind', 'chipTotal', 'bet', 'turnOptions', 'flipCheckFold',
         ],
         data() {
             return {
-                // TODO: bind data with props
                 checkFold: false,
                 raise: this.props.bigBlind()
+            }
+        },
+        watch: {
+            flipCheckFold: function () {
+                this.checkFold = false;
+                this.$parent.toggleCheckFoldButton(this.checkFold);
+                document.getElementById("checkFoldButton").toggled = false;
             }
         },
         methods:{
