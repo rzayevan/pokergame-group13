@@ -130,12 +130,11 @@ class PokerController {
 
                 this.rooms.push(room);
                 this.rooms.sort(function(a, b) { return a.table.bigBlind - b.table.bigBlind })
-
-                io.emit("receiveRoomList", this.getRoomList()); // update the room list
-                if (table.canAGameBegin() && !table.tableActive) { // check if we can begin a game
-                    table.tableActive = true; // the table is now active
-                    this.beginTheGame(io, roomToJoin);
-                }
+            }
+            io.emit("receiveRoomList", this.getRoomList()); // update the room list
+            if (table.canAGameBegin() && !table.tableActive) { // check if we can begin a game
+                table.tableActive = true; // the table is now active
+                this.beginTheGame(io, roomToJoin);
             }
         }
         else {
