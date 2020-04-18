@@ -88,8 +88,8 @@
       // Sort data if sortKey exists 
       if (sortKey) {
         data = data.slice().sort(function (row1, row2) {
-          row1 = row1[sortKey];
-          row2 = row2[sortKey];
+          row1 = row1[sortKey].toLowerCase();
+          row2 = row2[sortKey].toLowerCase();
           return (row1 === row2 ? 0 : row1 > row2 ? 1 : -1) * order;
         })
       }
