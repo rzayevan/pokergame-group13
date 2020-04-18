@@ -296,8 +296,13 @@ module.exports = class PokerTableAssistant {
             this.tableSeats[i].madeDecision = false;
         }
         this.tableSeats[this.seatTurnID].madeDecision = true; // all but the raiser have had their decisions reset
-        this.findNextTurn();
-        this.setPlayerTurn();
+        if(this.getNumberOfPlayersAbleToAct() < this.minimumNumberOfPlayersNeededToContinue){ // even though they raised, they could still be the last person able to act (thus raising rather than calling is pointless)
+            this.beginTheShowDown();
+        }
+        else{
+            this.findNextTurn();
+            this.setPlayerTurn();
+        }
     }
 
     /**
