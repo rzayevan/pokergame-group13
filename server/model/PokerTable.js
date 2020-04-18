@@ -235,14 +235,24 @@ class PokerTable {
         let chips = seat.chips;
         let socket = io.sockets.connected[seat.socketID];
         if (socket !== undefined) { socket.leave(room.id); } // if it was undefined then it was a disconnect (so the socket has already left the room)
-        let itWasTheirTurn = false;
-        if (this.assistant.wasItTheirTurn(userID)) { itWasTheirTurn = true; } // it was their turn
-        seat.resetSeat();
         let newTimeout = false;
-        if (itWasTheirTurn) { // it was their turn, find the next one
-            clearTimeout(this.timeout); // player made an action, stop the timeout
-            this.assistant.playerFoldFinish(); // because it was their turn we can treat it like a fold
-            if (!this.assistant.showdown) { newTimeout = true; } // it was their turn but we are not in a show down we continue with a new timeout
+        if(this.gameInPlay){
+            let itWasTheirTurn = false;
+            if (this.assistant.wasItTheirTurn(userID)) { itWasTheirTurn = true; } // it was their turn
+            seat.resetSeat();
+            //let newTimeout = false;
+            if (itWasTheirTurn) { // it was their turn, find the next one
+                clearTimeout(this.timeout); // player made an action, stop the timeout
+                this.assistant.playerFoldFinish(); // because it was their turn we can treat it like a fold
+                if (!this.assistant.showdown) { newTimeout = true; } // it was their turn but we are not in a show down we continue with a new timeout
+            } else { // it was not their turn, check if only one person remains
+                if (!this.assistant.showdown && this.assistant.getNumberOfPlayersStillInPlay() < this.assistant.minimumNumberOfPlayersNeededToContinue) {
+                    for(let i = 0; i < this.tableSeats.length; i++){
+                        this.tableSeats[i].resetForNextStage();
+                    }
+                    this.assistant.beginTheShowDown();
+                }
+            }
         }
         return { chips: chips, newTimeout: newTimeout };
     }
