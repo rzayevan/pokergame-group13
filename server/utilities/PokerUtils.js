@@ -32,7 +32,7 @@ const NUMBER_OF_SUITS = 4;
 const POKER_TABLE_STATS = [
     { name: 'Greenhorn', bigBlind: 2, buyIn: 20 }, // stolen from a poker website
     { name: 'Beginner', bigBlind: 10, buyIn: 100 },
-    { name: 'Guppy', bigBlind: 15, buyIn: 200 },
+    { name: 'Guppy', bigBlind: 20, buyIn: 200 },
     { name: 'Gambler', bigBlind: 50, buyIn: 500 },
     { name: 'Pro', bigBlind: 200, buyIn: 2000 },
     { name: 'BigFish', bigBlind: 1000, buyIn: 10000 },
