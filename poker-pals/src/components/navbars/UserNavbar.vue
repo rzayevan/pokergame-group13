@@ -75,10 +75,11 @@
         data() {
             return {
                 user: {},
-                playerIcon: require("../../images/ImageFiles").getImage(this.userData.icon)
+                playerIcon: require("../../images/ImageFiles").getImage('invisible'),
             }
         },
         mounted() {
+            this.playerIcon = require("../../images/ImageFiles").getImage(this.userData.icon);
             this.user = this.userData;
         }
     };
