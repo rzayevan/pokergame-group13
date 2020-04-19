@@ -163,7 +163,6 @@ export default {
                 if(this.seatID !== '' && this.players[this.seatID].timer === true && this.checkFold){
                     // the player wants to check, if can't then fold
                     this.makeDecision('CHECK/FOLD');
-                    this.flipCheckFold = !this.flipCheckFold;
                 }
                 this.timerReset = !this.timerReset;
 
@@ -259,6 +258,9 @@ export default {
     methods:{
         // define all of the socket.emit methods here,
         makeDecision(action, raise){// upon a player clicking a game play button this function is called, the server will either accept or deny the action
+            if(this.checkFold){
+                this.flipCheckFold = !this.flipCheckFold;
+            }
             this.socket.emit("turnDecision", {
                 userID: this.userData.id,
                 roomID: this.roomID,
@@ -266,7 +268,6 @@ export default {
                 action: action,
                 raiseToValue: raise, // only used if player is raising
             });
-            this.checkFold = false;
         },
         // end of socket.emit functions
         toggleCheckFoldButton(checkFold){ // toggle the check/fold button, this will allow the client to automatically send an action without user input
