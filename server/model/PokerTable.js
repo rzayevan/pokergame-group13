@@ -236,10 +236,10 @@ class PokerTable {
         let socket = io.sockets.connected[seat.socketID];
         if (socket !== undefined) { socket.leave(room.id); } // if it was undefined then it was a disconnect (so the socket has already left the room)
         let newTimeout = false;
+        seat.resetSeat();
         if(this.gameInPlay){
             let itWasTheirTurn = false;
             if (this.assistant.wasItTheirTurn(userID)) { itWasTheirTurn = true; } // it was their turn
-            seat.resetSeat();
             if (itWasTheirTurn) { // it was their turn, find the next one
                 clearTimeout(this.timeout); // player made an action, stop the timeout
                 this.assistant.playerFoldFinish(); // because it was their turn we can treat it like a fold
