@@ -74,9 +74,13 @@
         },
         data() {
             return {
-                user: this.userData,
-                playerIcon: require("../../images/ImageFiles").getImage(this.userData.icon)
+                user: {},
+                playerIcon: require("../../images/ImageFiles").getImage('invisible'),
             }
+        },
+        mounted() {
+            this.playerIcon = require("../../images/ImageFiles").getImage(this.userData.icon);
+            this.user = this.userData;
         }
     };
 </script>

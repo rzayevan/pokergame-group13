@@ -36,8 +36,11 @@
         data() {
             return {
                 checkFold: false,
-                raise: this.props.bigBlind()
+                raise: 0,
             }
+        },
+        mounted() {
+            this.raise = this.bigBlind;
         },
         watch: {
             flipCheckFold: function () {
