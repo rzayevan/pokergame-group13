@@ -65,7 +65,9 @@
         props: ['socket', 'userData', 'hideLogOut'],
         methods: {
             navigateToTables: function() {
-                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} });
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} }).catch(err => {
+                    if (err.name !== "NavigationDuplicated") throw err;
+                });
                 this.socket.emit('diconnect from table');
             },
             logOut: function() {

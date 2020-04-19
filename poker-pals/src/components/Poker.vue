@@ -196,7 +196,9 @@ export default {
                     player.timer = false;
                 }
                 this.userData.chips += msg.chipValueChangeBy;
-                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} });
+                this.$router.replace({ name: "Tables", params: {authenticated: true, socket: this.socket, userData: this.userData} }).catch(err => {
+                    if (err.name !== "NavigationDuplicated") throw err;
+                });
             });
             this.socket.on('beginTheGame', cardsJSON => { // each player receives their two personal cards upon the game starting
                 let cards = JSON.parse(cardsJSON);
