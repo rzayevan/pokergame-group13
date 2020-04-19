@@ -231,7 +231,7 @@ class PokerTable {
      */
     bootPlayer(userID, io, room) {
         let seat = this.tableSeats.find(seat => seat.userID === userID);
-        if(seat === undefined){ return {chips: chips, newTimeout: newTimeout}; } // we should never see this line execute, its just a fail safe
+        if(seat === undefined){ return {chips: 0, newTimeout: true}; } // we should never see this line execute, its just a fail safe
         let chips = seat.chips;
         let socket = io.sockets.connected[seat.socketID];
         if (socket !== undefined) { socket.leave(room.id); } // if it was undefined then it was a disconnect (so the socket has already left the room)
