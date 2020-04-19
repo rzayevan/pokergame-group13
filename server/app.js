@@ -113,7 +113,9 @@ io.on('connection', (socket) => {
 
     socket.on('review report', function(updateData) {
         ReportUtils.reviewReport(updateData);
-        DataAccessLayer.BanOffender(updateData.id);
+        if (updateData.newStatus === "dismissed") {
+            DataAccessLayer.BanOffender(updateData.id);
+        }
         reportController.retrieveReports(this, true);
     });
 
