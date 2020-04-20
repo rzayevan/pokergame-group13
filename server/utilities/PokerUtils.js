@@ -45,7 +45,7 @@ const POKER_TABLE_STATS = [
 /**
  * time player has to make decision
  */
-const POKER_TABLE_TIMEOUT = 2000000; // 20 seconds, for testing purposes make this a very large value so not to time out players
+const POKER_TABLE_TIMEOUT = 20000; // 20 seconds
 /**
  * Returns the NUM_OF_TABLE_SEATS constant
  */
